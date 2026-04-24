@@ -211,10 +211,8 @@
   .divider-label{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.8px}
 
   .exp-card{background:#FDF6EC;border-radius:14px;padding:12px 13px;border:1.5px solid #EDD9C0;margin-bottom:8px;animation:fadeIn .2s ease}
-  .exp-card.urgent-5{background:#FFF5F0;border-color:#F0A060}
-  .exp-card.urgent-3{background:#FFEDE6;border-color:#E07040}
-  .exp-card.urgent-0{background:#FFE0D0;border-color:#C4622D}
-  .exp-card.scaduta{background:#FFD6C8;border-color:#C4622D}
+  .exp-card.urgente{background:#FFE0D0;border-color:#C4622D;border-width:2px}
+  .exp-card.scaduta{background:#FFCFBA;border-color:#B03000;border-width:2px}
   .exp-header{display:flex;align-items:center;gap:9px}
   .exp-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
   .exp-info{flex:1;min-width:0}
@@ -357,8 +355,8 @@
           </div>
           <div class="label">Chi paga?</div>
           <div class="payer-row" id="payerBtns"></div>
-          <div class="label">Date</div>
-          <div class="date-row">
+          <div class="label" id="dateRowLabel">Data</div>
+          <div class="date-row" id="dateRow">
             <div id="calMainWrap">
               <button class="date-btn main-date" onclick="toggleCal('main')" style="width:100%">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#C4622D" stroke-width="2.2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
@@ -373,7 +371,7 @@
               </button>
               <div id="calSc" style="display:none" class="cal-dropdown">
                 <div id="calScInner"></div>
-                <button class="btn-secondary" onclick="clearSc()" style="width:100%;text-align:center;margin-top:8px;display:block">Rimuovi scadenza</button>
+                <button onclick="clearSc()" style="all:unset;display:block;width:100%;margin-top:8px;padding:7px 0;border-radius:8px;background:#EDD9C0;color:#8B4513;font-size:11px;font-weight:700;text-align:center;cursor:pointer;box-sizing:border-box;border:1.5px solid #D4A574">Rimuovi scadenza</button>
               </div>
             </div>
           </div>
@@ -488,6 +486,9 @@ function init(){
   load();
   document.getElementById('dateLabel').textContent=strToDisplay(today());
   document.getElementById('dateLabelSc').textContent='Scadenza';
+  // default: show Data, hide Scadenza
+  const scWrapInit=document.getElementById('calScWrap');
+  if(scWrapInit)scWrapInit.style.display='none';
   if(!localStorage.getItem('cc_seen')){
     document.getElementById('onboarding').style.display='flex';
   } else {
@@ -528,9 +529,33 @@ function renderCatIcons(){
     const el=document.getElementById(id);if(!el)return;
     el.innerHTML=cats.map(c=>{
       const a=selCat===c.id;
-      return`<button class="cat-btn${a?' active':''}" onclick="selCat='${c.id}';renderCatIcons()" style="border-color:${a?c.color:'#EDD9C0'};background:${a?c.bg:'#FAF3E8'}"><div style="color:${a?c.color:'#C4A070'}">${c.svg}</div><span style="color:${a?c.color:'#8B6040'}">${c.label}</span></button>`;
+      return`<button class="cat-btn${a?' active':''}" onclick="selectCat('${c.id}')" style="border-color:${a?c.color:'#EDD9C0'};background:${a?c.bg:'#FAF3E8'}"><div style="color:${a?c.color:'#C4A070'}">${c.svg}</div><span style="color:${a?c.color:'#8B6040'}">${c.label}</span></button>`;
     }).join('');
   });
+}
+
+function selectCat(id){
+  selCat=id;
+  renderCatIcons();
+  const SCAD_CATS=['luce','acqua','gas'];
+  const hasScadenza=SCAD_CATS.includes(id);
+  const mainWrap=document.getElementById('calMainWrap');
+  const scWrap=document.getElementById('calScWrap');
+  const lblDate=document.getElementById('dateRowLabel');
+  if(hasScadenza){
+    // Bollette: mostra solo Scadenza, nascondi Data
+    if(mainWrap)mainWrap.style.display='none';
+    if(scWrap)scWrap.style.display='block';
+    if(lblDate)lblDate.textContent='Scadenza';
+  } else {
+    // Tutte le altre: mostra Data, nascondi Scadenza
+    if(mainWrap)mainWrap.style.display='block';
+    if(scWrap)scWrap.style.display='none';
+    if(lblDate)lblDate.textContent='Data';
+    // reset scadenza se c'era
+    calSc.sel=null;
+    document.getElementById('dateLabelSc').textContent='Scadenza';
+  }
 }
 
 function renderCasaCatIcons(){
@@ -646,9 +671,8 @@ function urgBadge(sc){
   let text,color,bg;
   if(d<0){text=`Scaduta da ${Math.abs(d)}g`;color='#C4622D';bg='#FFE0D0';}
   else if(d===0){text='Scade oggi!';color='#C4622D';bg='#FFE0D0';}
-  else if(d<=3){text=`Scade tra ${d}g`;color='#C4622D';bg='#FFEDE6';}
-  else if(d<=5){text=`Scade tra ${d}g`;color='#A05010';bg='#FFF5F0';}
-  else if(d<=7){text=`Scade tra ${d}g`;color='#7A6010';bg='#FFFDE7';}
+  else if(d<=5){text=`Scade tra ${d}g`;color='#C4622D';bg='#FFE0D0';}
+  else if(d<=10){text=`Scade tra ${d}g`;color='#A05010';bg='#FFF3CD';}
   else{text=`Scade il ${strToDisplay(sc)}`;color='#6B7280';bg='#F3F4F6';}
   return`<div class="urg-badge" style="background:${bg}"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><span class="urg-text" style="color:${color}">${text}</span></div>`;
 }
@@ -657,7 +681,7 @@ function expCardHTML(e,isDa){
   const cat=CATS.find(c=>c.id===e.c)||CATS[7];
   const pl=e.payer==='A metà'?`A metà · €${e.half} a testa`:e.payer;
   let urgClass='';
-  if(isDa&&e.sc){const d=daysUntil(e.sc);if(d<0)urgClass='scaduta';else if(d===0)urgClass='urgent-0';else if(d<=3)urgClass='urgent-3';else if(d<=5)urgClass='urgent-5';}
+  if(isDa&&e.sc){const d=daysUntil(e.sc);if(d<0)urgClass='scaduta';else if(d<=5)urgClass='urgente';}
   return`<div class="exp-card ${urgClass}">
     <div class="exp-header">
       <div class="exp-icon" style="background:${cat.bg};color:${cat.color}">${cat.svg}</div>
@@ -686,12 +710,22 @@ function addExpense(){
   const n=document.getElementById('expName').value.trim();
   const cat=CATS.find(c=>c.id===selCat)||CATS[7];
   const half=selPayer==='A metà'?+(a/2).toFixed(2):null;
-  exp.unshift({id:Date.now(),n:n||cat.label,a,c:selCat,dt:dateToStr(calMain.sel||new Date()),sc:calSc.sel?dateToStr(calSc.sel):null,payer:selPayer,half,s:'da'});
+  const BOLLETTE_IDS=['luce','acqua','gas'];
+  const isBol=BOLLETTE_IDS.includes(selCat);
+  const dtSave=isBol?null:dateToStr(calMain.sel||new Date());
+  const scSave=calSc.sel?dateToStr(calSc.sel):null;
+  exp.unshift({id:Date.now(),n:n||cat.label,a,c:selCat,dt:dtSave,sc:scSave,payer:selPayer,half,s:'da'});
   save();renderExp();renderSummary();
   document.getElementById('expName').value='';document.getElementById('expAmt').value='';
   selPayer='';selCat='altro';calMain.sel=new Date();calSc.sel=null;
+  const mw=document.getElementById('calMainWrap');if(mw)mw.style.display='block';
+  const sw2=document.getElementById('calScWrap');if(sw2)sw2.style.display='none';
+  const lbl=document.getElementById('dateRowLabel');if(lbl)lbl.textContent='Data';
   document.getElementById('dateLabel').textContent=strToDisplay(today());
   document.getElementById('dateLabelSc').textContent='Scadenza';
+  // default: show Data, hide Scadenza
+  const scWrapInit=document.getElementById('calScWrap');
+  if(scWrapInit)scWrapInit.style.display='none';
   renderCatIcons();renderPayerBtns();
 }
 function toggleExp(id){const e=exp.find(x=>x.id===id);if(e){e.s=e.s==='da'?'ok':'da';if(e.s==='ok')e.paidAt=today();}save();renderExp();renderSummary();}
