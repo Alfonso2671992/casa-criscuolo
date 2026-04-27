@@ -431,7 +431,44 @@
   </div>
 </div>
 
+<!-- Firebase SDK -->
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import { getDatabase, ref, set, onValue, remove } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCHPWXCOg3lwu6_okAlpUomiGWoJ7f9he8",
+  authDomain: "casa-criscuolo.firebaseapp.com",
+  databaseURL: "https://casa-criscuolo-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "casa-criscuolo",
+  storageBucket: "casa-criscuolo.firebasestorage.app",
+  messagingSenderId: "229191200590",
+  appId: "1:229191200590:web:3eacdaa52d32780a40381f"
+};
+
+const fbApp = initializeApp(firebaseConfig);
+const db = getDatabase(fbApp);
+const HOUSE_KEY = 'criscuolo_falabella';
+
+// ---- SYNC FUNCTIONS (replace localStorage save/load) ----
+
+function fbSave(type, data) {
+  set(ref(db, HOUSE_KEY + '/' + type), data).catch(e => console.warn('Firebase write error:', e));
+}
+
+function fbListen(type, callback) {
+  onValue(ref(db, HOUSE_KEY + '/' + type), snap => {
+    callback(snap.val());
+  });
+}
+
+// Expose to global scope so legacy functions can call them
+window._fbSave = fbSave;
+window._fbListen = fbListen;
+window._fbReady = true;
+</script>
 <script>
+
 const CATS=[
   {id:'luce',label:'Luce',color:'#B07A10',bg:'#FEF3C7',svg:`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 22h4M12 2a7 7 0 017 7c0 2.4-1.2 4.5-3 5.7V17H8v-2.3C6.2 13.5 5 11.4 5 9a7 7 0 017-7z"/></svg>`},
   {id:'acqua',label:'Acqua',color:'#1565C0',bg:'#E3F2FD',svg:`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 11-11.31 0z"/></svg>`},
@@ -465,16 +502,54 @@ let calMain={nav:new Date(),sel:new Date()},calSc={nav:new Date(),sel:null};
 let photos={wish:null,misura:null};
 
 function load(){
-  try{
-    exp=JSON.parse(localStorage.getItem('cc_e')||'[]');
-    wish=JSON.parse(localStorage.getItem('cc_w')||'[]');
-    misure=JSON.parse(localStorage.getItem('cc_m')||'[]');
-    const n=localStorage.getItem('cc_n');if(n)names=JSON.parse(n);
-    const note=localStorage.getItem('cc_note')||'';
-    setTimeout(()=>{const t=document.getElementById('notepad');if(t)t.value=note;},100);
-  }catch(e){}
+  // Load names from localStorage (local-only)
+  try{const n=localStorage.getItem('cc_n');if(n)names=JSON.parse(n);}catch(e){}
+  // Load note from localStorage (local-only)
+  try{const note=localStorage.getItem('cc_note')||'';setTimeout(()=>{const t=document.getElementById('notepad');if(t)t.value=note;},200);}catch(e){}
+
+  // Firebase realtime listeners — sync in real time with Alina
+  function waitFb(attempt){
+    if(window._fbReady){
+      // Expenses
+      window._fbListen('exp', data => {
+        exp = data ? (Array.isArray(data) ? data : Object.values(data)) : [];
+        try{localStorage.setItem('cc_e',JSON.stringify(exp));}catch(e){}
+        if(document.getElementById('listDa')) { renderExp(); renderSummary(); }
+      });
+      // Wish list
+      window._fbListen('wish', data => {
+        wish = data ? (Array.isArray(data) ? data : Object.values(data)) : [];
+        try{localStorage.setItem('cc_w',JSON.stringify(wish));}catch(e){}
+        if(document.getElementById('wishList')) renderWish();
+      });
+      // Misure
+      window._fbListen('mis', data => {
+        misure = data ? (Array.isArray(data) ? data : Object.values(data)) : [];
+        try{localStorage.setItem('cc_m',JSON.stringify(misure));}catch(e){}
+        if(document.getElementById('misuraList')) renderMisure();
+      });
+    } else if(attempt < 20){
+      // Firebase module not ready yet, wait 100ms
+      setTimeout(()=>waitFb(attempt+1), 100);
+    } else {
+      // Fallback: load from localStorage
+      try{
+        exp=JSON.parse(localStorage.getItem('cc_e')||'[]');
+        wish=JSON.parse(localStorage.getItem('cc_w')||'[]');
+        misure=JSON.parse(localStorage.getItem('cc_m')||'[]');
+      }catch(e){}
+    }
+  }
+  waitFb(0);
 }
 function save(){
+  // Firebase realtime sync
+  if(window._fbReady){
+    window._fbSave('exp', exp);
+    window._fbSave('wish', wish);
+    window._fbSave('mis', misure);
+  }
+  // Also keep localStorage as offline fallback
   try{
     localStorage.setItem('cc_e',JSON.stringify(exp));
     localStorage.setItem('cc_w',JSON.stringify(wish));
@@ -799,6 +874,7 @@ function renderMisure(){
 }
 
 window.addEventListener('DOMContentLoaded', init);
+
 </script>
 </body>
 </html>
