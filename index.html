@@ -450,7 +450,18 @@ const fbApp = initializeApp(firebaseConfig);
 const db = getDatabase(fbApp);
 const ROOT = 'casa_criscuolo';
 
-// Converti snapshot Firebase object -> array ordinato per ts
+// Rimuovi null/undefined prima di salvare su Firebase
+function clean(obj) {
+  const out = {};
+  for (const [k, v] of Object.entries(obj)) {
+    if (v !== null && v !== undefined && k !== '_k') {
+      out[k] = v;
+    }
+  }
+  return out;
+}
+
+// Firebase object → array ordinato per ts decrescente
 function snap2arr(obj) {
   if (!obj) return [];
   return Object.entries(obj)
@@ -458,26 +469,27 @@ function snap2arr(obj) {
     .sort((a, b) => (b.ts || 0) - (a.ts || 0));
 }
 
-// Aggiungi item con push (chiave univoca Firebase, no duplicati)
+// Aggiungi nuovo item (push = chiave univoca)
 function fbAdd(type, item) {
-  const clean = { ...item };
-  delete clean._k;
-  clean.ts = Date.now();
-  push(ref(db, ROOT + '/' + type), clean).catch(e => console.warn(e));
+  const data = clean(item);
+  data.ts = Date.now();
+  push(ref(db, ROOT + '/' + type), data)
+    .catch(e => console.error('fbAdd error:', e));
 }
 
-// Aggiorna item esistente (toggle pagata, comprato, ecc.)
+// Aggiorna item esistente tramite _k
 function fbUpd(type, item) {
-  if (!item._k) return;
-  const clean = { ...item };
-  delete clean._k;
-  set(ref(db, ROOT + '/' + type + '/' + item._k), clean).catch(e => console.warn(e));
+  if (!item._k) { console.warn('fbUpd: missing _k'); return; }
+  const data = clean(item);
+  set(ref(db, ROOT + '/' + type + '/' + item._k), data)
+    .catch(e => console.error('fbUpd error:', e));
 }
 
-// Elimina item
+// Elimina item tramite _k
 function fbDel(type, item) {
-  if (!item._k) return;
-  remove(ref(db, ROOT + '/' + type + '/' + item._k)).catch(e => console.warn(e));
+  if (!item._k) { console.warn('fbDel: missing _k'); return; }
+  remove(ref(db, ROOT + '/' + type + '/' + item._k))
+    .catch(e => console.error('fbDel error:', e));
 }
 
 // Ascolta in tempo reale
@@ -485,8 +497,8 @@ function fbOn(type, cb) {
   onValue(ref(db, ROOT + '/' + type), snap => cb(snap.val()));
 }
 
-// Esponi globalmente
 window._fb = { add: fbAdd, upd: fbUpd, del: fbDel, on: fbOn, arr: snap2arr, ready: true };
+console.log('Firebase ready');
 </script>
 <script>
 
@@ -833,25 +845,18 @@ function addExpense(){
   renderCatIcons();renderPayerBtns();
 }
 function toggleExp(id){
-  const e=exp.find(x=>(x._k===id||x.id===id||String(x.ts)===String(id)));
-  if(!e)return;
+  const e=exp.find(x=>x._k===id);
+  if(!e){console.warn('toggleExp: not found',id);return;}
   e.s=e.s==='da'?'ok':'da';
   if(e.s==='ok')e.paidAt=today();
-  if(window._fb && window._fb.ready && e._k){
-    window._fb.upd('exp', e);
-  } else {
-    save();renderExp();renderSummary();
-  }
+  window._fb.upd('exp',e);
+  // listener aggiorna automaticamente la UI
 }
 function delExp(id){
-  const e=exp.find(x=>(x._k===id||x.id===id||String(x.ts)===String(id)));
-  if(!e)return;
-  if(window._fb && window._fb.ready && e._k){
-    window._fb.del('exp', e);
-  } else {
-    exp=exp.filter(x=>x!==e);
-    save();renderExp();renderSummary();
-  }
+  const e=exp.find(x=>x._k===id);
+  if(!e){console.warn('delExp: not found',id);return;}
+  window._fb.del('exp',e);
+  // listener aggiorna automaticamente la UI
 }
 
 function handlePhoto(type,input){const f=input.files[0];if(!f)return;const r=new FileReader();r.onload=e=>{photos[type]=e.target.result;const p=document.getElementById(type+'Preview');p.src=photos[type];p.style.display='block';};r.readAsDataURL(f);}
@@ -874,17 +879,15 @@ function addWish(){
   selCasaCat='Lampada';renderCasaCatIcons();
 }
 function toggleWish(id){
-  const w=wish.find(x=>(x._k===id||x.id===id||String(x.ts)===String(id)));
+  const w=wish.find(x=>x._k===id);
   if(!w)return;
   w.b=!w.b;
-  if(window._fb && window._fb.ready && w._k){window._fb.upd('wish',w);}
-  else{save();renderWish();}
+  window._fb.upd('wish',w);
 }
 function delWish(id){
-  const w=wish.find(x=>(x._k===id||x.id===id||String(x.ts)===String(id)));
+  const w=wish.find(x=>x._k===id);
   if(!w)return;
-  if(window._fb && window._fb.ready && w._k){window._fb.del('wish',w);}
-  else{wish=wish.filter(x=>x!==w);save();renderWish();}
+  window._fb.del('wish',w);
 }
 function renderWish(){
   const el=document.getElementById('wishList');
@@ -922,10 +925,9 @@ function addMisura(){
   document.getElementById('misuraPreview').style.display='none';document.getElementById('misuraPhotoInput').value='';photos.misura=null;
 }
 function delMisura(id){
-  const m=misure.find(x=>(x._k===id||x.id===id||String(x.ts)===String(id)));
+  const m=misure.find(x=>x._k===id);
   if(!m)return;
-  if(window._fb && window._fb.ready && m._k){window._fb.del('mis',m);}
-  else{misure=misure.filter(x=>x!==m);save();renderMisure();}
+  window._fb.del('mis',m);
 }
 function renderMisure(){
   const el=document.getElementById('misuraList');
