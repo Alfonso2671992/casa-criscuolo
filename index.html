@@ -845,18 +845,31 @@ function addExpense(){
   renderCatIcons();renderPayerBtns();
 }
 function toggleExp(id){
-  const e=exp.find(x=>x._k===id);
+  const e=exp.find(x=>x._k===id||String(x.id)===String(id)||String(x.ts)===String(id));
   if(!e){console.warn('toggleExp: not found',id);return;}
   e.s=e.s==='da'?'ok':'da';
   if(e.s==='ok')e.paidAt=today();
-  window._fb.upd('exp',e);
-  // listener aggiorna automaticamente la UI
+  if(e._k){
+    window._fb.upd('exp',e);
+  } else {
+    // vecchio dato senza push key: elimina e reinserisci
+    window._fb.add('exp', {...e, s:e.s, paidAt:e.paidAt||null});
+  }
 }
 function delExp(id){
-  const e=exp.find(x=>x._k===id);
+  const e=exp.find(x=>x._k===id||String(x.id)===String(id)||String(x.ts)===String(id));
   if(!e){console.warn('delExp: not found',id);return;}
-  window._fb.del('exp',e);
-  // listener aggiorna automaticamente la UI
+  if(e._k){
+    window._fb.del('exp',e);
+  } else {
+    // vecchio dato con chiave numerica — rimuovi dall'array locale e aggiorna tutto
+    exp=exp.filter(x=>x!==e);
+    if(window._fb&&window._fb.ready){
+      // riscrivi tutto exp su Firebase con le push key corrette
+      exp.forEach(item=>window._fb.add('exp',item));
+    }
+    renderExp();renderSummary();
+  }
 }
 
 function handlePhoto(type,input){const f=input.files[0];if(!f)return;const r=new FileReader();r.onload=e=>{photos[type]=e.target.result;const p=document.getElementById(type+'Preview');p.src=photos[type];p.style.display='block';};r.readAsDataURL(f);}
@@ -879,15 +892,15 @@ function addWish(){
   selCasaCat='Lampada';renderCasaCatIcons();
 }
 function toggleWish(id){
-  const w=wish.find(x=>x._k===id);
+  const w=wish.find(x=>x._k===id||String(x.id)===String(id)||String(x.ts)===String(id));
   if(!w)return;
   w.b=!w.b;
-  window._fb.upd('wish',w);
+  if(w._k){window._fb.upd('wish',w);}
 }
 function delWish(id){
-  const w=wish.find(x=>x._k===id);
+  const w=wish.find(x=>x._k===id||String(x.id)===String(id)||String(x.ts)===String(id));
   if(!w)return;
-  window._fb.del('wish',w);
+  if(w._k){window._fb.del('wish',w);}
 }
 function renderWish(){
   const el=document.getElementById('wishList');
@@ -925,9 +938,9 @@ function addMisura(){
   document.getElementById('misuraPreview').style.display='none';document.getElementById('misuraPhotoInput').value='';photos.misura=null;
 }
 function delMisura(id){
-  const m=misure.find(x=>x._k===id);
+  const m=misure.find(x=>x._k===id||String(x.id)===String(id)||String(x.ts)===String(id));
   if(!m)return;
-  window._fb.del('mis',m);
+  if(m._k){window._fb.del('mis',m);}
 }
 function renderMisure(){
   const el=document.getElementById('misuraList');
