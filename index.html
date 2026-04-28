@@ -434,7 +434,7 @@
 <!-- Firebase SDK -->
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
-import { getDatabase, ref, set, onValue, remove } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
+import { getDatabase, ref, set, push, remove, onValue } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
 
 const firebaseConfig = {
   apiKey: "AIzaSyCHPWXCOg3lwu6_okAlpUomiGWoJ7f9he8",
@@ -448,24 +448,45 @@ const firebaseConfig = {
 
 const fbApp = initializeApp(firebaseConfig);
 const db = getDatabase(fbApp);
-const HOUSE_KEY = 'criscuolo_falabella';
+const ROOT = 'casa_criscuolo';
 
-// ---- SYNC FUNCTIONS (replace localStorage save/load) ----
-
-function fbSave(type, data) {
-  set(ref(db, HOUSE_KEY + '/' + type), data).catch(e => console.warn('Firebase write error:', e));
+// Converti snapshot Firebase object -> array ordinato per ts
+function snap2arr(obj) {
+  if (!obj) return [];
+  return Object.entries(obj)
+    .map(([k, v]) => ({ ...v, _k: k }))
+    .sort((a, b) => (b.ts || 0) - (a.ts || 0));
 }
 
-function fbListen(type, callback) {
-  onValue(ref(db, HOUSE_KEY + '/' + type), snap => {
-    callback(snap.val());
-  });
+// Aggiungi item con push (chiave univoca Firebase, no duplicati)
+function fbAdd(type, item) {
+  const clean = { ...item };
+  delete clean._k;
+  clean.ts = Date.now();
+  push(ref(db, ROOT + '/' + type), clean).catch(e => console.warn(e));
 }
 
-// Expose to global scope so legacy functions can call them
-window._fbSave = fbSave;
-window._fbListen = fbListen;
-window._fbReady = true;
+// Aggiorna item esistente (toggle pagata, comprato, ecc.)
+function fbUpd(type, item) {
+  if (!item._k) return;
+  const clean = { ...item };
+  delete clean._k;
+  set(ref(db, ROOT + '/' + type + '/' + item._k), clean).catch(e => console.warn(e));
+}
+
+// Elimina item
+function fbDel(type, item) {
+  if (!item._k) return;
+  remove(ref(db, ROOT + '/' + type + '/' + item._k)).catch(e => console.warn(e));
+}
+
+// Ascolta in tempo reale
+function fbOn(type, cb) {
+  onValue(ref(db, ROOT + '/' + type), snap => cb(snap.val()));
+}
+
+// Esponi globalmente
+window._fb = { add: fbAdd, upd: fbUpd, del: fbDel, on: fbOn, arr: snap2arr, ready: true };
 </script>
 <script>
 
@@ -502,54 +523,56 @@ let calMain={nav:new Date(),sel:new Date()},calSc={nav:new Date(),sel:null};
 let photos={wish:null,misura:null};
 
 function load(){
-  // Load names from localStorage (local-only)
+  // Names and note are local-only
   try{const n=localStorage.getItem('cc_n');if(n)names=JSON.parse(n);}catch(e){}
-  // Load note from localStorage (local-only)
   try{const note=localStorage.getItem('cc_note')||'';setTimeout(()=>{const t=document.getElementById('notepad');if(t)t.value=note;},200);}catch(e){}
 
-  // Firebase realtime listeners — sync in real time with Alina
+  // Wait for Firebase module to be ready then start listeners
   function waitFb(attempt){
-    if(window._fbReady){
-      // Expenses
-      window._fbListen('exp', data => {
-        exp = data ? (Array.isArray(data) ? data : Object.values(data)) : [];
-        try{localStorage.setItem('cc_e',JSON.stringify(exp));}catch(e){}
-        if(document.getElementById('listDa')) { renderExp(); renderSummary(); }
-      });
-      // Wish list
-      window._fbListen('wish', data => {
-        wish = data ? (Array.isArray(data) ? data : Object.values(data)) : [];
-        try{localStorage.setItem('cc_w',JSON.stringify(wish));}catch(e){}
-        if(document.getElementById('wishList')) renderWish();
-      });
-      // Misure
-      window._fbListen('mis', data => {
-        misure = data ? (Array.isArray(data) ? data : Object.values(data)) : [];
-        try{localStorage.setItem('cc_m',JSON.stringify(misure));}catch(e){}
-        if(document.getElementById('misuraList')) renderMisure();
-      });
-    } else if(attempt < 20){
-      // Firebase module not ready yet, wait 100ms
+    if(window._fb && window._fb.ready){
+      startFbListeners();
+    } else if(attempt < 30){
       setTimeout(()=>waitFb(attempt+1), 100);
     } else {
-      // Fallback: load from localStorage
+      // Offline fallback
       try{
         exp=JSON.parse(localStorage.getItem('cc_e')||'[]');
         wish=JSON.parse(localStorage.getItem('cc_w')||'[]');
         misure=JSON.parse(localStorage.getItem('cc_m')||'[]');
+        renderExp();renderWish();renderMisure();renderSummary();
       }catch(e){}
     }
   }
+
+  function startFbListeners(){
+    // SPESE — usa snap2arr per mantenere _k key di ogni item
+    window._fb.on('exp', data => {
+      exp = window._fb.arr(data);
+      try{localStorage.setItem('cc_e',JSON.stringify(exp));}catch(e){}
+      if(document.getElementById('listDa')){renderExp();renderSummary();}
+    });
+
+    // CASA
+    window._fb.on('wish', data => {
+      wish = window._fb.arr(data);
+      try{localStorage.setItem('cc_w',JSON.stringify(wish));}catch(e){}
+      if(document.getElementById('wishList'))renderWish();
+    });
+
+    // MISURE
+    window._fb.on('mis', data => {
+      misure = window._fb.arr(data);
+      try{localStorage.setItem('cc_m',JSON.stringify(misure));}catch(e){}
+      if(document.getElementById('misuraList'))renderMisure();
+    });
+  }
+
   waitFb(0);
 }
 function save(){
-  // Firebase realtime sync
-  if(window._fbReady){
-    window._fbSave('exp', exp);
-    window._fbSave('wish', wish);
-    window._fbSave('mis', misure);
-  }
-  // Also keep localStorage as offline fallback
+  // save() is now a no-op for exp/wish/mis:
+  // each add/update/delete calls Firebase directly via addExp/toggleExp/delExp etc.
+  // localStorage kept as offline cache only
   try{
     localStorage.setItem('cc_e',JSON.stringify(exp));
     localStorage.setItem('cc_w',JSON.stringify(wish));
@@ -766,8 +789,8 @@ function expCardHTML(e,isDa){
     ${isDa&&e.sc?urgBadge(e.sc):''}
     ${!isDa&&e.sc?`<div style="font-size:10px;color:#A07850;margin-top:5px">Scadenza: ${strToDisplay(e.sc)}</div>`:''}
     <div class="exp-actions">
-      <button class="${isDa?'btn-pagata':'btn-annulla'}" onclick="toggleExp(${e.id})">${isDa?'Segna come pagata':'Annulla pagamento'}</button>
-      <button class="btn-del" onclick="delExp(${e.id})">✕</button>
+      <button class="${isDa?'btn-pagata':'btn-annulla'}" onclick="toggleExp('${e._k||e.id}')">${isDa?'Segna come pagata':'Annulla pagamento'}</button>
+      <button class="btn-del" onclick="delExp('${e._k||e.id}')">✕</button>
     </div>
   </div>`;
 }
@@ -789,8 +812,14 @@ function addExpense(){
   const isBol=BOLLETTE_IDS.includes(selCat);
   const dtSave=isBol?null:dateToStr(calMain.sel||new Date());
   const scSave=calSc.sel?dateToStr(calSc.sel):null;
-  exp.unshift({id:Date.now(),n:n||cat.label,a,c:selCat,dt:dtSave,sc:scSave,payer:selPayer,half,s:'da'});
-  save();renderExp();renderSummary();
+  const newItem = {n:n||cat.label,a,c:selCat,dt:dtSave,sc:scSave,payer:selPayer,half,s:'da',ts:Date.now()};
+  // Write directly to Firebase — listener will update local array and re-render
+  if(window._fb && window._fb.ready){
+    window._fb.add('exp', newItem);
+  } else {
+    exp.unshift({...newItem, id:Date.now()});
+    save();renderExp();renderSummary();
+  }
   document.getElementById('expName').value='';document.getElementById('expAmt').value='';
   selPayer='';selCat='altro';calMain.sel=new Date();calSc.sel=null;
   const mw=document.getElementById('calMainWrap');if(mw)mw.style.display='block';
@@ -803,8 +832,27 @@ function addExpense(){
   if(scWrapInit)scWrapInit.style.display='none';
   renderCatIcons();renderPayerBtns();
 }
-function toggleExp(id){const e=exp.find(x=>x.id===id);if(e){e.s=e.s==='da'?'ok':'da';if(e.s==='ok')e.paidAt=today();}save();renderExp();renderSummary();}
-function delExp(id){exp=exp.filter(x=>x.id!==id);save();renderExp();renderSummary();}
+function toggleExp(id){
+  const e=exp.find(x=>(x._k===id||x.id===id||String(x.ts)===String(id)));
+  if(!e)return;
+  e.s=e.s==='da'?'ok':'da';
+  if(e.s==='ok')e.paidAt=today();
+  if(window._fb && window._fb.ready && e._k){
+    window._fb.upd('exp', e);
+  } else {
+    save();renderExp();renderSummary();
+  }
+}
+function delExp(id){
+  const e=exp.find(x=>(x._k===id||x.id===id||String(x.ts)===String(id)));
+  if(!e)return;
+  if(window._fb && window._fb.ready && e._k){
+    window._fb.del('exp', e);
+  } else {
+    exp=exp.filter(x=>x!==e);
+    save();renderExp();renderSummary();
+  }
+}
 
 function handlePhoto(type,input){const f=input.files[0];if(!f)return;const r=new FileReader();r.onload=e=>{photos[type]=e.target.result;const p=document.getElementById(type+'Preview');p.src=photos[type];p.style.display='block';};r.readAsDataURL(f);}
 
@@ -814,14 +862,30 @@ function addWish(){
   const d=document.getElementById('wishDims').value.trim();
   const l=document.getElementById('wishLink').value.trim();
   const bgt=parseFloat(document.getElementById('wishBudget').value)||null;
-  wish.unshift({id:Date.now(),n,c:selCasaCat,d,l,bgt,p:photos.wish,b:false});
-  save();renderWish();
+  const newWish={n,c:selCasaCat,d,l,bgt,p:photos.wish,b:false,ts:Date.now()};
+  if(window._fb && window._fb.ready){
+    window._fb.add('wish', newWish);
+  } else {
+    wish.unshift({...newWish,id:Date.now()});
+    save();renderWish();
+  }
   ['wishName','wishDims','wishLink','wishBudget'].forEach(i=>document.getElementById(i).value='');
   document.getElementById('wishPreview').style.display='none';document.getElementById('wishPhotoInput').value='';photos.wish=null;
   selCasaCat='Lampada';renderCasaCatIcons();
 }
-function toggleWish(id){const w=wish.find(x=>x.id===id);if(w)w.b=!w.b;save();renderWish();}
-function delWish(id){wish=wish.filter(x=>x.id!==id);save();renderWish();}
+function toggleWish(id){
+  const w=wish.find(x=>(x._k===id||x.id===id||String(x.ts)===String(id)));
+  if(!w)return;
+  w.b=!w.b;
+  if(window._fb && window._fb.ready && w._k){window._fb.upd('wish',w);}
+  else{save();renderWish();}
+}
+function delWish(id){
+  const w=wish.find(x=>(x._k===id||x.id===id||String(x.ts)===String(id)));
+  if(!w)return;
+  if(window._fb && window._fb.ready && w._k){window._fb.del('wish',w);}
+  else{wish=wish.filter(x=>x!==w);save();renderWish();}
+}
 function renderWish(){
   const el=document.getElementById('wishList');
   if(!wish.length){el.innerHTML='<div class="empty">Nessun oggetto salvato</div>';return;}
@@ -839,8 +903,8 @@ function renderWish(){
         ${w.bgt?`<div style="font-size:12px;color:#7B1FA2;font-weight:700;margin-bottom:4px">Budget: €${w.bgt}</div>`:''}
         ${w.l?`<a href="${w.l}" target="_blank" style="font-size:12px;color:#C4622D;text-decoration:none;font-weight:700;display:inline-block;margin-bottom:6px">Apri link →</a>`:''}
         <div class="wish-actions">
-          <button class="btn-remove" onclick="delWish(${w.id})">Rimuovi</button>
-          <button class="btn-bought" onclick="toggleWish(${w.id})" style="background:${w.b?'#A07850':'#6A8A4A'};color:#FFF">${w.b?'Annulla':'Segna comprato'}</button>
+          <button class="btn-remove" onclick="delWish('${w._k||w.id}')">Rimuovi</button>
+          <button class="btn-bought" onclick="toggleWish('${w._k||w.id}')" style="background:${w.b?'#A07850':'#6A8A4A'};color:#FFF">${w.b?'Annulla':'Segna comprato'}</button>
         </div>
       </div>
     </div>`;
@@ -851,11 +915,18 @@ function addMisura(){
   const n=document.getElementById('misuraName').value.trim();if(!n)return;
   const d=document.getElementById('misuraDims').value.trim();
   const note=document.getElementById('misuraNote').value.trim();
-  misure.unshift({id:Date.now(),n,d,note,p:photos.misura});save();renderMisure();
+  const newMis={n,d,note,p:photos.misura,ts:Date.now()};
+  if(window._fb && window._fb.ready){window._fb.add('mis',newMis);}
+  else{misure.unshift({...newMis,id:Date.now()});save();renderMisure();}
   ['misuraName','misuraDims','misuraNote'].forEach(i=>document.getElementById(i).value='');
   document.getElementById('misuraPreview').style.display='none';document.getElementById('misuraPhotoInput').value='';photos.misura=null;
 }
-function delMisura(id){misure=misure.filter(x=>x.id!==id);save();renderMisure();}
+function delMisura(id){
+  const m=misure.find(x=>(x._k===id||x.id===id||String(x.ts)===String(id)));
+  if(!m)return;
+  if(window._fb && window._fb.ready && m._k){window._fb.del('mis',m);}
+  else{misure=misure.filter(x=>x!==m);save();renderMisure();}
+}
 function renderMisure(){
   const el=document.getElementById('misuraList');
   if(!misure.length){el.innerHTML='<div class="empty">Nessuna misura salvata</div>';return;}
@@ -865,7 +936,7 @@ function renderMisure(){
       <div class="mis-body">
         <div class="mis-top">
           <span class="mis-name">${m.n}</span>
-          <button class="btn-del-sm" onclick="delMisura(${m.id})">✕</button>
+          <button class="btn-del-sm" onclick="delMisura('${m._k||m.id}')">✕</button>
         </div>
         ${m.d?`<div class="mis-badge"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#C4622D" stroke-width="2.5"><path d="M4 20h16M4 4v16"/><path d="M8 16V8M12 16v-4M16 16V6"/></svg><span style="font-size:13px;font-weight:800;color:#C4622D">${m.d}</span></div>`:''}
         ${m.note?`<div class="mis-note">${m.note}</div>`:''}
