@@ -1,0 +1,22 @@
+import { json, error } from '@sveltejs/kit';
+import { addWish } from '$lib/server/firebase-admin';
+import { cap } from '$lib/utils';
+
+export async function POST({ request }) {
+  try {
+    const body = await request.json();
+    const n = cap((body.n || '').toString().slice(0, 200) || (body.c || 'Oggetto'));
+    await addWish({
+      n, c: body.c || 'Lampada',
+      d: (body.d || '').toString().slice(0, 200),
+      l: (body.l || '').toString().slice(0, 2000),
+      bgt: body.bgt ? parseFloat(body.bgt) : null,
+      p: body.p || null, b: false, ts: Date.now(),
+    });
+    return json({ ok: true });
+  } catch (e) {
+    if ((e instanceof Error) && e.message.includes('FIREBASE_SERVICE_ACCOUNT'))
+      error(500, 'Manca FIREBASE_SERVICE_ACCOUNT. Crea .dev.vars');
+    throw e;
+  }
+}

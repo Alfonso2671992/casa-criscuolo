@@ -276,6 +276,11 @@
   }
   .notepad::placeholder{color:#C4A070;font-style:italic}
 
+  #toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(10px);background:#C4622D;color:#FFF;padding:10px 20px;border-radius:12px;font-size:13px;font-weight:700;z-index:999;opacity:0;transition:opacity .3s,transform .3s;pointer-events:none;white-space:nowrap;max-width:90vw;overflow:hidden;text-overflow:ellipsis}
+  .settings-overlay{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:100;display:flex;align-items:center;justify-content:center;animation:fadeIn .15s ease}
+  .settings-box{background:#FAF3E8;border-radius:18px;padding:24px 28px;width:320px;max-width:92vw;animation:calPop .18s ease}
+  .settings-title{font-size:17px;font-weight:700;color:#3D2010;font-family:Georgia,serif;margin-bottom:16px;text-align:center}
+
   .onboarding{
     flex:1;
     display:flex;
@@ -319,9 +324,12 @@
 
   <!-- MAIN -->
   <div id="main" style="display:none;flex:1;flex-direction:column;overflow:hidden">
-    <div class="header">
-      <div style="font-size:17px;font-weight:700;color:#3D2010;font-family:Georgia,serif;line-height:1.2">Casa Criscuolo</div>
-      <div style="font-size:12px;font-weight:600;color:#C4622D;font-family:Georgia,serif;font-style:italic;line-height:1.2">/ Falabella</div>
+    <div class="header" style="display:flex;align-items:flex-start;justify-content:space-between">
+      <div><div style="font-size:17px;font-weight:700;color:#3D2010;font-family:Georgia,serif;line-height:1.2">Casa Criscuolo</div>
+      <div style="font-size:12px;font-weight:600;color:#C4622D;font-family:Georgia,serif;font-style:italic;line-height:1.2">/ Falabella</div></div>
+      <button onclick="openSettings()" style="all:unset;cursor:pointer;padding:4px;border-radius:8px;color:#A07850;flex-shrink:0;margin-top:2px">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+      </button>
     </div>
 
     <div class="tabs">
@@ -431,14 +439,25 @@
   </div>
 </div>
 
+<div id="toast"></div>
 
-<!-- Firebase -->
+<div id="settingsOverlay" style="display:none" class="settings-overlay">
+  <div class="settings-box">
+    <div class="settings-title">Modifica nomi</div>
+    <input id="setName1" class="inp" placeholder="Persona 1">
+    <input id="setName2" class="inp" placeholder="Persona 2">
+    <button class="btn-primary" onclick="saveSettings()">Salva</button>
+    <button onclick="document.getElementById('settingsOverlay').style.display='none'" style="all:unset;display:block;width:100%;margin-top:8px;padding:11px;border-radius:12px;background:#EDD9C0;color:#8B4513;font-size:14px;font-weight:700;text-align:center;cursor:pointer;box-sizing:border-box">Annulla</button>
+  </div>
+</div>
+
+<!-- Firebase SDK -->
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
-import { getDatabase, ref, push, set, remove, onValue }
-  from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
+import { getDatabase, ref as dbRef, set, push, remove, onValue } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
+import { getStorage, ref as stRef, uploadBytes, getDownloadURL } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js';
 
-const app = initializeApp({
+const firebaseConfig = {
   apiKey: "AIzaSyCHPWXCOg3lwu6_okAlpUomiGWoJ7f9he8",
   authDomain: "casa-criscuolo.firebaseapp.com",
   databaseURL: "https://casa-criscuolo-default-rtdb.europe-west1.firebasedatabase.app",
@@ -446,56 +465,60 @@ const app = initializeApp({
   storageBucket: "casa-criscuolo.firebasestorage.app",
   messagingSenderId: "229191200590",
   appId: "1:229191200590:web:3eacdaa52d32780a40381f"
-});
-const db  = getDatabase(app);
-const R   = 'casa_criscuolo';
+};
 
-/* Rimuove null/undefined da un oggetto prima di salvarlo */
-function strip(obj) {
-  const o = {};
-  for (const [k,v] of Object.entries(obj))
-    if (v !== null && v !== undefined) o[k] = v;
-  return o;
-}
+const fbApp = initializeApp(firebaseConfig);
+const db = getDatabase(fbApp);
+const storage = getStorage(fbApp);
+const ROOT = 'casa_criscuolo';
 
-/* Converte oggetto Firebase → array ordinato per ts desc */
-function toArr(obj) {
+// Converti snapshot Firebase object -> array ordinato per ts
+function snap2arr(obj) {
   if (!obj) return [];
   return Object.entries(obj)
-    .map(([k,v]) => ({...v, _k: k}))
-    .sort((a,b) => (b.ts||0) - (a.ts||0));
+    .map(([k, v]) => ({ ...v, _k: k }))
+    .sort((a, b) => (b.ts || 0) - (a.ts || 0));
 }
 
-/* Aggiunge un nuovo item con push (chiave univoca Firebase) */
+// Aggiungi item con push (chiave univoca Firebase, no duplicati)
 function fbAdd(type, item) {
-  const data = strip(item);
-  data.ts = Date.now();
-  return push(ref(db, R+'/'+type), data);
+  const clean = { ...item };
+  delete clean._k;
+  clean.ts = Date.now();
+  push(dbRef(db, ROOT + '/' + type), clean).catch(e => { console.warn(e); if(window._onError) window._onError('Errore salvataggio'); });
 }
 
-/* Sovrascrive un item esistente (usa _k) */
-function fbSet(type, item) {
-  if (!item._k) return Promise.reject('no _k');
-  const data = strip(item);
-  delete data._k;
-  return set(ref(db, R+'/'+type+'/'+item._k), data);
+// Aggiorna item esistente (toggle pagata, comprato, ecc.)
+function fbUpd(type, item) {
+  if (!item._k) return;
+  const clean = { ...item };
+  delete clean._k;
+  set(dbRef(db, ROOT + '/' + type + '/' + item._k), clean).catch(e => { console.warn(e); if(window._onError) window._onError('Errore aggiornamento'); });
 }
 
-/* Elimina un item (usa _k) */
+// Elimina item
 function fbDel(type, item) {
-  if (!item._k) return Promise.reject('no _k');
-  return remove(ref(db, R+'/'+type+'/'+item._k));
+  if (!item._k) return;
+  remove(dbRef(db, ROOT + '/' + type + '/' + item._k)).catch(e => { console.warn(e); if(window._onError) window._onError('Errore eliminazione'); });
 }
 
-/* Ascolta un nodo in realtime */
+// Ascolta in tempo reale
 function fbOn(type, cb) {
-  onValue(ref(db, R+'/'+type), snap => cb(snap.val()));
+  onValue(dbRef(db, ROOT + '/' + type), snap => cb(snap.val()));
 }
 
-window.FB = { add:fbAdd, set:fbSet, del:fbDel, on:fbOn, arr:toArr, ok:true };
-console.log('[Firebase] pronto');
+async function fbUpload(folder, file) {
+  const name = Date.now() + '_' + file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+  const path = ROOT + '/photos/' + folder + '/' + name;
+  const snapshot = await uploadBytes(stRef(storage, path), file);
+  return getDownloadURL(snapshot.ref);
+}
+
+// Esponi globalmente
+window._fb = { add: fbAdd, upd: fbUpd, del: fbDel, on: fbOn, arr: snap2arr, upload: fbUpload, ready: true };
 </script>
 <script>
+
 const CATS=[
   {id:'luce',label:'Luce',color:'#B07A10',bg:'#FEF3C7',svg:`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 22h4M12 2a7 7 0 017 7c0 2.4-1.2 4.5-3 5.7V17H8v-2.3C6.2 13.5 5 11.4 5 9a7 7 0 017-7z"/></svg>`},
   {id:'acqua',label:'Acqua',color:'#1565C0',bg:'#E3F2FD',svg:`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 11-11.31 0z"/></svg>`},
@@ -522,6 +545,10 @@ function dateToStr(d){return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.g
 function strToDisplay(s){if(!s)return '';const p=s.split('-');return p[2]+'/'+p[1]+'/'+p[0]}
 function today(){return dateToStr(new Date())}
 function daysUntil(s){if(!s)return null;return Math.round((new Date(s+'T00:00:00')-new Date(today()+'T00:00:00'))/(864e5))}
+function esc(s){if(typeof s!=='string')return s||'';const d=document.createElement('div');d.textContent=s;return d.innerHTML}
+function safeUrl(s){if(!s)return '';try{const u=new URL(s);return u.protocol==='http:'||u.protocol==='https:'?u.href:''}catch(e){return ''}}
+function showError(msg){const t=document.getElementById('toast');if(!t)return;t.textContent=msg;t.style.opacity='1';t.style.transform='translateY(0)';clearTimeout(t._t);t._t=setTimeout(()=>{t.style.opacity='0';t.style.transform='translateY(10px)'},3000)}
+window._onError=showError;
 
 let exp=[],wish=[],misure=[],names={p1:'Alfonso',p2:'Alina'};
 let selCat='altro',selCasaCat='Lampada',selPayer='';
@@ -529,21 +556,18 @@ let calMain={nav:new Date(),sel:new Date()},calSc={nav:new Date(),sel:null};
 let photos={wish:null,misura:null};
 
 function load(){
-  /* Nomi e note: solo localStorage */
+  // Names and note are local-only
   try{const n=localStorage.getItem('cc_n');if(n)names=JSON.parse(n);}catch(e){}
-  try{
-    const note=localStorage.getItem('cc_note')||'';
-    setTimeout(()=>{const t=document.getElementById('notepad');if(t)t.value=note;},200);
-  }catch(e){}
+  try{const note=localStorage.getItem('cc_note')||'';setTimeout(()=>{const t=document.getElementById('notepad');if(t)t.value=note;},200);}catch(e){}
 
-  /* Attende il modulo Firebase (type="module" è asincrono) */
-  function wait(n){
-    if(window.FB && window.FB.ok){
-      startListeners();
-    } else if(n<40){
-      setTimeout(()=>wait(n+1), 100);
+  // Wait for Firebase module to be ready then start listeners
+  function waitFb(attempt){
+    if(window._fb && window._fb.ready){
+      startFbListeners();
+    } else if(attempt < 30){
+      setTimeout(()=>waitFb(attempt+1), 100);
     } else {
-      /* fallback offline */
+      // Offline fallback
       try{
         exp=JSON.parse(localStorage.getItem('cc_e')||'[]');
         wish=JSON.parse(localStorage.getItem('cc_w')||'[]');
@@ -553,31 +577,35 @@ function load(){
     }
   }
 
-  function startListeners(){
-    /* Spese */
-    FB.on('exp', data => {
-      exp = FB.arr(data);
-      save();
-      if(document.getElementById('listDaPagare')){renderExp();renderSummary();}
+  function startFbListeners(){
+    // SPESE — usa snap2arr per mantenere _k key di ogni item
+    window._fb.on('exp', data => {
+      exp = window._fb.arr(data);
+      try{localStorage.setItem('cc_e',JSON.stringify(exp));}catch(e){}
+      if(document.getElementById('listDa')){renderExp();renderSummary();}
     });
-    /* Casa */
-    FB.on('wish', data => {
-      wish = FB.arr(data);
-      save();
+
+    // CASA
+    window._fb.on('wish', data => {
+      wish = window._fb.arr(data);
+      try{localStorage.setItem('cc_w',JSON.stringify(wish));}catch(e){}
       if(document.getElementById('wishList'))renderWish();
     });
-    /* Misure */
-    FB.on('mis', data => {
-      misure = FB.arr(data);
-      save();
+
+    // MISURE
+    window._fb.on('mis', data => {
+      misure = window._fb.arr(data);
+      try{localStorage.setItem('cc_m',JSON.stringify(misure));}catch(e){}
       if(document.getElementById('misuraList'))renderMisure();
     });
   }
 
-  wait(0);
+  waitFb(0);
 }
 function save(){
-  /* localStorage come cache offline */
+  // save() is now a no-op for exp/wish/mis:
+  // each add/update/delete calls Firebase directly via addExp/toggleExp/delExp etc.
+  // localStorage kept as offline cache only
   try{
     localStorage.setItem('cc_e',JSON.stringify(exp));
     localStorage.setItem('cc_w',JSON.stringify(wish));
@@ -589,7 +617,6 @@ function init(){
   load();
   document.getElementById('dateLabel').textContent=strToDisplay(today());
   document.getElementById('dateLabelSc').textContent='Scadenza';
-  const _sw=document.getElementById('calScWrap');if(_sw)_sw.style.display='none';
   // default: show Data, hide Scadenza
   const scWrapInit=document.getElementById('calScWrap');
   if(scWrapInit)scWrapInit.style.display='none';
@@ -618,6 +645,21 @@ function showMain(){
   m.style.display='flex';m.style.flexDirection='column';m.style.overflow='hidden';m.style.flex='1';
   renderCatIcons();renderCasaCatIcons();renderPayerBtns();
   renderExp();renderWish();renderMisure();renderSummary();
+}
+
+function openSettings(){
+  document.getElementById('setName1').value=names.p1;
+  document.getElementById('setName2').value=names.p2;
+  document.getElementById('settingsOverlay').style.display='flex';
+}
+function saveSettings(){
+  const n1=document.getElementById('setName1').value.trim()||names.p1;
+  const n2=document.getElementById('setName2').value.trim()||names.p2;
+  names={p1:n1,p2:n2};
+  try{localStorage.setItem('cc_n',JSON.stringify(names));}catch(e){}
+  document.getElementById('settingsOverlay').style.display='none';
+  renderPayerBtns();
+  showError('Nomi salvati');
 }
 
 function switchTab(t){
@@ -789,14 +831,14 @@ function expCardHTML(e,isDa){
   return`<div class="exp-card ${urgClass}">
     <div class="exp-header">
       <div class="exp-icon" style="background:${cat.bg};color:${cat.color}">${cat.svg}</div>
-      <div class="exp-info"><div class="exp-name">${e.n}</div><div class="exp-meta">${[pl,e.dt?strToDisplay(e.dt):''].filter(Boolean).join(' · ')}</div></div>
+      <div class="exp-info"><div class="exp-name">${esc(e.n)}</div><div class="exp-meta">${[esc(pl),e.dt?strToDisplay(e.dt):''].filter(Boolean).join(' · ')}</div></div>
       <div class="exp-amt">€${e.a.toFixed(2)}</div>
     </div>
     ${isDa&&e.sc?urgBadge(e.sc):''}
     ${!isDa&&e.sc?`<div style="font-size:10px;color:#A07850;margin-top:5px">Scadenza: ${strToDisplay(e.sc)}</div>`:''}
     <div class="exp-actions">
-      <button class="${isDa?'btn-pagata':'btn-annulla'}" onclick="toggleExp('${e._k}')">${isDa?'Segna come pagata':'Annulla pagamento'}</button>
-      <button class="btn-del" onclick="delExp('${e._k}')">✕</button>
+      <button class="${isDa?'btn-pagata':'btn-annulla'}" onclick="toggleExp('${e._k||e.id}')">${isDa?'Segna come pagata':'Annulla pagamento'}</button>
+      <button class="btn-del" onclick="delExp('${e._k||e.id}')">✕</button>
     </div>
   </div>`;
 }
@@ -818,55 +860,96 @@ function addExpense(){
   const isBol=BOLLETTE_IDS.includes(selCat);
   const dtSave=isBol?null:dateToStr(calMain.sel||new Date());
   const scSave=calSc.sel?dateToStr(calSc.sel):null;
-  const item={n:n||cat.label,a,c:selCat,dt:dtSave,sc:scSave,payer:selPayer,half,s:'da',ts:Date.now()};
-  FB.add('exp', item); /* Firebase push: listener aggiornerà automaticamente */
+  const newItem = {n:n||cat.label,a,c:selCat,dt:dtSave,sc:scSave,payer:selPayer,half,s:'da',ts:Date.now()};
+  // Write directly to Firebase — listener will update local array and re-render
+  if(window._fb && window._fb.ready){
+    window._fb.add('exp', newItem);
+  } else {
+    exp.unshift({...newItem, id:Date.now()});
+    save();renderExp();renderSummary();
+  }
   document.getElementById('expName').value='';document.getElementById('expAmt').value='';
   selPayer='';selCat='altro';calMain.sel=new Date();calSc.sel=null;
-  const mw2=document.getElementById('calMainWrap');if(mw2)mw2.style.display='block';
-  const sw2=document.getElementById('calScWrap');if(sw2)sw2.style.display='none';
-  const lbl2=document.getElementById('dateRowLabel');if(lbl2)lbl2.textContent='Data';
   const mw=document.getElementById('calMainWrap');if(mw)mw.style.display='block';
+  const sw2=document.getElementById('calScWrap');if(sw2)sw2.style.display='none';
   const lbl=document.getElementById('dateRowLabel');if(lbl)lbl.textContent='Data';
   document.getElementById('dateLabel').textContent=strToDisplay(today());
   document.getElementById('dateLabelSc').textContent='Scadenza';
+  // default: show Data, hide Scadenza
+  const scWrapInit=document.getElementById('calScWrap');
+  if(scWrapInit)scWrapInit.style.display='none';
   renderCatIcons();renderPayerBtns();
 }
 function toggleExp(id){
-  const e=exp.find(x=>x._k===id);
-  if(!e){console.warn('toggleExp not found:',id);return;}
+  const e=exp.find(x=>(x._k===id||x.id===id||String(x.ts)===String(id)));
+  if(!e)return;
   e.s=e.s==='da'?'ok':'da';
   if(e.s==='ok')e.paidAt=today();
-  FB.set('exp',e); /* listener aggiornerà la UI */
+  if(window._fb && window._fb.ready && e._k){
+    window._fb.upd('exp', e);
+  } else {
+    save();renderExp();renderSummary();
+  }
 }
 function delExp(id){
-  const e=exp.find(x=>x._k===id);
-  if(!e){console.warn('delExp not found:',id);return;}
-  FB.del('exp',e);
+  const e=exp.find(x=>(x._k===id||x.id===id||String(x.ts)===String(id)));
+  if(!e)return;
+  if(window._fb && window._fb.ready && e._k){
+    window._fb.del('exp', e);
+  } else {
+    exp=exp.filter(x=>x!==e);
+    save();renderExp();renderSummary();
+  }
 }
 
-function handlePhoto(type,input){const f=input.files[0];if(!f)return;const r=new FileReader();r.onload=e=>{photos[type]=e.target.result;const p=document.getElementById(type+'Preview');p.src=photos[type];p.style.display='block';};r.readAsDataURL(f);}
+function handlePhoto(type,input){
+  const f=input.files[0];if(!f)return;
+  if(f.size>5*1024*1024){showError('Foto troppo grande (max 5MB)');input.value='';return}
+  photos[type]={file:f};
+  const r=new FileReader();
+  r.onload=e=>{
+    photos[type].data=e.target.result;
+    const p=document.getElementById(type+'Preview');
+    p.src=photos[type].data;p.style.display='block';
+  };
+  r.readAsDataURL(f);
+}
 
-function addWish(){
+async function addWish(){
   const cat=CASA_CATS.find(c=>c.id===selCasaCat)||CASA_CATS[5];
-  const n=document.getElementById('wishName').value.trim()||cat.label;
-  const d=document.getElementById('wishDims').value.trim();
-  const l=document.getElementById('wishLink').value.trim();
+  const n=esc(document.getElementById('wishName').value.trim()||cat.label);
+  const d=esc(document.getElementById('wishDims').value.trim());
+  const l=safeUrl(document.getElementById('wishLink').value.trim());
   const bgt=parseFloat(document.getElementById('wishBudget').value)||null;
-  FB.add('wish',{n,c:selCasaCat,d,l,bgt,p:photos.wish,b:false,ts:Date.now()});
+  let photoUrl=null;
+  if(photos.wish&&photos.wish.file&&window._fb&&window._fb.ready){
+    try{photoUrl=await window._fb.upload('wish',photos.wish.file)}catch(e){showError('Errore caricamento foto')}
+  }else if(photos.wish&&photos.wish.data){
+    photoUrl=photos.wish.data;
+  }
+  const newWish={n,c:selCasaCat,d,l,bgt,p:photoUrl,b:false,ts:Date.now()};
+  if(window._fb && window._fb.ready){
+    window._fb.add('wish', newWish);
+  } else {
+    wish.unshift({...newWish,id:Date.now()});
+    save();renderWish();
+  }
   ['wishName','wishDims','wishLink','wishBudget'].forEach(i=>document.getElementById(i).value='');
   document.getElementById('wishPreview').style.display='none';document.getElementById('wishPhotoInput').value='';photos.wish=null;
   selCasaCat='Lampada';renderCasaCatIcons();
 }
 function toggleWish(id){
-  const w=wish.find(x=>x._k===id);
+  const w=wish.find(x=>(x._k===id||x.id===id||String(x.ts)===String(id)));
   if(!w)return;
   w.b=!w.b;
-  FB.set('wish',w);
+  if(window._fb && window._fb.ready && w._k){window._fb.upd('wish',w);}
+  else{save();renderWish();}
 }
 function delWish(id){
-  const w=wish.find(x=>x._k===id);
+  const w=wish.find(x=>(x._k===id||x.id===id||String(x.ts)===String(id)));
   if(!w)return;
-  FB.del('wish',w);
+  if(window._fb && window._fb.ready && w._k){window._fb.del('wish',w);}
+  else{wish=wish.filter(x=>x!==w);save();renderWish();}
 }
 function renderWish(){
   const el=document.getElementById('wishList');
@@ -878,33 +961,42 @@ function renderWish(){
       <div class="wish-body">
         ${w.b?'<span style="font-size:11px;color:#FFF;font-weight:700;background:#6A8A4A;padding:3px 10px;border-radius:20px;display:inline-block;margin-bottom:6px">✓ Comprato</span>':''}
         <div class="wish-top">
-          <span class="wish-name" style="color:${w.b?'#3A5A1A':'#3D2010'}">${w.n}</span>
-          <span class="wish-cat-badge" style="background:${cat.bg};color:${cat.color};border-color:${cat.color}">${w.c}</span>
+          <span class="wish-name" style="color:${w.b?'#3A5A1A':'#3D2010'}">${esc(w.n)}</span>
+          <span class="wish-cat-badge" style="background:${cat.bg};color:${cat.color};border-color:${cat.color}">${esc(w.c)}</span>
         </div>
-        ${w.d?`<div style="font-size:12px;color:#A07850;font-weight:600;margin-bottom:4px">${w.d}</div>`:''}
+        ${w.d?`<div style="font-size:12px;color:#A07850;font-weight:600;margin-bottom:4px">${esc(w.d)}</div>`:''}
         ${w.bgt?`<div style="font-size:12px;color:#7B1FA2;font-weight:700;margin-bottom:4px">Budget: €${w.bgt}</div>`:''}
-        ${w.l?`<a href="${w.l}" target="_blank" style="font-size:12px;color:#C4622D;text-decoration:none;font-weight:700;display:inline-block;margin-bottom:6px">Apri link →</a>`:''}
+        ${w.l?`<a href="${safeUrl(w.l)||'#'}" target="_blank" style="font-size:12px;color:#C4622D;text-decoration:none;font-weight:700;display:inline-block;margin-bottom:6px">Apri link →</a>`:''}
         <div class="wish-actions">
-          <button class="btn-remove" onclick="delWish('${w._k}')">Rimuovi</button>
-          <button class="btn-bought" onclick="toggleWish('${w._k}')" style="background:${w.b?'#A07850':'#6A8A4A'};color:#FFF">${w.b?'Annulla':'Segna comprato'}</button>
+          <button class="btn-remove" onclick="delWish('${w._k||w.id}')">Rimuovi</button>
+          <button class="btn-bought" onclick="toggleWish('${w._k||w.id}')" style="background:${w.b?'#A07850':'#6A8A4A'};color:#FFF">${w.b?'Annulla':'Segna comprato'}</button>
         </div>
       </div>
     </div>`;
   }).join('');
 }
 
-function addMisura(){
-  const n=document.getElementById('misuraName').value.trim();if(!n)return;
-  const d=document.getElementById('misuraDims').value.trim();
-  const note=document.getElementById('misuraNote').value.trim();
-  FB.add('mis',{n,d,note,p:photos.misura,ts:Date.now()});
+async function addMisura(){
+  const n=esc(document.getElementById('misuraName').value.trim());if(!n)return;
+  const d=esc(document.getElementById('misuraDims').value.trim());
+  const note=esc(document.getElementById('misuraNote').value.trim());
+  let photoUrl=null;
+  if(photos.misura&&photos.misura.file&&window._fb&&window._fb.ready){
+    try{photoUrl=await window._fb.upload('mis',photos.misura.file)}catch(e){showError('Errore caricamento foto')}
+  }else if(photos.misura&&photos.misura.data){
+    photoUrl=photos.misura.data;
+  }
+  const newMis={n,d,note,p:photoUrl,ts:Date.now()};
+  if(window._fb && window._fb.ready){window._fb.add('mis',newMis);}
+  else{misure.unshift({...newMis,id:Date.now()});save();renderMisure();}
   ['misuraName','misuraDims','misuraNote'].forEach(i=>document.getElementById(i).value='');
   document.getElementById('misuraPreview').style.display='none';document.getElementById('misuraPhotoInput').value='';photos.misura=null;
 }
 function delMisura(id){
-  const m=misure.find(x=>x._k===id);
+  const m=misure.find(x=>(x._k===id||x.id===id||String(x.ts)===String(id)));
   if(!m)return;
-  FB.del('mis',m);
+  if(window._fb && window._fb.ready && m._k){window._fb.del('mis',m);}
+  else{misure=misure.filter(x=>x!==m);save();renderMisure();}
 }
 function renderMisure(){
   const el=document.getElementById('misuraList');
@@ -915,7 +1007,7 @@ function renderMisure(){
       <div class="mis-body">
         <div class="mis-top">
           <span class="mis-name">${m.n}</span>
-          <button class="btn-del-sm" onclick="delMisura('${m._k}')">✕</button>
+          <button class="btn-del-sm" onclick="delMisura('${m._k||m.id}')">✕</button>
         </div>
         ${m.d?`<div class="mis-badge"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#C4622D" stroke-width="2.5"><path d="M4 20h16M4 4v16"/><path d="M8 16V8M12 16v-4M16 16V6"/></svg><span style="font-size:13px;font-weight:800;color:#C4622D">${m.d}</span></div>`:''}
         ${m.note?`<div class="mis-note">${m.note}</div>`:''}
@@ -924,6 +1016,7 @@ function renderMisure(){
 }
 
 window.addEventListener('DOMContentLoaded', init);
+
 </script>
 </body>
 </html>

@@ -1,0 +1,49 @@
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow:hidden;background:#EDD5B0;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Segoe UI',sans-serif}
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+input[type=number]{-moz-appearance:textfield}
+@keyframes fadeIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+@keyframes calPop{from{opacity:0;transform:translateY(-5px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+
+.app{
+  max-width:480px;
+  margin:0 auto;
+  height:100%;
+  display:flex;
+  flex-direction:column;
+  background:#FAF3E8;
+}
+
+.body{
+  flex:1;
+  overflow-y:auto;
+  -webkit-overflow-scrolling:touch;
+  padding:14px 14px 80px;
+}
+
+.section{display:none}
+.section.active{display:block}
+
+.empty{text-align:center;padding:24px 0;font-size:13px;color:#A07850;font-weight:500}
+
+.divider{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.divider-line{flex:1;height:1px;background:#D4A574}
+.divider-label{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.8px}
+
+.notepad{
+  display:block;
+  width:100%;
+  min-height:calc(100vh - 200px);
+  padding:18px 20px;
+  font-family:Georgia,'Times New Roman',serif;
+  font-size:15px;
+  line-height:1.9;
+  color:#3D2010;
+  background:#FAF3E8;
+  border:none;
+  outline:none;
+  resize:none;
+  -webkit-appearance:none;
+}
+.notepad::placeholder{color:#C4A070;font-style:italic}

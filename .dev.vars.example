@@ -1,0 +1,3 @@
+# Scarica il service account da Firebase Console > Impostazioni progetto > Account di servizio
+# e incolla qui il JSON completo come singola riga
+FIREBASE_SERVICE_ACCOUNT={"type":"service_account","project_id":"casa-criscuolo",...}
