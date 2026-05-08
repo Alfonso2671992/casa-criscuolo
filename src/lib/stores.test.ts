@@ -12,6 +12,7 @@ const {
   cacheExpenses,
   cacheWishes,
   cacheMisure,
+  initDark,
   toast,
   names,
   freeNotes,
@@ -20,6 +21,7 @@ const {
   misure,
   totalUnpaid,
   totalPaid,
+  darkMode,
 } = await import('./stores');
 
 describe('showToast', () => {
@@ -109,5 +111,31 @@ describe('totalUnpaid / totalPaid', () => {
     cacheExpenses([]);
     expect(get(totalUnpaid)).toBe(0);
     expect(get(totalPaid)).toBe(0);
+  });
+});
+
+describe('initDark', () => {
+  beforeEach(() => {
+    document.documentElement.removeAttribute('data-theme');
+  });
+
+  it('sets data-theme to dark when cc_dark is true', () => {
+    localStorage.setItem('cc_dark', 'true');
+    initDark();
+    expect(document.documentElement.getAttribute('data-theme')).toBe('dark');
+    expect(get(darkMode)).toBe(true);
+  });
+
+  it('sets data-theme to light when cc_dark is false', () => {
+    localStorage.setItem('cc_dark', 'false');
+    initDark();
+    expect(document.documentElement.getAttribute('data-theme')).toBe('light');
+    expect(get(darkMode)).toBe(false);
+  });
+
+  it('defaults to light when cc_dark is not set', () => {
+    initDark();
+    expect(document.documentElement.getAttribute('data-theme')).toBe('light');
+    expect(get(darkMode)).toBe(false);
   });
 });
