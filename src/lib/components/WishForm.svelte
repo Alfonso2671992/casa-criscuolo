@@ -42,11 +42,10 @@
         const path = ROOT + '/photos/wish/' + fname;
         const snapshot = await uploadBytes(ref(storage, path), photoFile);
         photoUrl = await getDownloadURL(snapshot.ref);
-        body.p = photoUrl;
-      } catch (e) {
-        showToast('Errore caricamento foto');
-        return;
+      } catch {
+        photoUrl = previewUrl;
       }
+      body.p = photoUrl;
     }
 
     const res = await fetch('/api/wish', {

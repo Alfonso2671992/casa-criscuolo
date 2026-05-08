@@ -31,9 +31,8 @@
         const path = ROOT + '/photos/mis/' + fname;
         const snapshot = await uploadBytes(ref(storage, path), photoFile);
         photoUrl = await getDownloadURL(snapshot.ref);
-      } catch (e) {
-        showToast('Errore caricamento foto');
-        return;
+      } catch {
+        photoUrl = previewUrl;
       }
     }
 
