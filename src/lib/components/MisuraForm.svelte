@@ -1,8 +1,5 @@
 <script lang="ts">
   import { showToast } from '$lib/stores';
-  import { storage } from '$lib/firebase-client';
-  import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-  import { ROOT } from '$lib/constants';
 
   let name = $state('');
   let dims = $state('');
@@ -25,15 +22,7 @@
     let photoUrl: string | null = null;
 
     if (photoFile) {
-      try {
-        const ext = photoFile.name.split('.').pop() || 'jpg';
-        const fname = Date.now() + '_' + Math.random().toString(36).slice(2, 8) + '.' + ext;
-        const path = ROOT + '/photos/mis/' + fname;
-        const snapshot = await uploadBytes(ref(storage, path), photoFile);
-        photoUrl = await getDownloadURL(snapshot.ref);
-      } catch {
-        photoUrl = previewUrl;
-      }
+      photoUrl = previewUrl;
     }
 
     const res = await fetch('/api/mis', {
