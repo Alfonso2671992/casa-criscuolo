@@ -2,7 +2,7 @@
 
 ## What this is
 
-A SvelteKit 5 app for two people to track shared expenses, shopping lists, home items, and measurements. Firebase Realtime Database for realtime sync, Firebase Auth (Google), Firebase Admin SDK for server-side writes, Cloudflare Pages deployment.
+A SvelteKit 5 app for two people to track shared expenses, shopping lists, home items, and measurements. Firebase Realtime Database for realtime sync, Firebase Auth (Google), Firebase Admin SDK for server-side writes (uses REST API — compatible with Cloudflare edge runtime), Cloudflare Pages deployment.
 
 ## Project structure
 
@@ -35,7 +35,7 @@ wrangler.jsonc      → Cloudflare Pages config
 
 - **Reads**: Client Firebase SDK realtime listeners → Svelte stores → reactive UI
 - **Writes**: Client → SvelteKit API endpoint → Firebase REST API (OAuth2 JWT) → Realtime DB → all clients via listener
-- **Photos**: Client → `/api/upload` → Firebase REST API (OAuth2 JWT) → Storage → returns public URL → saved in DB
+- **Photos**: Client → Firebase client SDK (uploadBytes) or data URL (fallback) → stored in DB
 
 `index.html` is the old v1 app — it shares the same Firebase project. Changes from v2 appear in both apps immediately.
 
@@ -56,7 +56,7 @@ npm run test:watch  # Vitest watch mode
 - **Database URL**: `https://casa-criscuolo-default-rtdb.europe-west1.firebasedatabase.app`
 - **Root path**: `casa_criscuolo/` → sub-collections `exp`, `wish`, `mis`
 - **Client config**: hardcoded in `src/lib/firebase-client.ts` (public by design)
-- **Admin**: `firebase-admin` lazily initialized from `FIREBASE_SERVICE_ACCOUNT` env var (uses REST API internally — compatible with Cloudflare edge runtime)
+- **Admin**: `firebase-admin` lazily initialized from `FIREBASE_SERVICE_ACCOUNT` env var (uses REST API — compatible with Cloudflare edge runtime)
 - **Auth**: Google Sign-In via Firebase Auth (client + token verification on server)
 
 ## Repo conventions
@@ -75,3 +75,4 @@ Cloudflare Pages via `@sveltejs/adapter-cloudflare`. Set `FIREBASE_SERVICE_ACCOU
 - Firebase Admin SDK requires `FIREBASE_SERVICE_ACCOUNT` env var (service account JSON) — fails at runtime if unset
 - Photo upload requires Firebase Storage to be enabled and bucket publicly readable (or use signed URLs)
 - Legacy `index.html` v1 app still in repo — don't delete until v2 is verified by both users
+- `firebase-admin` npm package not used — project uses REST API directly with OAuth2 JWT
