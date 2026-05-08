@@ -76,7 +76,7 @@ export async function updateWish(k: string, d: Partial<WishItem>) { await db('PA
 export async function deleteWish(k: string) { await db('DELETE', 'wish/' + k); }
 export async function addMisura(d: Misura) { d.ts = Date.now(); await db('POST', 'mis', d); }
 export async function deleteMisura(k: string) { await db('DELETE', 'mis/' + k); }
-const BUCKET = 'casa-criscuolo.firebasestorage.app';
+const BUCKET = 'casa-criscuolo.appspot.com';
 
 export async function uploadFile(path: string, file: File): Promise<string> {
   const t = await token();
