@@ -13,7 +13,7 @@ src/
     server/         → firebase-admin.ts (Firebase REST API — OAuth2 JWT from service account)
     __mocks__/
       app/          → vitest mock for $app/environment
-    constants.ts    → CATS, CASA_CATS, MONTHS, DAYS, paths
+    constants.ts    → CATS, CASA_CATS, MONTHS, DAYS, ROOT
     firebase-client.ts → client SDK init + realtime listeners
     stores.ts       → Svelte writable stores + cache helpers
     types.ts        → Expense, WishItem, Misura, etc.
@@ -25,7 +25,6 @@ src/
       exp/          → POST /[id] (PATCH, DELETE)
       wish/         → POST /[id] (PATCH, DELETE)
       mis/          → POST /[id] (DELETE)
-      upload/       → POST (multipart → Firebase Storage)
 static/             → manifest.json, icons
 wrangler.jsonc      → Cloudflare Pages config
 ```
@@ -34,9 +33,7 @@ wrangler.jsonc      → Cloudflare Pages config
 
 - **Reads**: Client Firebase SDK realtime listeners → Svelte stores → reactive UI
 - **Writes**: Client → SvelteKit API endpoint → Firebase REST API (OAuth2 JWT) → Realtime DB → all clients via listener
-- **Photos**: Client → Firebase client SDK (uploadBytes) or data URL (fallback) → stored in DB
-
-`index.html` is the old v1 app — it shares the same Firebase project. Changes from v2 appear in both apps immediately.
+- **Photos**: Client → data URL (inline in JSON payload) → stored in DB
 
 ## Dev commands
 
@@ -72,5 +69,4 @@ Cloudflare Pages via `@sveltejs/adapter-cloudflare`. Set `FIREBASE_SERVICE_ACCOU
 ## Constraints
 
 - Firebase Admin SDK requires `FIREBASE_SERVICE_ACCOUNT` env var (service account JSON) — fails at runtime if unset
-- Photo upload requires Firebase Storage to be enabled and bucket publicly readable (or use signed URLs)
 - `firebase-admin` npm package not used — project uses REST API directly with OAuth2 JWT

@@ -32,12 +32,6 @@ export const names = writable<Names>(lsNames());
 export const freeNotes = writable<string>(lsNote());
 export const toast = writable<string | null>(null);
 
-export const unpaidExpenses = derived(expenses, ($e) =>
-  $e.filter((e) => e.s === 'da').sort((a, b) => (a.sc || '9999') > (b.sc || '9999') ? 1 : -1)
-);
-export const paidExpenses = derived(expenses, ($e) =>
-  $e.filter((e) => e.s === 'ok').sort((a, b) => ((b.paidAt || b.dt || '') > (a.paidAt || a.dt || '') ? 1 : -1))
-);
 export const totalUnpaid = derived(expenses, ($e) =>
   $e.filter((e) => e.s === 'da').reduce((s, e) => s + e.a, 0)
 );
@@ -75,6 +69,4 @@ export function cacheMisure(data: Misura[]) {
   try { localStorage.setItem('cc_m', JSON.stringify(data)); } catch {}
 }
 
-export function getAuthHeaders(user: User | null): Record<string, string> {
-  return { Authorization: `Bearer ${user?.uid || 'anonymous'}` };
-}
+

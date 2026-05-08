@@ -4,7 +4,6 @@ import {
   ref,
   onValue,
 } from 'firebase/database';
-import { getStorage } from 'firebase/storage';
 import {
   getAuth,
   signInWithEmailAndPassword,
@@ -30,7 +29,6 @@ const firebaseConfig = {
 
 export const fbApp = initializeApp(firebaseConfig);
 export const db = getDatabase(fbApp);
-export const storage = getStorage(fbApp);
 export const auth = getAuth(fbApp);
 
 export type AuthCallback = (user: User | null) => void;

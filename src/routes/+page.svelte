@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';
-  import { currentTab, expenses, wishes, misure, cacheExpenses, cacheWishes, cacheMisure, freeNotes, saveFreeNotes, showToast } from '$lib/stores';
+  import { currentTab, expenses, wishes, misure, cacheExpenses, cacheWishes, cacheMisure, freeNotes, saveFreeNotes } from '$lib/stores';
   import { listenExpenses, listenWishes, listenMisure, listenNote, saveNote } from '$lib/firebase-client';
   import SummaryBar from '$lib/components/SummaryBar.svelte';
   import ExpenseForm from '$lib/components/ExpenseForm.svelte';
