@@ -84,8 +84,8 @@
   .amt { font-size: 14px; font-weight: 800; color: var(--text-primary); font-family: Georgia, serif; flex-shrink: 0; }
   .badge { display: inline-flex; align-items: center; gap: 5px; margin-top: 7px; padding: 3px 10px; border-radius: 20px; font-size: 10px; font-weight: 700; }
   .actions { display: flex; gap: 6px; margin-top: 9px; }
-  .btn-primary-sm, .btn-secondary-sm { all: unset; flex: 1; padding: 7px 0; border-radius: 9px; font-size: 11px; font-weight: 700; text-align: center; cursor: pointer; display: block; }
-  .btn-primary-sm { background: var(--accent); color: var(--color-white); }
+  .btn-primary-sm, .btn-secondary-sm, .btn-edit { all: unset; flex: 1; padding: 7px 0; border-radius: 9px; font-size: 11px; font-weight: 700; text-align: center; cursor: pointer; display: block; }
+  .btn-primary-sm, .btn-edit { background: var(--accent); color: var(--color-white); }
   .btn-secondary-sm { background: var(--bg-secondary); color: var(--color-brown); }
   .btn-del { all: unset; padding: 7px 12px; border-radius: 9px; background: var(--bg-secondary); color: var(--color-brown); font-size: 11px; font-weight: 700; cursor: pointer; display: inline-block; }
 </style>

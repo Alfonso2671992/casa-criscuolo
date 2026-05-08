@@ -9,7 +9,6 @@
   import WishCard from '$lib/components/WishCard.svelte';
   import MisuraForm from '$lib/components/MisuraForm.svelte';
   import MisuraCard from '$lib/components/MisuraCard.svelte';
-  import PhotoGallery from '$lib/components/PhotoGallery.svelte';
 
   let unsubExp = $state<() => void>(() => {});
   let unsubWish = $state<() => void>(() => {});
@@ -98,11 +97,6 @@
   {:else}
     <div class="empty">Nessuna misura salvata</div>
   {/each}
-</div>
-
-<!-- FOTO -->
-<div class="section" class:active={$currentTab === 'foto'}>
-  <PhotoGallery />
 </div>
 
 <style>

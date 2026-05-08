@@ -11,10 +11,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Modifica spese: pulsante "Modifica" nelle card, modal con form precompilata (nome, importo, categoria, pagante, data/scadenza)
 - Modifica wishlist: pulsante "Modifica" nelle card, modal con form precompilata (nome, categoria, dimensioni, link, budget, foto)
-- Modifica misure: pulsante "Modifica" nelle card, modal con form precompilata (nome, dimensioni, note, foto)
+- Modifica misure: pulsante "Modifica" con stile coerente agli altri bottoni, modal con form precompilata (nome, dimensioni, note, foto)
 - Endpoint PATCH per misure (`/api/mis/[id]`)
 - Dark mode: tema scuro con toggle nelle impostazioni (salvato in localStorage)
-- Galleria foto: 5° tab "Foto" con griglia di tutte le foto degli oggetti casa e lightbox
 
 ## [2.1.1] - 2026-05-08
 

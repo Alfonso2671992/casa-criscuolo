@@ -33,7 +33,7 @@ export interface Misura {
   ts: number;
 }
 
-export type TabId = 'spese' | 'acquisto' | 'casa' | 'misure' | 'foto';
+export type TabId = 'spese' | 'acquisto' | 'casa' | 'misure';
 
 export interface Names {
   p1: string;
