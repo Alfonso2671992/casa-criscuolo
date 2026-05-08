@@ -70,7 +70,7 @@
   {/if}
 </div>
 
-<svelte:window onclick={(e) => { if (!e.target?.closest?.('.wrap')) open = false; }} />
+<svelte:window onclick={(e) => { if (!(e.target as HTMLElement)?.closest?.('.wrap')) open = false; }} />
 
 <style>
   .wrap { position: relative; }

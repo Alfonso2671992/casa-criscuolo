@@ -46,7 +46,7 @@ export function daysUntil(s?: string | null): number | null {
   );
 }
 
-export function snap2arr<T extends Record<string, unknown>>(obj: Record<string, T> | null): (T & { _k: string })[] {
+export function snap2arr<T extends { ts?: number }>(obj: Record<string, T> | null): (T & { _k: string })[] {
   if (!obj) return [];
   return Object.entries(obj)
     .map(([k, v]) => ({ ...v, _k: k } as T & { _k: string }))

@@ -14,7 +14,7 @@ function sa() {
     if (!json) throw new Error('FIREBASE_SERVICE_ACCOUNT env var not set');
     _sa = JSON.parse(json);
   }
-  return _sa;
+  return _sa!;
 }
 
 function b64url(s: string) {
@@ -51,7 +51,7 @@ async function token(): Promise<string> {
   if (!d.access_token) throw new Error('No access_token in response: ' + txt);
   _token = d.access_token;
   _tokenExp = Date.now() + (d.expires_in || 3600) * 1000;
-  return _token;
+  return _token!;
 }
 
 async function db(method: string, path: string, data?: any) {
