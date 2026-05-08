@@ -14,8 +14,7 @@ export async function POST({ request }) {
     });
     return json({ ok: true });
   } catch (e) {
-    if ((e instanceof Error) && e.message.includes('FIREBASE_SERVICE_ACCOUNT'))
-      error(500, 'Manca FIREBASE_SERVICE_ACCOUNT. Crea .dev.vars');
-    throw e;
+    const msg = e instanceof Error ? e.message : 'Errore sconosciuto';
+    return json({ ok: false, error: msg }, { status: 500 });
   }
 }
