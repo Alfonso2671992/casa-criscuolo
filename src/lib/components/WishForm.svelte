@@ -8,7 +8,7 @@
   let cat = $state('Lampada');
   let dims = $state('');
   let link = $state('');
-  let budget = $state<number | null>(null);
+  let budgetStr = $state('');
   let photoFile = $state<File | null>(null);
   let previewUrl = $state<string | null>(null);
 
@@ -24,12 +24,14 @@
 
   async function submit() {
     let photoUrl: string | null = null;
+    let bgt: number | null = parseFloat(budgetStr.replace(',', '.'));
+    if (isNaN(bgt)) bgt = null;
     let body: Record<string, unknown> = {
       n: name || cat,
       c: cat,
       d: dims,
       l: link,
-      bgt: budget,
+      bgt,
       p: null,
     };
 
@@ -43,7 +45,7 @@
       body: JSON.stringify(body),
     });
     if (!res.ok) { showToast('Errore salvataggio'); return; }
-    name = ''; cat = 'Lampada'; dims = ''; link = ''; budget = null;
+    name = ''; cat = 'Lampada'; dims = ''; link = ''; budgetStr = '';
     photoFile = null; previewUrl = null;
     showToast('Oggetto aggiunto');
   }
@@ -55,7 +57,7 @@
   <CategoryGrid categories={CASA_CATS} bind:selected={cat} columns={3} />
   <input class="inp" placeholder="Misure (es. 40×60 cm)" bind:value={dims} />
   <input class="inp" placeholder="Link prodotto (Amazon, IKEA...)" bind:value={link} />
-  <input type="number" class="inp" placeholder="Budget indicativo (€)" step="0.01" bind:value={budget} />
+  <input type="text" inputmode="decimal" class="inp" placeholder="Budget indicativo (€)" bind:value={budgetStr} />
   <button class="photo-btn" onclick={() => document.getElementById('wishFileInput')?.click()}>+ Aggiungi foto</button>
   <input type="file" id="wishFileInput" accept="image/*" style="display:none" onchange={handlePhoto} />
   {#if previewUrl}

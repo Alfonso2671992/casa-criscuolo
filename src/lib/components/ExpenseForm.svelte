@@ -7,7 +7,7 @@
   import { today } from '$lib/utils';
 
   let name = $state('');
-  let amount = $state(0);
+  let amountStr = $state('');
   let cat = $state('altro');
   let payer = $state('');
   let selectedDate = $state(today());
@@ -20,16 +20,27 @@
     { val: 'A metà', color: '#5D4037', bg: '#EFEBE9', border: '#BCAAA4' },
   ]);
 
+  function parseAmt(v: string): number {
+    const n = parseFloat(v.replace(',', '.'));
+    return isNaN(n) ? 0 : Math.max(0, +n.toFixed(2));
+  }
+
   function changeAmt(d: number) {
-    amount = Math.max(0, +(amount + d).toFixed(2));
+    const cur = parseAmt(amountStr);
+    amountStr = (Math.max(0, +(cur + d).toFixed(2))).toFixed(2);
+  }
+
+  function onAmtInput(e: Event) {
+    amountStr = (e.target as HTMLInputElement).value;
   }
 
   async function submit() {
-    if (amount <= 0) return;
+    const amt = parseAmt(amountStr);
+    if (amt <= 0) return;
     if (!payer) { showToast('Seleziona chi paga'); return; }
     const body = {
       n: name || cat,
-      a: amount,
+      a: amt,
       c: cat,
       dt: showScad ? null : selectedDate,
       sc: selectedScad,
@@ -41,7 +52,7 @@
       body: JSON.stringify(body),
     });
     if (!res.ok) { showToast('Errore salvataggio'); return; }
-    name = ''; amount = 0; payer = ''; cat = 'altro';
+    name = ''; amountStr = ''; payer = ''; cat = 'altro';
     selectedDate = today(); selectedScad = null;
     showToast('Spesa aggiunta');
   }
@@ -54,7 +65,7 @@
   <div class="label">Importo</div>
   <div class="amt-wrap">
     <span class="euro">€</span>
-    <input type="number" class="inp amt" placeholder="0,00" min="0" step="0.01" bind:value={amount} />
+    <input type="text" inputmode="decimal" class="inp amt" placeholder="0,00" value={amountStr} oninput={onAmtInput} />
   </div>
   <div class="adj-row">
     <button class="adj adj-minus" onclick={() => changeAmt(-10)}>−10</button>
