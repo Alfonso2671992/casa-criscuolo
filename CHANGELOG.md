@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Test: 54 nuovi test per stores, firebase-admin (verifyToken, b64url, requireAuth) e edge case utils (85 totali)
+- Mock per `$env/dynamic/private` nei test
 - Modifica spese: pulsante "Modifica" nelle card, modal con form precompilata (nome, importo, categoria, pagante, data/scadenza)
 - Modifica wishlist: pulsante "Modifica" nelle card, modal con form precompilata (nome, categoria, dimensioni, link, budget, foto)
 - Modifica misure: pulsante "Modifica" con stile coerente agli altri bottoni, modal con form precompilata (nome, dimensioni, note, foto)

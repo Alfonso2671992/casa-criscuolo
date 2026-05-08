@@ -5,6 +5,7 @@ export default defineConfig({
   resolve: {
     alias: {
       $app: path.resolve('src/__mocks__/app'),
+      '$env/dynamic/private': path.resolve('src/__mocks__/env/dynamic/private'),
     },
   },
   test: {
