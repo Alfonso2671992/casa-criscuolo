@@ -10,7 +10,9 @@ A SvelteKit 5 app for two people to track shared expenses, shopping lists, home 
 src/
   lib/
     components/     → Svelte 5 components (runes syntax)
-    server/         → firebase-admin.ts (lazy init — throws at runtime if FIREBASE_SERVICE_ACCOUNT missing)
+    server/         → firebase-admin.ts (Firebase REST API — OAuth2 JWT from service account)
+    __mocks__/
+      app/          → vitest mock for $app/environment
     constants.ts    → CATS, CASA_CATS, MONTHS, DAYS, paths
     firebase-client.ts → client SDK init + realtime listeners
     stores.ts       → Svelte writable stores + cache helpers
@@ -32,8 +34,8 @@ wrangler.jsonc      → Cloudflare Pages config
 ## Data flow
 
 - **Reads**: Client Firebase SDK realtime listeners → Svelte stores → reactive UI
-- **Writes**: Client → SvelteKit API endpoint → Firebase Admin SDK → Realtime DB → all clients via listener
-- **Photos**: Client → `/api/upload` → Admin SDK → Storage → returns public URL → saved in DB
+- **Writes**: Client → SvelteKit API endpoint → Firebase REST API (OAuth2 JWT) → Realtime DB → all clients via listener
+- **Photos**: Client → `/api/upload` → Firebase REST API (OAuth2 JWT) → Storage → returns public URL → saved in DB
 
 `index.html` is the old v1 app — it shares the same Firebase project. Changes from v2 appear in both apps immediately.
 
@@ -44,6 +46,8 @@ npm run dev      # Vite dev server on localhost:5173
 npm run build    # Production build + Cloudflare adapter
 npm run preview  # Preview production build locally
 npm run check    # svelte-check (TypeScript verification)
+npm test         # Vitest unit tests
+npm run test:watch  # Vitest watch mode
 ```
 
 ## Firebase
@@ -52,7 +56,7 @@ npm run check    # svelte-check (TypeScript verification)
 - **Database URL**: `https://casa-criscuolo-default-rtdb.europe-west1.firebasedatabase.app`
 - **Root path**: `casa_criscuolo/` → sub-collections `exp`, `wish`, `mis`
 - **Client config**: hardcoded in `src/lib/firebase-client.ts` (public by design)
-- **Admin**: `firebase-admin` lazily initialized from `FIREBASE_SERVICE_ACCOUNT` env var
+- **Admin**: `firebase-admin` lazily initialized from `FIREBASE_SERVICE_ACCOUNT` env var (uses REST API internally — compatible with Cloudflare edge runtime)
 - **Auth**: Google Sign-In via Firebase Auth (client + token verification on server)
 
 ## Repo conventions
