@@ -1,5 +1,6 @@
 <script lang="ts">
   import { showToast } from '$lib/stores';
+  import { authFetch } from '$lib/firebase-client';
 
   let name = $state('');
   let dims = $state('');
@@ -25,7 +26,7 @@
       photoUrl = previewUrl;
     }
 
-    const res = await fetch('/api/mis', {
+    const res = await authFetch('/api/mis', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ n: name, d: dims, note, p: photoUrl }),

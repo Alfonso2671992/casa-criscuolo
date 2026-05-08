@@ -2,6 +2,7 @@
   import { CATS } from '$lib/constants';
   import { strToDisplay, daysUntil, esc } from '$lib/utils';
   import { showToast } from '$lib/stores';
+  import { authFetch } from '$lib/firebase-client';
   import type { Expense } from '$lib/types';
 
   let { expense, isDa = false }: { expense: Expense; isDa?: boolean } = $props();
@@ -25,7 +26,7 @@
     const newS = expense.s === 'da' ? 'ok' : 'da';
     const body: Record<string, unknown> = { s: newS };
     if (newS === 'ok') body.paidAt = new Date().toISOString().slice(0, 10);
-    const res = await fetch(`/api/exp/${expense._k}`, {
+    const res = await authFetch(`/api/exp/${expense._k}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
@@ -34,7 +35,7 @@
   }
 
   async function del() {
-    const res = await fetch(`/api/exp/${expense._k}`, { method: 'DELETE' });
+    const res = await authFetch(`/api/exp/${expense._k}`, { method: 'DELETE' });
     if (!res.ok) showToast('Errore eliminazione');
   }
 </script>

@@ -79,3 +79,13 @@ import { set } from 'firebase/database';
 export function saveNote(text: string) {
   set(ref(db, ROOT + '/note'), text);
 }
+
+export async function authFetch(url: string, init?: RequestInit): Promise<Response> {
+  const u = auth.currentUser;
+  if (!u) throw new Error('Non autenticato');
+  const token = await u.getIdToken();
+  return fetch(url, {
+    ...init,
+    headers: { ...init?.headers, Authorization: 'Bearer ' + token },
+  });
+}

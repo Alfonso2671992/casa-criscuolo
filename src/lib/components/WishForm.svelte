@@ -1,6 +1,7 @@
 <script lang="ts">
   import { CASA_CATS } from '$lib/constants';
   import { showToast } from '$lib/stores';
+  import { authFetch } from '$lib/firebase-client';
   import CategoryGrid from './CategoryGrid.svelte';
 
   let name = $state('');
@@ -36,7 +37,7 @@
       body.p = previewUrl;
     }
 
-    const res = await fetch('/api/wish', {
+    const res = await authFetch('/api/wish', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),

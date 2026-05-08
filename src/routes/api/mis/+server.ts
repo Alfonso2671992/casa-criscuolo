@@ -1,9 +1,10 @@
 import { json, error } from '@sveltejs/kit';
-import { addMisura } from '$lib/server/firebase-admin';
+import { addMisura, requireAuth } from '$lib/server/firebase-admin';
 import { cap } from '$lib/utils';
 
 export async function POST({ request }) {
   try {
+    await requireAuth(request);
     const body = await request.json();
     const n = cap((body.n || '').toString().slice(0, 200));
     if (!n) error(400, 'Nome richiesto');
@@ -15,6 +16,6 @@ export async function POST({ request }) {
     return json({ ok: true });
   } catch (e) {
     const msg = e instanceof Error ? e.message : 'Errore sconosciuto';
-    return json({ ok: false, error: msg }, { status: 500 });
+    return json({ ok: false, error: msg }, { status: msg.includes('Autenticazione') ? 401 : 500 });
   }
 }

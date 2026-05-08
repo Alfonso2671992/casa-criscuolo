@@ -1,12 +1,13 @@
 <script lang="ts">
   import { esc } from '$lib/utils';
   import { showToast } from '$lib/stores';
+  import { authFetch } from '$lib/firebase-client';
   import type { Misura } from '$lib/types';
 
   let { misura }: { misura: Misura } = $props();
 
   async function del() {
-    const res = await fetch(`/api/mis/${misura._k}`, { method: 'DELETE' });
+    const res = await authFetch(`/api/mis/${misura._k}`, { method: 'DELETE' });
     if (!res.ok) showToast('Errore eliminazione');
   }
 </script>

@@ -2,13 +2,14 @@
   import { CASA_CATS } from '$lib/constants';
   import { esc, safeUrl } from '$lib/utils';
   import { showToast } from '$lib/stores';
+  import { authFetch } from '$lib/firebase-client';
   import type { WishItem } from '$lib/types';
 
   let { wish }: { wish: WishItem } = $props();
   const cat = $derived(CASA_CATS.find(c => c.id === wish.c) || CASA_CATS[5]);
 
   async function toggle() {
-    const res = await fetch(`/api/wish/${wish._k}`, {
+    const res = await authFetch(`/api/wish/${wish._k}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ b: !wish.b }),
@@ -17,7 +18,7 @@
   }
 
   async function del() {
-    const res = await fetch(`/api/wish/${wish._k}`, { method: 'DELETE' });
+    const res = await authFetch(`/api/wish/${wish._k}`, { method: 'DELETE' });
     if (!res.ok) showToast('Errore eliminazione');
   }
 </script>

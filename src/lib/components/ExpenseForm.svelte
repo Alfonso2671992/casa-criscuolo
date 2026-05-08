@@ -1,6 +1,7 @@
 <script lang="ts">
   import { CATS as allCats, BOLLETTE_IDS } from '$lib/constants';
   import { names, showToast } from '$lib/stores';
+  import { authFetch } from '$lib/firebase-client';
   import CategoryGrid from './CategoryGrid.svelte';
   import Calendar from './Calendar.svelte';
   import { today } from '$lib/utils';
@@ -34,7 +35,7 @@
       sc: selectedScad,
       payer,
     };
-    const res = await fetch('/api/exp', {
+    const res = await authFetch('/api/exp', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
