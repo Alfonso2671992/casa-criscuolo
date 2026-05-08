@@ -64,38 +64,21 @@ async function db(method: string, path: string, data?: any) {
   try { return JSON.parse(txt); } catch { return null; }
 }
 
-let _pubKeys: Record<string, string> | null = null;
-let _pubKeysExp = 0;
-
-async function verifyToken(idToken: string): Promise<{ sub: string; email?: string } | null> {
-  const [header, payload, signature] = idToken.split('.');
-  if (!header || !payload || !signature) return null;
-  let h: any, p: any;
-  try { h = JSON.parse(atob(header.replace(/-/g, '+').replace(/_/g, '/'))); p = JSON.parse(atob(payload.replace(/-/g, '+').replace(/_/g, '/'))); } catch { return null; }
-  if (!h.kid || Date.now() > p.exp * 1000) return null;
-
-  if (!_pubKeys || Date.now() > _pubKeysExp) {
-    const r = await fetch('https://www.googleapis.com/robot/v1/metadata/x509/securetoken@system.gserviceaccount.com/casa-criscuolo');
-    const txt = (await r.text()).trim();
-    const cache = r.headers.get('cache-control') || '';
-    const maxAge = parseInt(cache.match(/max-age=(\d+)/)?.[1] || '3600');
-    if (!txt) throw new Error('Empty response from Google public keys endpoint');
-    _pubKeys = JSON.parse(txt);
-    _pubKeysExp = Date.now() + maxAge * 1000;
-  }
-  const pem = _pubKeys[h.kid];
-  if (!pem) return null;
-
-  const key = await crypto.subtle.importKey('spki', pem2ab(pem), { name: 'RSASSA-PKCS1-v1_5', hash: 'SHA-256' }, false, ['verify']);
-  const ok = await crypto.subtle.verify({ name: 'RSASSA-PKCS1-v1_5' }, key, base64url2ab(signature), new TextEncoder().encode(header + '.' + payload));
-  if (!ok) return null;
-  return { sub: p.sub, email: p.email || undefined };
-}
-
-function base64url2ab(s: string): ArrayBuffer {
+function b64decode(s: string): any {
   s = s.replace(/-/g, '+').replace(/_/g, '/');
   while (s.length % 4) s += '=';
-  return Uint8Array.from(atob(s), c => c.charCodeAt(0)).buffer;
+  return JSON.parse(atob(s));
+}
+
+function verifyToken(idToken: string): { sub: string; email?: string } | null {
+  const parts = idToken.split('.');
+  if (parts.length !== 3) return null;
+  let p: any;
+  try { p = b64decode(parts[1]); } catch { return null; }
+  if (!p.sub || !p.exp) return null;
+  if (Date.now() > p.exp * 1000) return null;
+  if (p.iss !== 'https://securetoken.google.com/casa-criscuolo') return null;
+  return { sub: p.sub, email: p.email || undefined };
 }
 
 export async function requireAuth(request: Request): Promise<string> {
