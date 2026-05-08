@@ -61,6 +61,7 @@ npm run test:watch  # Vitest watch mode
 - **Commits**: short, English
 - **UI labels**: Italian (`Spese`, `Da acquistare`, `Misure`)
 - **localStorage keys**: prefixed `cc_`
+- **Changelog**: update `CHANGELOG.md` (Keep a Changelog format) before every commit — group under `### Added`, `### Changed`, `### Fixed`, `### Removed`, `### Docs`
 
 ## Deployment
 
