@@ -27,7 +27,6 @@ src/
       mis/          → POST /[id] (DELETE)
       upload/       → POST (multipart → Firebase Storage)
 static/             → manifest.json, icons
-index.html          → LEGACY v1 app (still usable, not deleted)
 wrangler.jsonc      → Cloudflare Pages config
 ```
 
@@ -74,5 +73,4 @@ Cloudflare Pages via `@sveltejs/adapter-cloudflare`. Set `FIREBASE_SERVICE_ACCOU
 
 - Firebase Admin SDK requires `FIREBASE_SERVICE_ACCOUNT` env var (service account JSON) — fails at runtime if unset
 - Photo upload requires Firebase Storage to be enabled and bucket publicly readable (or use signed URLs)
-- Legacy `index.html` v1 app still in repo — don't delete until v2 is verified by both users
 - `firebase-admin` npm package not used — project uses REST API directly with OAuth2 JWT
