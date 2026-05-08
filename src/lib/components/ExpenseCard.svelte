@@ -4,8 +4,10 @@
   import { showToast } from '$lib/stores';
   import { authFetch } from '$lib/firebase-client';
   import type { Expense } from '$lib/types';
+  import ExpenseEditModal from './ExpenseEditModal.svelte';
 
   let { expense, isDa = false }: { expense: Expense; isDa?: boolean } = $props();
+  let showEdit = $state(false);
 
   const cat = $derived(CATS.find(c => c.id === expense.c) || CATS[7]);
   const payerText = $derived(expense.payer === 'A metà' ? `A metà · €${expense.half} a testa` : expense.payer);
@@ -61,24 +63,29 @@
 
   <div class="actions">
     <button class={isDa ? 'btn-primary-sm' : 'btn-secondary-sm'} onclick={toggle}>{isDa ? 'Segna come pagata' : 'Annulla pagamento'}</button>
+    <button class="btn-edit" onclick={() => showEdit = true}>Modifica</button>
     <button class="btn-del" onclick={del}>✕</button>
   </div>
 </div>
 
+{#if showEdit}
+  <ExpenseEditModal {expense} onClose={() => showEdit = false} />
+{/if}
+
 <style>
-  .card { background: #FDF6EC; border-radius: 14px; padding: 12px 13px; border: 1.5px solid #EDD9C0; margin-bottom: 8px; }
-  .card.urgente { background: #FFE0D0; border-color: #C4622D; border-width: 2px; }
-  .card.scaduta { background: #FFCFBA; border-color: #B03000; border-width: 2px; }
+  .card { background: var(--bg-card); border-radius: 14px; padding: 12px 13px; border: 1.5px solid var(--border-light); margin-bottom: 8px; }
+  .card.urgente { background: var(--urgent-bg); border-color: var(--accent); border-width: 2px; }
+  .card.scaduta { background: var(--scaduta-bg); border-color: var(--scaduta-border); border-width: 2px; }
   .header { display: flex; align-items: center; gap: 9px; }
   .icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
   .info { flex: 1; min-width: 0; }
-  .name { font-size: 13px; font-weight: 700; color: #3D2010; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .meta { font-size: 10px; color: #A07850; font-weight: 500; margin-top: 1px; }
-  .amt { font-size: 14px; font-weight: 800; color: #3D2010; font-family: Georgia, serif; flex-shrink: 0; }
+  .name { font-size: 13px; font-weight: 700; color: var(--text-primary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .meta { font-size: 10px; color: var(--text-muted); font-weight: 500; margin-top: 1px; }
+  .amt { font-size: 14px; font-weight: 800; color: var(--text-primary); font-family: Georgia, serif; flex-shrink: 0; }
   .badge { display: inline-flex; align-items: center; gap: 5px; margin-top: 7px; padding: 3px 10px; border-radius: 20px; font-size: 10px; font-weight: 700; }
   .actions { display: flex; gap: 6px; margin-top: 9px; }
   .btn-primary-sm, .btn-secondary-sm { all: unset; flex: 1; padding: 7px 0; border-radius: 9px; font-size: 11px; font-weight: 700; text-align: center; cursor: pointer; display: block; }
-  .btn-primary-sm { background: #C4622D; color: #FFF; }
-  .btn-secondary-sm { background: #EDD9C0; color: #8B4513; }
-  .btn-del { all: unset; padding: 7px 12px; border-radius: 9px; background: #EDD9C0; color: #8B4513; font-size: 11px; font-weight: 700; cursor: pointer; display: inline-block; }
+  .btn-primary-sm { background: var(--accent); color: var(--color-white); }
+  .btn-secondary-sm { background: var(--bg-secondary); color: var(--color-brown); }
+  .btn-del { all: unset; padding: 7px 12px; border-radius: 9px; background: var(--bg-secondary); color: var(--color-brown); font-size: 11px; font-weight: 700; cursor: pointer; display: inline-block; }
 </style>

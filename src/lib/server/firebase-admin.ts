@@ -96,5 +96,6 @@ export async function addWish(d: WishItem) { d.ts = Date.now(); await db('POST',
 export async function updateWish(k: string, d: Partial<WishItem>) { await db('PATCH', 'wish/' + k, d); }
 export async function deleteWish(k: string) { await db('DELETE', 'wish/' + k); }
 export async function addMisura(d: Misura) { d.ts = Date.now(); await db('POST', 'mis', d); }
+export async function updateMisura(k: string, d: Partial<Misura>) { await db('PATCH', 'mis/' + k, d); }
 export async function deleteMisura(k: string) { await db('DELETE', 'mis/' + k); }
 

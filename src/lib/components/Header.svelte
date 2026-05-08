@@ -21,11 +21,11 @@
   .header {
     padding: env(safe-area-inset-top, 14px) 20px 12px;
     padding-top: calc(env(safe-area-inset-top, 0px) + 14px);
-    background: #FDF6EC; border-bottom: 1.5px solid #EDD9C0;
+    background: var(--bg-card); border-bottom: 1.5px solid var(--border-light);
     flex-shrink: 0;
     display: flex; align-items: flex-start; justify-content: space-between;
   }
-  .title { font-size: 17px; font-weight: 700; color: #3D2010; font-family: Georgia, serif; line-height: 1.2; }
-  .subtitle { font-size: 12px; font-weight: 600; color: #C4622D; font-family: Georgia, serif; font-style: italic; line-height: 1.2; }
-  .gear-btn { all: unset; cursor: pointer; padding: 4px; border-radius: 8px; color: #A07850; flex-shrink: 0; margin-top: 2px; }
+  .title { font-size: 17px; font-weight: 700; color: var(--text-primary); font-family: Georgia, serif; line-height: 1.2; }
+  .subtitle { font-size: 12px; font-weight: 600; color: var(--accent); font-family: Georgia, serif; font-style: italic; line-height: 1.2; }
+  .gear-btn { all: unset; cursor: pointer; padding: 4px; border-radius: 8px; color: var(--text-muted); flex-shrink: 0; margin-top: 2px; }
 </style>

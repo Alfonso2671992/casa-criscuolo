@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.2.0] - 2026-05-08
+
+### Added
+
+- Modifica spese: pulsante "Modifica" nelle card, modal con form precompilata (nome, importo, categoria, pagante, data/scadenza)
+- Modifica wishlist: pulsante "Modifica" nelle card, modal con form precompilata (nome, categoria, dimensioni, link, budget, foto)
+- Modifica misure: pulsante "Modifica" nelle card, modal con form precompilata (nome, dimensioni, note, foto)
+- Endpoint PATCH per misure (`/api/mis/[id]`)
+- Dark mode: tema scuro con toggle nelle impostazioni (salvato in localStorage)
+- Galleria foto: 5° tab "Foto" con griglia di tutte le foto degli oggetti casa e lightbox
+
 ## [2.1.1] - 2026-05-08
 
 ### Fixed
@@ -73,6 +84,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Vecchia app v1 (index.html, root icons)
 
+[2.2.0]: https://github.com/Alfonso2671992/casa-criscuolo/compare/2.1.1...2.2.0
 [2.1.1]: https://github.com/Alfonso2671992/casa-criscuolo/compare/2.1.0...2.1.1
 [2.1.0]: https://github.com/Alfonso2671992/casa-criscuolo/compare/2.0.0...2.1.0
 [2.0.0]: https://github.com/Alfonso2671992/casa-criscuolo/releases/tag/2.0.0

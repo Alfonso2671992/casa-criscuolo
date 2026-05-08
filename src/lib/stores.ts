@@ -69,4 +69,18 @@ export function cacheMisure(data: Misura[]) {
   try { localStorage.setItem('cc_m', JSON.stringify(data)); } catch {}
 }
 
+function lsDark(): boolean {
+  try {
+    return localStorage.getItem('cc_dark') === 'true';
+  } catch { return false; }
+}
+
+export const darkMode = writable<boolean>(lsDark());
+
+export function initDark() {
+  const d = lsDark();
+  darkMode.set(d);
+  document.documentElement.setAttribute('data-theme', d ? 'dark' : 'light');
+}
+
 

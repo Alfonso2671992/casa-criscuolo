@@ -93,31 +93,31 @@
   .overlay {
     position: fixed; inset: 0; z-index: 200;
     display: flex; align-items: center; justify-content: center;
-    background: #FAF3E8;
+    background: var(--bg-app);
   }
   .box { width: 320px; max-width: 92vw; text-align: center; }
   form { width: 100%; }
   .icon-wrap {
     width: 48px; height: 48px; border-radius: 14px;
-    background: #C4622D; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    background: var(--accent); display: flex; align-items: center; justify-content: center; flex-shrink: 0;
   }
-  .title { font-size: 20px; font-weight: 700; color: #3D2010; font-family: Georgia, serif; line-height: 1.2; text-align: left; }
-  .accent { font-size: 13px; font-weight: 600; color: #C4622D; font-family: Georgia, serif; font-style: italic; text-align: left; }
-  .subtitle { font-size: 14px; color: #8B6040; font-weight: 500; margin: 16px 0 20px; }
+  .title { font-size: 20px; font-weight: 700; color: var(--text-primary); font-family: Georgia, serif; line-height: 1.2; text-align: left; }
+  .accent { font-size: 13px; font-weight: 600; color: var(--accent); font-family: Georgia, serif; font-style: italic; text-align: left; }
+  .subtitle { font-size: 14px; color: var(--text-secondary); font-weight: 500; margin: 16px 0 20px; }
   .inp {
     all: unset; display: block; width: 100%; padding: 10px 12px; border-radius: 10px;
-    border: 1.5px solid #D4A574; background: #FAF3E8; color: #3D2010;
+    border: 1.5px solid var(--border); background: var(--bg-app); color: var(--text-primary);
     font-size: 14px; font-weight: 500; margin-bottom: 10px; box-sizing: border-box;
   }
   .btn-primary {
     all: unset; display: block; width: 100%; padding: 13px; border-radius: 12px;
-    background: #C4622D; color: #FFF; font-size: 15px; font-weight: 700;
+    background: var(--accent); color: var(--color-white); font-size: 15px; font-weight: 700;
     text-align: center; cursor: pointer; box-sizing: border-box; margin-top: 4px;
   }
   .btn-primary:disabled { opacity: .6; }
   .btn-link {
     all: unset; display: block; width: 100%; margin-top: 14px;
-    font-size: 13px; color: #A07850; font-weight: 600; cursor: pointer;
+    font-size: 13px; color: var(--text-muted); font-weight: 600; cursor: pointer;
     text-decoration: underline; text-align: center;
   }
 </style>

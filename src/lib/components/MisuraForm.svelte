@@ -50,22 +50,22 @@
 </div>
 
 <style>
-  .card { background: #FDF6EC; border-radius: 16px; padding: 14px; margin-bottom: 14px; border: 1.5px solid #D4A574; }
+  .card { background: var(--bg-card); border-radius: 16px; padding: 14px; margin-bottom: 14px; border: 1.5px solid var(--border); }
   .inp {
     all: unset; display: block; width: 100%; padding: 10px 12px; border-radius: 10px;
-    border: 1.5px solid #D4A574; background: #FAF3E8; color: #3D2010;
+    border: 1.5px solid var(--border); background: var(--bg-app); color: var(--text-primary);
     font-size: 14px; font-weight: 500; margin-bottom: 10px; box-sizing: border-box;
   }
   .photo-btn {
     all: unset; display: block; width: 100%; height: 50px;
-    border: 2px dashed #D4A574; border-radius: 10px; background: #FAF3E8;
-    color: #C4622D; font-size: 13px; font-weight: 700; text-align: center;
+    border: 2px dashed var(--border); border-radius: 10px; background: var(--bg-app);
+    color: var(--accent); font-size: 13px; font-weight: 700; text-align: center;
     cursor: pointer; box-sizing: border-box; line-height: 50px; margin-bottom: 8px;
   }
   .preview { width: 100%; height: 80px; object-fit: cover; border-radius: 10px; margin-bottom: 8px; }
   .btn-primary {
     all: unset; display: block; width: 100%; padding: 13px; border-radius: 12px;
-    background: #C4622D; color: #FFF; font-size: 15px; font-weight: 700;
+    background: var(--accent); color: var(--color-white); font-size: 15px; font-weight: 700;
     text-align: center; cursor: pointer; box-sizing: border-box;
   }
 </style>
