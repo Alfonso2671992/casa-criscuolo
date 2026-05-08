@@ -39,10 +39,16 @@ async function token(): Promise<string> {
   if (_token && Date.now() < _tokenExp - 60000) return _token;
   const a = sa();
   const now = Math.floor(Date.now() / 1000);
-  const jwt = b64url(JSON.stringify({ alg: 'RS256', typ: 'JWT' })) + '.' + b64url(JSON.stringify({ iss: a.client_email, scope: 'https://www.googleapis.com/auth/database', aud: 'https://oauth2.googleapis.com/token', exp: now + 3600, iat: now }));
-  const sig = await sign(jwt, a.private_key);
+  const header = b64url(JSON.stringify({ alg: 'RS256', typ: 'JWT' }));
+  const payload = b64url(JSON.stringify({ iss: a.client_email, scope: 'https://www.googleapis.com/auth/database https://www.googleapis.com/auth/userinfo.email', aud: 'https://oauth2.googleapis.com/token', exp: now + 3600, iat: now }));
+  const jwt = header + '.' + payload;
+  let sig: string;
+  try { sig = await sign(jwt, a.private_key); } catch (e: any) { throw new Error('JWT sign failed: ' + (e?.message || e)); }
   const r = await fetch('https://oauth2.googleapis.com/token', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: new URLSearchParams({ grant_type: 'urn:ietf:params:oauth:grant-type:jwt-bearer', assertion: jwt + '.' + sig }) });
-  const d: any = await r.json();
+  const txt = await r.text();
+  if (!r.ok) throw new Error('Token exchange failed (' + r.status + '): ' + txt);
+  const d: any = JSON.parse(txt);
+  if (!d.access_token) throw new Error('No access_token in response: ' + txt);
   _token = d.access_token;
   _tokenExp = Date.now() + (d.expires_in || 3600) * 1000;
   return _token;
@@ -55,6 +61,11 @@ async function db(method: string, path: string, data?: any) {
   const txt = await r.text();
   if (!r.ok) throw new Error(`Firebase ${r.status}: ${txt}`);
   return txt ? JSON.parse(txt) : null;
+}
+
+export async function testToken() {
+  const t = await token();
+  return 'token ok, length=' + t.length;
 }
 
 export async function addExpense(d: Expense) { d.ts = Date.now(); await db('POST', 'exp', d); }
