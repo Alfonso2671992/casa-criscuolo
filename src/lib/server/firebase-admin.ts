@@ -76,22 +76,4 @@ export async function updateWish(k: string, d: Partial<WishItem>) { await db('PA
 export async function deleteWish(k: string) { await db('DELETE', 'wish/' + k); }
 export async function addMisura(d: Misura) { d.ts = Date.now(); await db('POST', 'mis', d); }
 export async function deleteMisura(k: string) { await db('DELETE', 'mis/' + k); }
-const BUCKET = 'casa-criscuolo.appspot.com';
 
-export async function uploadFile(path: string, file: File): Promise<string> {
-  const t = await token();
-  const enc = encodeURIComponent(path);
-  const url = `https://storage.googleapis.com/upload/storage/v1/b/${BUCKET}/o?uploadType=media&name=${enc}`;
-  const r = await fetch(url, {
-    method: 'POST',
-    headers: { 'Authorization': 'Bearer ' + t, 'Content-Type': file.type || 'application/octet-stream' },
-    body: await file.arrayBuffer(),
-  });
-  if (!r.ok) throw new Error('Storage upload failed: ' + (await r.text()));
-  await fetch(`https://storage.googleapis.com/storage/v1/b/${BUCKET}/o/${enc}/acl`, {
-    method: 'POST',
-    headers: { 'Authorization': 'Bearer ' + t, 'Content-Type': 'application/json' },
-    body: JSON.stringify({ entity: 'allUsers', role: 'READER' }),
-  });
-  return `https://storage.googleapis.com/${BUCKET}/${path}`;
-}

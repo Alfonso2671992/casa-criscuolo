@@ -1,5 +1,8 @@
 <script lang="ts">
   import { showToast } from '$lib/stores';
+  import { storage } from '$lib/firebase-client';
+  import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+  import { ROOT } from '$lib/constants';
 
   let name = $state('');
   let dims = $state('');
@@ -22,14 +25,13 @@
     let photoUrl: string | null = null;
 
     if (photoFile) {
-      const fd = new FormData();
-      fd.append('file', photoFile);
-      fd.append('folder', 'mis');
-      const upRes = await fetch('/api/upload', { method: 'POST', body: fd });
-      if (upRes.ok) {
-        const { url } = await upRes.json();
-        photoUrl = url;
-      } else {
+      try {
+        const ext = photoFile.name.split('.').pop() || 'jpg';
+        const fname = Date.now() + '_' + Math.random().toString(36).slice(2, 8) + '.' + ext;
+        const path = ROOT + '/photos/mis/' + fname;
+        const snapshot = await uploadBytes(ref(storage, path), photoFile);
+        photoUrl = await getDownloadURL(snapshot.ref);
+      } catch (e) {
         showToast('Errore caricamento foto');
         return;
       }

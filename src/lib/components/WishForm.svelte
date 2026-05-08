@@ -1,6 +1,9 @@
 <script lang="ts">
   import { CASA_CATS } from '$lib/constants';
   import { showToast } from '$lib/stores';
+  import { storage } from '$lib/firebase-client';
+  import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+  import { ROOT } from '$lib/constants';
   import CategoryGrid from './CategoryGrid.svelte';
 
   let name = $state('');
@@ -33,14 +36,14 @@
     };
 
     if (photoFile) {
-      const fd = new FormData();
-      fd.append('file', photoFile);
-      fd.append('folder', 'wish');
-      const upRes = await fetch('/api/upload', { method: 'POST', body: fd });
-      if (upRes.ok) {
-        const { url } = await upRes.json();
-        body.p = url;
-      } else {
+      try {
+        const ext = photoFile.name.split('.').pop() || 'jpg';
+        const fname = Date.now() + '_' + Math.random().toString(36).slice(2, 8) + '.' + ext;
+        const path = ROOT + '/photos/wish/' + fname;
+        const snapshot = await uploadBytes(ref(storage, path), photoFile);
+        photoUrl = await getDownloadURL(snapshot.ref);
+        body.p = photoUrl;
+      } catch (e) {
         showToast('Errore caricamento foto');
         return;
       }
