@@ -54,7 +54,7 @@
   <div class="label">Importo</div>
   <div class="amt-wrap">
     <span class="euro">€</span>
-    <input type="number" class="inp amt" placeholder="0.00" min="0" step="1" bind:value={amount} />
+    <input type="number" class="inp amt" placeholder="0,00" min="0" step="0.01" bind:value={amount} />
   </div>
   <div class="adj-row">
     <button class="adj adj-minus" onclick={() => changeAmt(-10)}>−10</button>
