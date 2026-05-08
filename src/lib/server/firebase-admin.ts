@@ -63,11 +63,6 @@ async function db(method: string, path: string, data?: any) {
   return txt ? JSON.parse(txt) : null;
 }
 
-export async function testToken() {
-  const t = await token();
-  return 'token ok, length=' + t.length;
-}
-
 export async function addExpense(d: Expense) { d.ts = Date.now(); await db('POST', 'exp', d); }
 export async function updateExpense(k: string, d: Partial<Expense>) { await db('PATCH', 'exp/' + k, d); }
 export async function deleteExpense(k: string) { await db('DELETE', 'exp/' + k); }
