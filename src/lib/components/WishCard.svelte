@@ -18,7 +18,7 @@
   }
 
   async function del() {
-    const res = await authFetch(`/api/wish/${wish._k}`, { method: 'DELETE' });
+    const res = await authFetch(`/api/wish/${wish._k}`, { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: '{}' });
     if (!res.ok) showToast('Errore eliminazione');
   }
 </script>

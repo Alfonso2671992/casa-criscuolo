@@ -58,9 +58,10 @@ async function db(method: string, path: string, data?: any) {
   const t = await token();
   const url = `${DB_URL}/${ROOT}/${path}.json?access_token=${t}`;
   const r = await fetch(url, { method, headers: data ? { 'Content-Type': 'application/json' } : undefined, body: data ? JSON.stringify(data) : undefined });
-  const txt = await r.text();
+  const txt = (await r.text()).trim();
   if (!r.ok) throw new Error(`Firebase ${r.status}: ${txt}`);
-  return txt ? JSON.parse(txt) : null;
+  if (!txt || txt === 'null') return null;
+  try { return JSON.parse(txt); } catch { return null; }
 }
 
 let _pubKeys: Record<string, string> | null = null;
@@ -75,9 +76,10 @@ async function verifyToken(idToken: string): Promise<{ sub: string; email?: stri
 
   if (!_pubKeys || Date.now() > _pubKeysExp) {
     const r = await fetch('https://www.googleapis.com/robot/v1/metadata/x509/securetoken@system.gserviceaccount.com/casa-criscuolo');
-    const txt = await r.text();
+    const txt = (await r.text()).trim();
     const cache = r.headers.get('cache-control') || '';
     const maxAge = parseInt(cache.match(/max-age=(\d+)/)?.[1] || '3600');
+    if (!txt) throw new Error('Empty response from Google public keys endpoint');
     _pubKeys = JSON.parse(txt);
     _pubKeysExp = Date.now() + maxAge * 1000;
   }

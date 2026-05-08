@@ -7,7 +7,7 @@
   let { misura }: { misura: Misura } = $props();
 
   async function del() {
-    const res = await authFetch(`/api/mis/${misura._k}`, { method: 'DELETE' });
+    const res = await authFetch(`/api/mis/${misura._k}`, { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: '{}' });
     if (!res.ok) showToast('Errore eliminazione');
   }
 </script>
