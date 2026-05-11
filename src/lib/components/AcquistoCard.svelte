@@ -20,10 +20,10 @@
   </div>
   <div class="center">
     <div class="name">{item.n}</div>
-    {#if item.qta}
-      <div class="qta">{item.qta}</div>
-    {/if}
   </div>
+  {#if item.qta}
+    <div class="qta-badge">{item.qta}</div>
+  {/if}
   <button class="remove" onclick={del} aria-label="Rimuovi">
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
   </button>
@@ -43,7 +43,11 @@
   }
   .center { flex: 1; min-width: 0; }
   .name { font-size: 14px; font-weight: 700; font-family: Georgia, serif; }
-  .qta { font-size: 11px; color: var(--text-muted); font-weight: 600; margin-top: 2px; }
+  .qta-badge {
+    font-size: 10px; font-weight: 800; color: var(--accent);
+    background: var(--bg-secondary); padding: 3px 10px; border-radius: 20px;
+    white-space: nowrap; flex-shrink: 0;
+  }
   .remove {
     all: unset; width: 32px; height: 32px; border-radius: 8px; cursor: pointer;
     display: flex; align-items: center; justify-content: center;

@@ -11,6 +11,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Tab "Da acquistare" rinnovato: lista della spesa strutturata con categorie (Spesa, Igiene, Pulizia, Elettronica, Abbigliamento, Altro), form rapido con nome + quantità, card raggruppate per categoria, eliminazione diretta. Dati salvati su Firebase in `casa_criscuolo/acquisti/` con API dedicata
 - Cache localStorage per acquisti (`cc_a`)
+- Ordinamento cronologico item (FIFO) all'interno di ogni categoria
+- Pulsante "Svuota" per eliminare tutti gli item di una categoria (DELETE batch su server)
+- Badge quantità visibile sulle card (stile pillola colorata)
 
 ### Fixed
 

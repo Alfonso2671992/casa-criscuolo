@@ -101,4 +101,16 @@ export async function deleteMisura(k: string) { await db('DELETE', 'mis/' + k); 
 export async function addAcquisto(d: AcquistoItem) { d.ts = Date.now(); await db('POST', 'acquisti', d); }
 export async function updateAcquisto(k: string, d: Partial<AcquistoItem>) { await db('PATCH', 'acquisti/' + k, d); }
 export async function deleteAcquisto(k: string) { await db('DELETE', 'acquisti/' + k); }
+export async function deleteAcquistiByCat(cat: string) {
+  const all = await db('GET', 'acquisti');
+  if (!all) return;
+  const updates: Record<string, null> = {};
+  for (const [k, v] of Object.entries(all)) {
+    if ((v as any).c === cat) updates[k] = null;
+  }
+  const keys = Object.keys(updates);
+  if (keys.length > 0) {
+    await db('PATCH', 'acquisti', updates);
+  }
+}
 
