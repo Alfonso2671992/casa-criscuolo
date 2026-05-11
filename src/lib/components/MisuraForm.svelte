@@ -7,6 +7,7 @@
   let note = $state('');
   let photoFile = $state<File | null>(null);
   let previewUrl = $state<string | null>(null);
+  let submitting = $state(false);
 
   function handlePhoto(e: Event) {
     const f = (e.target as HTMLInputElement).files?.[0];
@@ -19,6 +20,7 @@
   }
 
   async function submit() {
+    if (submitting) return;
     if (!name.trim()) { showToast('Inserisci un nome'); return; }
     let photoUrl: string | null = null;
 
@@ -26,11 +28,13 @@
       photoUrl = previewUrl;
     }
 
+    submitting = true;
     const res = await authFetch('/api/mis', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ n: name, d: dims, note, p: photoUrl }),
     });
+    submitting = false;
     if (!res.ok) { showToast('Errore salvataggio'); return; }
     name = ''; dims = ''; note = ''; photoFile = null; previewUrl = null;
     showToast('Misura salvata');
@@ -46,7 +50,7 @@
   {#if previewUrl}
     <img src={previewUrl} class="preview" alt="anteprima" />
   {/if}
-  <button class="btn-primary" onclick={submit}>+ Salva misura</button>
+  <button class="btn-primary" disabled={submitting} onclick={submit}>{submitting ? 'Salvataggio...' : '+ Salva misura'}</button>
 </div>
 
 <style>
@@ -68,4 +72,5 @@
     background: var(--accent); color: var(--color-white); font-size: 15px; font-weight: 700;
     text-align: center; cursor: pointer; box-sizing: border-box;
   }
+  .btn-primary:disabled { opacity: .5; cursor: default; }
 </style>

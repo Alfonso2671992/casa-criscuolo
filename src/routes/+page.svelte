@@ -12,6 +12,7 @@
   import MisuraCard from '$lib/components/MisuraCard.svelte';
   import AcquistoForm from '$lib/components/AcquistoForm.svelte';
   import AcquistoCard from '$lib/components/AcquistoCard.svelte';
+  import ConfirmDialog from '$lib/components/ConfirmDialog.svelte';
 
   let unsubExp = $state<() => void>(() => {});
   let unsubWish = $state<() => void>(() => {});
@@ -19,6 +20,7 @@
   let unsubAcq = $state<() => void>(() => {});
 
   let collapsed = $state(new Set<string>());
+  let confirmSvuota = $state<string | null>(null);
 
   function toggleCat(id: string) {
     const next = new Set(collapsed);
@@ -43,6 +45,7 @@
     });
     if (!res.ok) { const d = await res.json(); showToast(d?.error || 'Errore'); return; }
     showToast('Categoria svuotata');
+    confirmSvuota = null;
   }
 
   onMount(() => {
@@ -94,7 +97,7 @@
       <span class="group-icon">{@html group.cat.svg.replace('width="18" height="18"', 'width="14" height="14"')}</span>
       <span>{group.cat.label} ({group.items.length})</span>
       <svg class="chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-      <button class="svuota-btn" onclick={(e) => { e.stopPropagation(); svuotaCat(group.cat.id); }} aria-label="Svuota categoria">Svuota</button>
+      <button class="svuota-btn" onclick={(e) => { e.stopPropagation(); confirmSvuota = group.cat.id; }} aria-label="Svuota categoria">Svuota</button>
     </div>
     {#if !collapsed.has(group.cat.id)}
       {#each group.items as item (item._k)}
@@ -105,6 +108,9 @@
     <div class="empty">Nessun articolo in lista</div>
   {/each}
 </div>
+{#if confirmSvuota}
+  <ConfirmDialog message="Svuotare tutta la categoria?" onConfirm={() => { if (confirmSvuota) svuotaCat(confirmSvuota); }} onCancel={() => confirmSvuota = null} />
+{/if}
 
 <!-- CASA -->
 <div class="section" class:active={$currentTab === 'casa'}>

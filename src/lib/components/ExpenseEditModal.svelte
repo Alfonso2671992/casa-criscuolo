@@ -16,6 +16,7 @@
   let selectedDate = $state(expense.dt ?? today());
   let selectedScad = $state<string | null>(expense.sc);
   let showScad = $derived(BOLLETTE_IDS.includes(cat));
+  let submitting = $state(false);
 
   let payerOpts = $derived([
     { val: $names.p1, color: '#C4622D', bg: '#FDF0E6', border: '#D4A574' },
@@ -38,9 +39,11 @@
   }
 
   async function submit() {
+    if (submitting) return;
     const amt = parseAmt(amountStr);
     if (amt <= 0) { showToast('Importo non valido'); return; }
     if (!payer) { showToast('Seleziona chi paga'); return; }
+    submitting = true;
     const body: Record<string, unknown> = {
       n: name || cat,
       a: amt,
@@ -54,6 +57,7 @@
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
     });
+    submitting = false;
     if (!res.ok) { showToast('Errore salvataggio'); return; }
     showToast('Spesa modificata');
     onClose();
@@ -97,7 +101,7 @@
     {:else}
       <Calendar bind:selected={selectedDate} buttonLabel={today()} />
     {/if}
-    <button class="btn-primary" onclick={submit}>Salva modifiche</button>
+    <button class="btn-primary" disabled={submitting} onclick={submit}>{submitting ? 'Salvataggio...' : 'Salva modifiche'}</button>
     <button class="btn-cancel" onclick={onClose}>Annulla</button>
   </div>
 </div>
@@ -135,6 +139,7 @@
     background: var(--accent); color: var(--color-white); font-size: 15px; font-weight: 700;
     text-align: center; cursor: pointer; box-sizing: border-box; margin-top: 6px;
   }
+  .btn-primary:disabled { opacity: .5; cursor: default; }
   .btn-cancel {
     all: unset; display: block; width: 100%; padding: 11px; border-radius: 12px;
     background: transparent; color: var(--text-muted); font-size: 14px; font-weight: 700;

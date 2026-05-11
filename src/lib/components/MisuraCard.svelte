@@ -4,13 +4,16 @@
   import { authFetch } from '$lib/firebase-client';
   import type { Misura } from '$lib/types';
   import MisuraEditModal from './MisuraEditModal.svelte';
+  import ConfirmDialog from './ConfirmDialog.svelte';
 
   let { misura }: { misura: Misura } = $props();
   let showEdit = $state(false);
+  let confirmDel = $state(false);
 
   async function del() {
     const res = await authFetch(`/api/mis/${misura._k}`, { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: '{}' });
     if (!res.ok) showToast('Errore eliminazione');
+    confirmDel = false;
   }
 </script>
 
@@ -27,11 +30,14 @@
       <span class="name">{esc(misura.n)}</span>
       <div class="top-actions">
         <button class="btn-edit" onclick={() => showEdit = true}>Modifica</button>
-        <button class="btn-del" onclick={del}>✕</button>
+        <button class="btn-del" onclick={() => confirmDel = true}>✕</button>
       </div>
     </div>
     {#if showEdit}
       <MisuraEditModal {misura} onClose={() => showEdit = false} />
+    {/if}
+    {#if confirmDel}
+      <ConfirmDialog message={'Eliminare "' + misura.n + '"?'} onConfirm={del} onCancel={() => confirmDel = false} />
     {/if}
     {#if misura.d}
       <div class="badge">

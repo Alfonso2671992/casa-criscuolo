@@ -5,9 +5,11 @@
   import { authFetch } from '$lib/firebase-client';
   import type { Expense } from '$lib/types';
   import ExpenseEditModal from './ExpenseEditModal.svelte';
+  import ConfirmDialog from './ConfirmDialog.svelte';
 
   let { expense, isDa = false }: { expense: Expense; isDa?: boolean } = $props();
   let showEdit = $state(false);
+  let confirmDel = $state(false);
 
   const cat = $derived(CATS.find(c => c.id === expense.c) || CATS[7]);
   const payerText = $derived(expense.payer === 'A metà' ? `A metà · €${expense.half} a testa` : expense.payer);
@@ -39,6 +41,7 @@
   async function del() {
     const res = await authFetch(`/api/exp/${expense._k}`, { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: '{}' });
     if (!res.ok) showToast('Errore eliminazione');
+    confirmDel = false;
   }
 </script>
 
@@ -64,12 +67,15 @@
   <div class="actions">
     <button class={isDa ? 'btn-primary-sm' : 'btn-secondary-sm'} onclick={toggle}>{isDa ? 'Segna come pagata' : 'Annulla pagamento'}</button>
     <button class="btn-edit" onclick={() => showEdit = true}>Modifica</button>
-    <button class="btn-del" onclick={del}>✕</button>
+    <button class="btn-del" onclick={() => confirmDel = true}>✕</button>
   </div>
 </div>
 
 {#if showEdit}
   <ExpenseEditModal {expense} onClose={() => showEdit = false} />
+{/if}
+{#if confirmDel}
+  <ConfirmDialog message={'Eliminare "' + (expense.n || expense.c) + '"?'} onConfirm={del} onCancel={() => confirmDel = false} />
 {/if}
 
 <style>

@@ -3,8 +3,10 @@
   import { showToast } from '$lib/stores';
   import { authFetch } from '$lib/firebase-client';
   import type { AcquistoItem } from '$lib/types';
+  import ConfirmDialog from './ConfirmDialog.svelte';
 
   let { item }: { item: AcquistoItem } = $props();
+  let confirmDel = $state(false);
 
   const cat = $derived(ACQUISTO_CATS.find(c => c.id === item.c) || ACQUISTO_CATS[5]);
 
@@ -20,6 +22,7 @@
   async function del() {
     const res = await authFetch(`/api/acquisto/${item._k}`, { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: '{}' });
     if (!res.ok) showToast('Errore eliminazione');
+    confirmDel = false;
   }
 </script>
 
@@ -40,10 +43,13 @@
   {#if item.qta}
     <div class="qta-badge">{item.qta}</div>
   {/if}
-  <button class="remove" onclick={del} aria-label="Rimuovi">
+  <button class="remove" onclick={() => confirmDel = true} aria-label="Rimuovi">
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
   </button>
 </div>
+{#if confirmDel}
+  <ConfirmDialog message={'Rimuovere "' + item.n + '"?'} onConfirm={del} onCancel={() => confirmDel = false} />
+{/if}
 
 <style>
   .card {

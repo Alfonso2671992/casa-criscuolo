@@ -5,9 +5,11 @@
   import { authFetch } from '$lib/firebase-client';
   import type { WishItem } from '$lib/types';
   import WishEditModal from './WishEditModal.svelte';
+  import ConfirmDialog from './ConfirmDialog.svelte';
 
   let { wish }: { wish: WishItem } = $props();
   let showEdit = $state(false);
+  let confirmDel = $state(false);
   const cat = $derived(CASA_CATS.find(c => c.id === wish.c) || CASA_CATS[5]);
 
   async function toggle() {
@@ -22,6 +24,7 @@
   async function del() {
     const res = await authFetch(`/api/wish/${wish._k}`, { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: '{}' });
     if (!res.ok) showToast('Errore eliminazione');
+    confirmDel = false;
   }
 </script>
 
@@ -44,7 +47,7 @@
     {/if}
     <div class="actions">
       <button class="btn-edit" onclick={() => showEdit = true}>Modifica</button>
-      <button class="btn-remove" onclick={del}>Rimuovi</button>
+      <button class="btn-remove" onclick={() => confirmDel = true}>Rimuovi</button>
       <button class="btn-bought" style="background:{wish.b ? 'var(--text-muted)' : 'var(--color-green)'}" onclick={toggle}>{wish.b ? 'Annulla' : 'Segna comprato'}</button>
     </div>
   </div>
@@ -52,6 +55,9 @@
 
 {#if showEdit}
   <WishEditModal {wish} onClose={() => showEdit = false} />
+{/if}
+{#if confirmDel}
+  <ConfirmDialog message={'Eliminare "' + wish.n + '"?'} onConfirm={del} onCancel={() => confirmDel = false} />
 {/if}
 
 <style>

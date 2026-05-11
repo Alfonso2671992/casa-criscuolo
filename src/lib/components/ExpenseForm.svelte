@@ -13,6 +13,7 @@
   let selectedDate = $state(today());
   let selectedScad = $state<string | null>(null);
   let showScad = $derived(BOLLETTE_IDS.includes(cat));
+  let submitting = $state(false);
 
   let payerOpts = $derived([
     { val: $names.p1, color: '#C4622D', bg: '#FDF0E6', border: '#D4A574' },
@@ -35,9 +36,11 @@
   }
 
   async function submit() {
+    if (submitting) return;
     const amt = parseAmt(amountStr);
     if (amt <= 0) return;
     if (!payer) { showToast('Seleziona chi paga'); return; }
+    submitting = true;
     const body = {
       n: name || cat,
       a: amt,
@@ -51,6 +54,7 @@
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
     });
+    submitting = false;
     if (!res.ok) { showToast('Errore salvataggio'); return; }
     name = ''; amountStr = ''; payer = ''; cat = 'altro';
     selectedDate = today(); selectedScad = null;
@@ -92,7 +96,7 @@
   {:else}
     <Calendar bind:selected={selectedDate} buttonLabel={today()} />
   {/if}
-  <button class="btn-primary" onclick={submit}>+ Aggiungi spesa</button>
+  <button class="btn-primary" disabled={submitting} onclick={submit}>{submitting ? 'Salvataggio...' : '+ Aggiungi spesa'}</button>
 </div>
 
 <style>
@@ -119,4 +123,5 @@
     background: var(--accent); color: var(--color-white); font-size: 15px; font-weight: 700;
     text-align: center; cursor: pointer; box-sizing: border-box; margin-top: 6px;
   }
+  .btn-primary:disabled { opacity: .5; cursor: default; }
 </style>

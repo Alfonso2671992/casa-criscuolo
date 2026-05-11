@@ -11,6 +11,7 @@
   let budgetStr = $state('');
   let photoFile = $state<File | null>(null);
   let previewUrl = $state<string | null>(null);
+  let submitting = $state(false);
 
   function handlePhoto(e: Event) {
     const f = (e.target as HTMLInputElement).files?.[0];
@@ -23,7 +24,7 @@
   }
 
   async function submit() {
-    let photoUrl: string | null = null;
+    if (submitting) return;
     let bgt: number | null = parseFloat(budgetStr.replace(',', '.'));
     if (isNaN(bgt)) bgt = null;
     let body: Record<string, unknown> = {
@@ -39,11 +40,13 @@
       body.p = previewUrl;
     }
 
+    submitting = true;
     const res = await authFetch('/api/wish', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
     });
+    submitting = false;
     if (!res.ok) { showToast('Errore salvataggio'); return; }
     name = ''; cat = 'Lampada'; dims = ''; link = ''; budgetStr = '';
     photoFile = null; previewUrl = null;
@@ -63,7 +66,7 @@
   {#if previewUrl}
     <img src={previewUrl} class="preview" alt="anteprima" />
   {/if}
-  <button class="btn-primary" onclick={submit}>+ Aggiungi oggetto</button>
+  <button class="btn-primary" disabled={submitting} onclick={submit}>{submitting ? 'Salvataggio...' : '+ Aggiungi oggetto'}</button>
 </div>
 
 <style>
@@ -86,4 +89,5 @@
     background: var(--accent); color: var(--color-white); font-size: 15px; font-weight: 700;
     text-align: center; cursor: pointer; box-sizing: border-box;
   }
+  .btn-primary:disabled { opacity: .5; cursor: default; }
 </style>

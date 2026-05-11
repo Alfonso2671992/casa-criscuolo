@@ -8,6 +8,7 @@
   let cat = $state('Spesa');
   let qta = $state('');
   let showSuggestions = $state(false);
+  let submitting = $state(false);
 
   let suggestions = $derived.by(() => {
     const q = name.toLowerCase().trim();
@@ -44,7 +45,9 @@
   }
 
   async function submit() {
+    if (submitting) return;
     if (!name.trim()) { showToast('Inserisci un nome'); return; }
+    submitting = true;
     const body: Record<string, unknown> = {
       n: name.trim(),
       c: cat,
@@ -55,6 +58,7 @@
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
     });
+    submitting = false;
     if (!res.ok) { showToast('Errore salvataggio'); return; }
     name = ''; cat = 'Spesa'; qta = '';
     showToast('Aggiunto alla lista');
@@ -78,7 +82,7 @@
   <div class="label">Categoria</div>
   <CategoryGrid categories={ACQUISTO_CATS} bind:selected={cat} columns={3} />
   <input class="inp" placeholder="Quantità (es. 1 kg, 2 confezioni)" bind:value={qta} />
-  <button class="btn-primary" onclick={submit}>+ Aggiungi alla lista</button>
+  <button class="btn-primary" disabled={submitting} onclick={submit}>{submitting ? 'Salvataggio...' : '+ Aggiungi alla lista'}</button>
 </div>
 
 <style>
@@ -112,4 +116,5 @@
     background: var(--accent); color: var(--color-white); font-size: 15px; font-weight: 700;
     text-align: center; cursor: pointer; box-sizing: border-box;
   }
+  .btn-primary:disabled { opacity: .5; cursor: default; }
 </style>
