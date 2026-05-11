@@ -8,14 +8,12 @@ beforeEach(() => {
 const {
   showToast,
   saveNames,
-  saveFreeNotes,
   cacheExpenses,
   cacheWishes,
   cacheMisure,
   initDark,
   toast,
   names,
-  freeNotes,
   expenses,
   wishes,
   misure,
@@ -54,18 +52,6 @@ describe('saveNames', () => {
   it('persists to localStorage', () => {
     saveNames({ p1: 'A', p2: 'B' });
     expect(JSON.parse(localStorage.getItem('cc_n')!)).toEqual({ p1: 'A', p2: 'B' });
-  });
-});
-
-describe('saveFreeNotes', () => {
-  it('updates freeNotes store', () => {
-    saveFreeNotes('hello world');
-    expect(get(freeNotes)).toBe('hello world');
-  });
-
-  it('persists to localStorage', () => {
-    saveFreeNotes('test note');
-    expect(localStorage.getItem('cc_note')).toBe('test note');
   });
 });
 

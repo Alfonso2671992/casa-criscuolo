@@ -73,16 +73,6 @@ export function listenAcquisti(cb: (data: AcquistoItem[]) => void) {
   return onValue(rootRef, (snap) => cb(snap2arr<AcquistoItem>(snap.val())));
 }
 
-export function listenNote(cb: (text: string) => void) {
-  const noteRef = ref(db, ROOT + '/note');
-  return onValue(noteRef, (snap) => cb(snap.val() ?? ''));
-}
-
-import { set } from 'firebase/database';
-export function saveNote(text: string) {
-  set(ref(db, ROOT + '/note'), text);
-}
-
 export async function authFetch(url: string, init?: RequestInit): Promise<Response> {
   const u = auth.currentUser;
   if (!u) throw new Error('Non autenticato');

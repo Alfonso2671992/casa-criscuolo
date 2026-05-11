@@ -10,12 +10,6 @@ function lsNames(): Names {
   return { p1: 'Alfonso', p2: 'Alina' };
 }
 
-function lsNote(): string {
-  try {
-    return localStorage.getItem('cc_note') || '';
-  } catch { return ''; }
-}
-
 function lsCache<T>(key: string, fallback: T): T {
   try {
     const v = localStorage.getItem(key);
@@ -30,7 +24,6 @@ export const acquisti = writable<AcquistoItem[]>(lsCache<AcquistoItem[]>('cc_a',
 export const user = writable<User | null>(null);
 export const currentTab = writable<TabId>('spese');
 export const names = writable<Names>(lsNames());
-export const freeNotes = writable<string>(lsNote());
 export const toast = writable<string | null>(null);
 
 export const totalUnpaid = derived(expenses, ($e) =>
@@ -48,11 +41,6 @@ export function showToast(msg: string, duration = 3000) {
 export function saveNames(n: Names) {
   names.set(n);
   try { localStorage.setItem('cc_n', JSON.stringify(n)); } catch {}
-}
-
-export function saveFreeNotes(text: string) {
-  freeNotes.set(text);
-  try { localStorage.setItem('cc_note', text); } catch {}
 }
 
 export function cacheExpenses(data: Expense[]) {

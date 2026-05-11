@@ -23,7 +23,7 @@
 
 <div class="app">
   {#if !authed}
-    <!-- caricamento -->
+    <div class="loader"><div class="spinner"></div><span>Caricamento...</span></div>
   {:else if !$user}
     <LoginForm />
   {:else}
@@ -35,3 +35,18 @@
   {/if}
   <Toast />
 </div>
+
+<style>
+  .loader {
+    position: fixed; inset: 0; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 16px;
+    background: var(--bg-app); color: var(--text-muted);
+    font-size: 14px; font-weight: 600;
+  }
+  .spinner {
+    width: 28px; height: 28px; border: 3px solid var(--border);
+    border-top-color: var(--accent); border-radius: 50%;
+    animation: spin .8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>

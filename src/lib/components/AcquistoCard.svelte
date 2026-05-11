@@ -42,7 +42,7 @@
     display: flex; align-items: center; justify-content: center;
   }
   .center { flex: 1; min-width: 0; }
-  .name { font-size: 14px; font-weight: 700; font-family: Georgia, serif; }
+  .name { font-size: 14px; font-weight: 700; font-family: Georgia, serif; color: var(--text-primary); }
   .qta-badge {
     font-size: 10px; font-weight: 800; color: var(--accent);
     background: var(--bg-secondary); padding: 3px 10px; border-radius: 20px;

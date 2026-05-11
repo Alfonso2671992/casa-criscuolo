@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.4.0] - 2026-05-11
+
+### Changed
+
+- Modali modifica (Spese, Wish, Misure): colori hardcoded sostituiti con CSS custom properties per supporto dark mode
+- API endpoints: refactor con `apiHandler` wrapper centralizzato, rimosso boilerplate try/catch (17 file, ~80 righe nette eliminate)
+- Validazione `payer` lato server: ora controlla anche spazi vuoti
+- AcquistoCard: testo nome usa `var(--text-primary)` per leggibilità in dark mode
+
+### Added
+
+- Loader spinner durante inizializzazione auth (invece di schermata bianca)
+
+### Removed
+
+- `listenNote`, `saveNote`, `freeNotes` store, `.notepad` CSS (dead code blocco note mai completato)
+- Test `saveFreeNotes` correlati
+
 ## [2.3.0] - 2026-05-11
 
 ### Added
