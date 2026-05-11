@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.5.0] - 2026-05-11
+
+### Added
+
+- Tab "Da acquistare": pulsante check per segnare item come comprati (`b` field ora usato nell'UI, sincronizzato su Firebase)
+- Barra di ricerca nella lista acquisti (filtra per nome in tempo reale)
+- Categorie collassabili: click sul nome categoria per chiudere/aprire, con contatore item
+- Pulsante "Nascondi comprati": toggle per nascondere gli item già spuntati
+- Suggerimenti autocompletamento nel form "Cosa devi comprare?" (basati su item già aggiunti, dopo 2 caratteri, auto-seleziona categoria)
+
+### Changed
+
+- AcquistoCard: card comprata si opacizza e nome barrato
+- AcquistoForm: più spazio tra campo quantità e bottone aggiungi
+
 ## [2.4.0] - 2026-05-11
 
 ### Changed
