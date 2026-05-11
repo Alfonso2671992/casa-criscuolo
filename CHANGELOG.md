@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.6.0] - 2026-05-11
+
+### Added
+
+- Suggerimenti predefiniti nel form acquisti: ~90 item comuni (Acqua, Pasta, Pomodori, Latte, Dentifricio, ecc.) organizzati per categoria, sempre suggeriti anche senza averli mai aggiunti. Si combinano con gli item inseriti manualmente (es. Whisky, Gin) — stile lista Alexa.
+- File `src/lib/acquisto-suggestions.ts` con la lista completa dei default
+
 ## [2.5.0] - 2026-05-11
 
 ### Added

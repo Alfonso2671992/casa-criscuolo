@@ -3,6 +3,7 @@
   import { acquisti, showToast } from '$lib/stores';
   import { authFetch } from '$lib/firebase-client';
   import CategoryGrid from './CategoryGrid.svelte';
+  import { DEFAULT_SUGGESTIONS } from '$lib/acquisto-suggestions';
   let name = $state('');
   let cat = $state('Spesa');
   let qta = $state('');
@@ -13,11 +14,15 @@
     if (q.length < 2) return [];
     const seen = new Set<string>();
     const result: { n: string; c: string }[] = [];
+    const userMap = new Map<string, string>();
     for (const item of $acquisti) {
-      const ln = item.n.toLowerCase();
+      userMap.set(item.n.toLowerCase(), item.c);
+    }
+    for (const s of [...DEFAULT_SUGGESTIONS, ...$acquisti.map(i => ({ n: i.n, c: i.c }))]) {
+      const ln = s.n.toLowerCase();
       if ((ln.startsWith(q) || ln.includes(q)) && !seen.has(ln)) {
         seen.add(ln);
-        result.push({ n: item.n, c: item.c });
+        result.push({ n: s.n, c: userMap.get(ln) || s.c });
         if (result.length >= 8) break;
       }
     }
