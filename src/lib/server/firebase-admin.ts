@@ -1,6 +1,6 @@
 import { env } from '$env/dynamic/private';
 import { ROOT } from '../constants';
-import type { Expense, WishItem, Misura } from '../types';
+import type { Expense, WishItem, Misura, AcquistoItem } from '../types';
 
 const DB_URL = 'https://casa-criscuolo-default-rtdb.europe-west1.firebasedatabase.app';
 
@@ -98,4 +98,7 @@ export async function deleteWish(k: string) { await db('DELETE', 'wish/' + k); }
 export async function addMisura(d: Misura) { d.ts = Date.now(); await db('POST', 'mis', d); }
 export async function updateMisura(k: string, d: Partial<Misura>) { await db('PATCH', 'mis/' + k, d); }
 export async function deleteMisura(k: string) { await db('DELETE', 'mis/' + k); }
+export async function addAcquisto(d: AcquistoItem) { d.ts = Date.now(); await db('POST', 'acquisti', d); }
+export async function updateAcquisto(k: string, d: Partial<AcquistoItem>) { await db('PATCH', 'acquisti/' + k, d); }
+export async function deleteAcquisto(k: string) { await db('DELETE', 'acquisti/' + k); }
 

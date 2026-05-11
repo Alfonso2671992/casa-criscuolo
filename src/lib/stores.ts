@@ -1,5 +1,5 @@
 import { writable, derived } from 'svelte/store';
-import type { Expense, WishItem, Misura, TabId, Names } from './types';
+import type { Expense, WishItem, Misura, AcquistoItem, TabId, Names } from './types';
 import type { User } from 'firebase/auth';
 
 function lsNames(): Names {
@@ -26,6 +26,7 @@ function lsCache<T>(key: string, fallback: T): T {
 export const expenses = writable<Expense[]>(lsCache<Expense[]>('cc_e', []));
 export const wishes = writable<WishItem[]>(lsCache<WishItem[]>('cc_w', []));
 export const misure = writable<Misura[]>(lsCache<Misura[]>('cc_m', []));
+export const acquisti = writable<AcquistoItem[]>(lsCache<AcquistoItem[]>('cc_a', []));
 export const user = writable<User | null>(null);
 export const currentTab = writable<TabId>('spese');
 export const names = writable<Names>(lsNames());
@@ -67,6 +68,11 @@ export function cacheWishes(data: WishItem[]) {
 export function cacheMisure(data: Misura[]) {
   misure.set(data);
   try { localStorage.setItem('cc_m', JSON.stringify(data)); } catch {}
+}
+
+export function cacheAcquisti(data: AcquistoItem[]) {
+  acquisti.set(data);
+  try { localStorage.setItem('cc_a', JSON.stringify(data)); } catch {}
 }
 
 function lsDark(): boolean {

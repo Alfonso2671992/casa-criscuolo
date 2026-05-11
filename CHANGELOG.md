@@ -5,11 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [2.2.1] - 2026-05-11
+## [2.3.0] - 2026-05-11
+
+### Added
+
+- Tab "Da acquistare" rinnovato: lista della spesa strutturata con categorie (Spesa, Igiene, Pulizia, Elettronica, Abbigliamento, Altro), form rapido con nome + quantità, card raggruppate per categoria, eliminazione diretta. Dati salvati su Firebase in `casa_criscuolo/acquisti/` con API dedicata
+- Cache localStorage per acquisti (`cc_a`)
 
 ### Fixed
 
-- Modali di modifica sovrapposti ai tab su iPhone grandi: aggiunto padding top all'overlay per posizionare il box sotto header + tab bar, con `env(safe-area-inset-top)` per dynamic island
+- Modali di modifica sovrapposti ai tab su iPhone grandi: padding top overlay con `env(safe-area-inset-top)`
 
 ## [2.2.0] - 2026-05-08
 

@@ -33,6 +33,15 @@ export interface Misura {
   ts: number;
 }
 
+export interface AcquistoItem {
+  _k?: string;
+  n: string;
+  c: string;
+  b: boolean;
+  qta: string;
+  ts: number;
+}
+
 export type TabId = 'spese' | 'acquisto' | 'casa' | 'misure';
 
 export interface Names {

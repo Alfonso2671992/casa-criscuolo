@@ -20,6 +20,15 @@ export const CASA_CATS: Category[] = [
   {id:'Altro',label:'Altro',color:'#6B7280',bg:'#F3F4F6',svg:`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`}
 ];
 
+export const ACQUISTO_CATS: Category[] = [
+  {id:'Spesa',label:'Spesa',color:'#2E7D32',bg:'#E8F5E9',svg:`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>`},
+  {id:'Igiene',label:'Igiene',color:'#1565C0',bg:'#E3F2FD',svg:`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`},
+  {id:'Pulizia',label:'Pulizia',color:'#E65100',bg:'#FFF3E0',svg:`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 24h18"/><path d="M6 20V8l6-6 6 6v12"/><path d="M10 20v-4h4v4"/></svg>`},
+  {id:'Elettronica',label:'Elettronica',color:'#7B1FA2',bg:'#F3E5F5',svg:`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="9" y1="22" x2="15" y2="22"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>`},
+  {id:'Abbigliamento',label:'Abbigliamento',color:'#C2185B',bg:'#FCE4EC',svg:`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6h5l2-4 2 4h5l-3-4z"/><rect x="3" y="6" width="18" height="16" rx="1"/><path d="M9 12h6M9 16h4"/></svg>`},
+  {id:'Altro',label:'Altro',color:'#6B7280',bg:'#F3F4F6',svg:`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`}
+];
+
 export const MONTHS = ['Gennaio','Febbraio','Marzo','Aprile','Maggio','Giugno','Luglio','Agosto','Settembre','Ottobre','Novembre','Dicembre'];
 export const DAYS = ['Lu','Ma','Me','Gi','Ve','Sa','Do'];
 export const BOLLETTE_IDS = ['luce','acqua','gas'];

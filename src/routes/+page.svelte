@@ -1,7 +1,8 @@
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';
-  import { currentTab, expenses, wishes, misure, cacheExpenses, cacheWishes, cacheMisure, freeNotes, saveFreeNotes } from '$lib/stores';
-  import { listenExpenses, listenWishes, listenMisure, listenNote, saveNote } from '$lib/firebase-client';
+  import { currentTab, expenses, wishes, misure, acquisti, cacheExpenses, cacheWishes, cacheMisure, cacheAcquisti } from '$lib/stores';
+  import { listenExpenses, listenWishes, listenMisure, listenAcquisti } from '$lib/firebase-client';
+  import { ACQUISTO_CATS } from '$lib/constants';
   import SummaryBar from '$lib/components/SummaryBar.svelte';
   import ExpenseForm from '$lib/components/ExpenseForm.svelte';
   import ExpenseCard from '$lib/components/ExpenseCard.svelte';
@@ -9,37 +10,36 @@
   import WishCard from '$lib/components/WishCard.svelte';
   import MisuraForm from '$lib/components/MisuraForm.svelte';
   import MisuraCard from '$lib/components/MisuraCard.svelte';
+  import AcquistoForm from '$lib/components/AcquistoForm.svelte';
+  import AcquistoCard from '$lib/components/AcquistoCard.svelte';
 
   let unsubExp = $state<() => void>(() => {});
   let unsubWish = $state<() => void>(() => {});
   let unsubMis = $state<() => void>(() => {});
-  let unsubNote = $state<() => void>(() => {});
-  let noteTimer: ReturnType<typeof setTimeout> | undefined;
+  let unsubAcq = $state<() => void>(() => {});
+
+  let grouped = $derived.by(() => {
+    const map = new Map<string, typeof $acquisti>();
+    for (const item of $acquisti) {
+      const list = map.get(item.c);
+      if (list) list.push(item); else map.set(item.c, [item]);
+    }
+    return ACQUISTO_CATS.map(c => ({ cat: c, items: map.get(c.id) || [] })).filter(g => g.items.length > 0);
+  });
 
   onMount(() => {
     unsubExp = listenExpenses((data) => cacheExpenses(data));
     unsubWish = listenWishes((data) => cacheWishes(data));
     unsubMis = listenMisure((data) => cacheMisure(data));
-    unsubNote = listenNote((text) => {
-      saveFreeNotes(text);
-      const ta = document.getElementById('freeNotes') as HTMLTextAreaElement | null;
-      if (ta && document.activeElement !== ta) ta.value = text;
-    });
+    unsubAcq = listenAcquisti((data) => cacheAcquisti(data));
   });
 
   onDestroy(() => {
     unsubExp();
     unsubWish();
     unsubMis();
-    unsubNote();
+    unsubAcq();
   });
-
-  function handleNoteInput(e: Event) {
-    const val = (e.target as HTMLTextAreaElement).value;
-    saveFreeNotes(val);
-    clearTimeout(noteTimer);
-    noteTimer = setTimeout(() => saveNote(val), 1000);
-  }
 </script>
 
 <!-- SPESE -->
@@ -70,13 +70,18 @@
 
 <!-- DA ACQUISTARE -->
 <div class="section" class:active={$currentTab === 'acquisto'}>
-  <div class="note-card">
-    <div class="note-header">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-      <span>Note libere</span>
+  <AcquistoForm />
+  {#each grouped as group}
+    <div class="group-header" style="color:{group.cat.color}">
+      <span class="group-icon">{@html group.cat.svg.replace('width="18" height="18"', 'width="14" height="14"')}</span>
+      <span>{group.cat.label}</span>
     </div>
-    <textarea id="freeNotes" class="notepad" placeholder="Scrivi qui..." value={$freeNotes} oninput={handleNoteInput}></textarea>
-  </div>
+    {#each group.items as item (item._k)}
+      <AcquistoCard {item} />
+    {/each}
+  {:else}
+    <div class="empty">Nessun articolo in lista</div>
+  {/each}
 </div>
 
 <!-- CASA -->
@@ -100,12 +105,10 @@
 </div>
 
 <style>
-  .note-card {
-    background: var(--bg-card); border-radius: 16px; border: 1.5px solid var(--border); overflow: hidden;
+  .group-header {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: .6px;
+    margin: 6px 0 8px 4px;
   }
-  .note-header {
-    padding: 13px 16px 11px; border-bottom: 1.5px solid var(--border-light);
-    display: flex; align-items: center; gap: 8px; background: var(--bg-card);
-  }
-  .note-header span { font-size: 14px; font-weight: 700; color: var(--text-primary); font-family: Georgia, serif; flex: 1; }
+  .group-icon { display: flex; align-items: center; }
 </style>
