@@ -42,16 +42,7 @@ export interface AcquistoItem {
   ts: number;
 }
 
-export interface CartaItem {
-  _k?: string;
-  n: string;
-  codice: string;
-  colore: string;
-  note: string;
-  ts: number;
-}
-
-export type TabId = 'spese' | 'acquisto' | 'casa' | 'misure' | 'carte';
+export type TabId = 'spese' | 'acquisto' | 'casa' | 'misure';
 
 export interface Names {
   p1: string;

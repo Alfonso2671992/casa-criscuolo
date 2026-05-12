@@ -24,7 +24,6 @@
     "vitest": "^4.1.5"
   },
   "dependencies": {
-    "@ericblade/quagga2": "^1.12.1",
     "firebase": "^10.12.0"
   }
 }

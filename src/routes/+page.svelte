@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';
-  import { currentTab, expenses, wishes, misure, acquisti, carte, cacheExpenses, cacheWishes, cacheMisure, cacheAcquisti, cacheCarte, showToast } from '$lib/stores';
-  import { listenExpenses, listenWishes, listenMisure, listenAcquisti, listenCarte, authFetch } from '$lib/firebase-client';
+  import { currentTab, expenses, wishes, misure, acquisti, cacheExpenses, cacheWishes, cacheMisure, cacheAcquisti, showToast } from '$lib/stores';
+  import { listenExpenses, listenWishes, listenMisure, listenAcquisti, authFetch } from '$lib/firebase-client';
   import { ACQUISTO_CATS } from '$lib/constants';
   import { groupAcquisti } from '$lib/group-acquisti';
   import { sortDaPagare } from '$lib/utils';
@@ -14,15 +14,12 @@
   import MisuraCard from '$lib/components/MisuraCard.svelte';
   import AcquistoForm from '$lib/components/AcquistoForm.svelte';
   import AcquistoCard from '$lib/components/AcquistoCard.svelte';
-  import CartaForm from '$lib/components/CartaForm.svelte';
-  import CartaCard from '$lib/components/CartaCard.svelte';
   import ConfirmDialog from '$lib/components/ConfirmDialog.svelte';
 
   let unsubExp = $state<() => void>(() => {});
   let unsubWish = $state<() => void>(() => {});
   let unsubMis = $state<() => void>(() => {});
   let unsubAcq = $state<() => void>(() => {});
-  let unsubCarte = $state<() => void>(() => {});
 
   let collapsed = $state(new Set<string>(['__paid']));
   let confirmSvuota = $state<string | null>(null);
@@ -51,7 +48,6 @@
     unsubWish = listenWishes((data) => cacheWishes(data));
     unsubMis = listenMisure((data) => cacheMisure(data));
     unsubAcq = listenAcquisti((data) => cacheAcquisti(data));
-    unsubCarte = listenCarte((data) => cacheCarte(data));
   });
 
   onDestroy(() => {
@@ -59,7 +55,6 @@
     unsubWish();
     unsubMis();
     unsubAcq();
-    unsubCarte();
   });
 </script>
 
@@ -130,16 +125,6 @@
     <MisuraCard {misura} />
   {:else}
     <div class="empty">Nessuna misura salvata</div>
-  {/each}
-</div>
-
-<!-- CARTE -->
-<div class="section" class:active={$currentTab === 'carte'}>
-  <CartaForm />
-  {#each $carte as carta (carta._k)}
-    <CartaCard {carta} />
-  {:else}
-    <div class="empty">Nessuna carta salvata</div>
   {/each}
 </div>
 

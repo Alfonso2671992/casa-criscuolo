@@ -15,7 +15,7 @@ import {
 } from 'firebase/auth';
 import { snap2arr } from './utils';
 import { ROOT } from './constants';
-import type { Expense, WishItem, Misura, AcquistoItem, CartaItem } from './types';
+import type { Expense, WishItem, Misura, AcquistoItem } from './types';
 
 const firebaseConfig = {
   apiKey: 'AIzaSyCHPWXCOg3lwu6_okAlpUomiGWoJ7f9he8',
@@ -71,11 +71,6 @@ export function listenMisure(cb: (data: Misura[]) => void) {
 export function listenAcquisti(cb: (data: AcquistoItem[]) => void) {
   const rootRef = ref(db, ROOT + '/acquisti');
   return onValue(rootRef, (snap) => cb(snap2arr<AcquistoItem>(snap.val())));
-}
-
-export function listenCarte(cb: (data: CartaItem[]) => void) {
-  const rootRef = ref(db, ROOT + '/carte');
-  return onValue(rootRef, (snap) => cb(snap2arr<CartaItem>(snap.val())));
 }
 
 export async function authFetch(url: string, init?: RequestInit): Promise<Response> {

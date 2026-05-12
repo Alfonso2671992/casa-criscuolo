@@ -7,7 +7,6 @@
     { id: 'acquisto', label: 'Da acquistare', svg: '' },
     { id: 'casa', label: 'Casa', svg: '' },
     { id: 'misure', label: 'Misure', svg: '' },
-    { id: 'carte', label: 'Carte', svg: '' },
   ];
 </script>
 

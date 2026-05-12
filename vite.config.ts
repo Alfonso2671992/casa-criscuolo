@@ -9,7 +9,5 @@ try {
 } catch {}
 
 export default defineConfig({
-  plugins: [sveltekit()],
-  optimizeDeps: { include: ['@ericblade/quagga2'] },
-  ssr: { noExternal: ['@ericblade/quagga2'] },
+  plugins: [sveltekit()]
 });

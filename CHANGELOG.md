@@ -9,15 +9,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- **Nuovo tab "Carte"** (5° tab): portafoglio digitale per carte fedeltà (stile Stocard)
-  - Aggiunta carta: nome negozio, codice, colore, note
-  - Visualizzazione con barcode generato su canvas, codice copiabile al tap
-  - 8 colori predefiniti per personalizzare le carte
-  - Salvataggio su Firebase (`casa_criscuolo/carte/`) con cache localStorage
-  - Nuovo tipo `CartaItem` e `TabId = 'carte'` in types.ts
-  - Nuova store `carte` + `cacheCarte` in stores.ts
-  - Nuova API: `GET` (via listener Firebase), `POST /api/carte`, `PATCH /api/carte/[id]`, `DELETE /api/carte/[id]`
-  - Scanner barcode integrato: pulsante "Scannerizza" nel form, usa `html5-qrcode` (supporto cross-browser incluso iOS Safari), fotocamera posteriore con mirino, rilevamento automatico codici a barre e QR
 - Test: 7 nuovi test per `groupAcquisti` (grouping, activeCount exclude comprati, sorting, categorie vuote, caso misto)
 - Test: 5 nuovi test per `sortDaPagare` (ordinamento sc prima di dt, sc crescente, dt crescente, dt prima di null, caso misto completo)
 
@@ -28,6 +19,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Spese "Da pagare" ordinate: prima bollette (sc) per scadenza, poi spese (dt) per data, infine senza data
 - Refactor: `sortDaPagare` estratta in `utils.ts` come funzione pura testabile
 - Dark mode: palette raffinata — sfondo più ricco, card più distinte, testo più contrastato, colori semantici più vividi, overlay meno aggressivo
+
+### Removed
+
+- Tab "Carte" (5° tab) e tutto il relativo codice: componente scanner barcode, form/card carte, API routes, tipo `CartaItem`, store `carte`, dipendenza `@ericblade/quagga2`
 
 ### Docs
 
