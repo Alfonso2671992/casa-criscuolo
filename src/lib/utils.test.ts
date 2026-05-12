@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeAll } from 'vitest';
 
-const { cap, esc, safeUrl, pad, dateToStr, strToDisplay, today, daysUntil, snap2arr, sortDaPagare } = await import('./utils');
+const { cap, esc, safeUrl, pad, dateToStr, strToDisplay, today, daysUntil, snap2arr, sortDaPagare, fmtDim } = await import('./utils');
 
 describe('cap', () => {
   it('capitalizes first letter', () => {
@@ -92,6 +92,25 @@ describe('daysUntil', () => {
   });
   it('returns null for null', () => {
     expect(daysUntil(null)).toBeNull();
+  });
+});
+
+describe('fmtDim', () => {
+  it('formats all three dimensions', () => {
+    expect(fmtDim(40, 50, 30)).toBe('L 40 cm × P 50 cm × A 30 cm');
+  });
+
+  it('omits null dimensions', () => {
+    expect(fmtDim(40, null, 30)).toBe('L 40 cm × A 30 cm');
+    expect(fmtDim(null, 50, null)).toBe('P 50 cm');
+  });
+
+  it('returns empty string when all null', () => {
+    expect(fmtDim(null, null, null)).toBe('');
+  });
+
+  it('handles zero values', () => {
+    expect(fmtDim(0, 0, 0)).toBe('L 0 cm × P 0 cm × A 0 cm');
   });
 });
 

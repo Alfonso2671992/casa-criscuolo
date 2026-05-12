@@ -47,15 +47,15 @@
   <input class="inp" placeholder="Nome luogo (es. Nicchia soggiorno...)" bind:value={name} />
   <div class="dim-row">
     <div class="dim-group">
-      <span class="dim-label">L (cm)</span>
+      <span class="dim-label">Lunghezza (cm)</span>
       <input class="inp dim-inp" type="text" inputmode="numeric" bind:value={l} />
     </div>
     <div class="dim-group">
-      <span class="dim-label">P (cm)</span>
+      <span class="dim-label">Profondità (cm)</span>
       <input class="inp dim-inp" type="text" inputmode="numeric" bind:value={w} />
     </div>
     <div class="dim-group">
-      <span class="dim-label">A (cm)</span>
+      <span class="dim-label">Altezza (cm)</span>
       <input class="inp dim-inp" type="text" inputmode="numeric" bind:value={h} />
     </div>
   </div>
