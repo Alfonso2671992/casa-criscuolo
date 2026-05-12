@@ -46,6 +46,13 @@ export function daysUntil(s?: string | null): number | null {
   );
 }
 
+export function sortDaPagare(a: { sc: string | null; dt: string | null }, b: { sc: string | null; dt: string | null }): number {
+  if (a.sc && !b.sc) return -1;
+  if (!a.sc && b.sc) return 1;
+  if (a.sc && b.sc) return a.sc.localeCompare(b.sc);
+  return (a.dt ?? '9999-99-99').localeCompare(b.dt ?? '9999-99-99');
+}
+
 export function snap2arr<T extends { ts?: number }>(obj: Record<string, T> | null): (T & { _k: string })[] {
   if (!obj) return [];
   return Object.entries(obj)

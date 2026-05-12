@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeAll } from 'vitest';
 
-const { cap, esc, safeUrl, pad, dateToStr, strToDisplay, today, daysUntil, snap2arr } = await import('./utils');
+const { cap, esc, safeUrl, pad, dateToStr, strToDisplay, today, daysUntil, snap2arr, sortDaPagare } = await import('./utils');
 
 describe('cap', () => {
   it('capitalizes first letter', () => {
@@ -92,6 +92,62 @@ describe('daysUntil', () => {
   });
   it('returns null for null', () => {
     expect(daysUntil(null)).toBeNull();
+  });
+});
+
+describe('sortDaPagare', () => {
+  it('puts sc items before dt items', () => {
+    const items = [
+      { sc: null, dt: '2026-06-01' },
+      { sc: '2026-05-28', dt: null },
+    ];
+    expect([...items].sort(sortDaPagare)[0].sc).toBe('2026-05-28');
+  });
+
+  it('sorts sc items ascending', () => {
+    const items = [
+      { sc: '2026-06-07', dt: null },
+      { sc: '2026-05-28', dt: null },
+    ];
+    const sorted = [...items].sort(sortDaPagare);
+    expect(sorted[0].sc).toBe('2026-05-28');
+    expect(sorted[1].sc).toBe('2026-06-07');
+  });
+
+  it('sorts dt items ascending', () => {
+    const items = [
+      { sc: null, dt: '2026-09-01' },
+      { sc: null, dt: '2026-06-01' },
+    ];
+    const sorted = [...items].sort(sortDaPagare);
+    expect(sorted[0].dt).toBe('2026-06-01');
+    expect(sorted[1].dt).toBe('2026-09-01');
+  });
+
+  it('puts dt items before null items', () => {
+    const items = [
+      { sc: null, dt: null },
+      { sc: null, dt: '2026-06-01' },
+    ];
+    const sorted = [...items].sort(sortDaPagare);
+    expect(sorted[0].dt).toBe('2026-06-01');
+    expect(sorted[1].dt).toBeNull();
+  });
+
+  it('sc + dt items: sc first sorted, then dt sorted, then null', () => {
+    const items = [
+      { sc: null, dt: '2026-09-01' },
+      { sc: '2026-06-07', dt: null },
+      { sc: '2026-05-28', dt: null },
+      { sc: null, dt: null },
+      { sc: null, dt: '2026-06-01' },
+    ];
+    const sorted = [...items].sort(sortDaPagare);
+    expect(sorted[0].sc).toBe('2026-05-28');
+    expect(sorted[1].sc).toBe('2026-06-07');
+    expect(sorted[2].dt).toBe('2026-06-01');
+    expect(sorted[3].dt).toBe('2026-09-01');
+    expect(sorted[4].dt).toBeNull();
   });
 });
 

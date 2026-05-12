@@ -16,6 +16,7 @@ src/
     constants.ts    → CATS, CASA_CATS, MONTHS, DAYS, ROOT
     firebase-client.ts → client SDK init + realtime listeners
     stores.ts       → Svelte writable stores + cache helpers
+    group-acquisti.ts → groupAcquisti() pure function (raggruppa acquisti per categoria con activeCount)
     types.ts        → Expense, WishItem, Misura, etc.
     utils.ts        → esc(), safeUrl(), date helpers, snap2arr
   routes/

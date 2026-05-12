@@ -3,6 +3,8 @@
   import { currentTab, expenses, wishes, misure, acquisti, cacheExpenses, cacheWishes, cacheMisure, cacheAcquisti, showToast } from '$lib/stores';
   import { listenExpenses, listenWishes, listenMisure, listenAcquisti, authFetch } from '$lib/firebase-client';
   import { ACQUISTO_CATS } from '$lib/constants';
+  import { groupAcquisti } from '$lib/group-acquisti';
+  import { sortDaPagare } from '$lib/utils';
   import SummaryBar from '$lib/components/SummaryBar.svelte';
   import ExpenseForm from '$lib/components/ExpenseForm.svelte';
   import ExpenseCard from '$lib/components/ExpenseCard.svelte';
@@ -19,7 +21,7 @@
   let unsubMis = $state<() => void>(() => {});
   let unsubAcq = $state<() => void>(() => {});
 
-  let collapsed = $state(new Set<string>());
+  let collapsed = $state(new Set<string>(['__paid']));
   let confirmSvuota = $state<string | null>(null);
 
   function toggleCat(id: string) {
@@ -28,14 +30,7 @@
     collapsed = next;
   }
 
-  let grouped = $derived.by(() => {
-    const map = new Map<string, typeof $acquisti>();
-    for (const item of $acquisti) {
-      const list = map.get(item.c);
-      if (list) list.push(item); else map.set(item.c, [item]);
-    }
-    return ACQUISTO_CATS.map(c => ({ cat: c, items: (map.get(c.id) || []).sort((a, b) => a.ts - b.ts) })).filter(g => g.items.length > 0);
-  });
+  let grouped = $derived(groupAcquisti($acquisti, ACQUISTO_CATS));
 
   async function svuotaCat(cat: string) {
     const res = await authFetch('/api/acquisto', {
@@ -72,21 +67,22 @@
     <span class="divider-label" style="color:var(--accent)">Da pagare</span>
     <div class="divider-line"></div>
   </div>
-  {#each $expenses.filter(e => e.s === 'da') as exp (exp._k)}
+  {#each $expenses.filter(e => e.s === 'da').sort(sortDaPagare) as exp (exp._k)}
     <ExpenseCard expense={exp} isDa={true} />
   {:else}
     <div class="empty">Nessuna spesa da pagare</div>
   {/each}
-  <div class="divider" style="margin-top:8px">
-    <div class="divider-line"></div>
-    <span class="divider-label" style="color:var(--color-green)">Pagate</span>
-    <div class="divider-line"></div>
+  <div class="group-header" class:collapsed={collapsed.has('__paid')} style="color:var(--color-green)" onclick={() => toggleCat('__paid')} onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleCat('__paid'); } }} role="button" tabindex="0">
+    <span>Pagate</span>
+    <svg class="chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
   </div>
-  {#each $expenses.filter(e => e.s === 'ok') as exp (exp._k)}
-    <ExpenseCard expense={exp} isDa={false} />
-  {:else}
-    <div class="empty">Nessuna spesa pagata</div>
-  {/each}
+  {#if !collapsed.has('__paid')}
+    {#each $expenses.filter(e => e.s === 'ok') as exp (exp._k)}
+      <ExpenseCard expense={exp} isDa={false} />
+    {:else}
+      <div class="empty">Nessuna spesa pagata</div>
+    {/each}
+  {/if}
 </div>
 
 <!-- DA ACQUISTARE -->
@@ -95,7 +91,7 @@
   {#each grouped as group}
     <div class="group-header" class:collapsed={collapsed.has(group.cat.id)} style="color:{group.cat.color}" onclick={() => toggleCat(group.cat.id)} onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleCat(group.cat.id); } }} role="button" tabindex="0">
       <span class="group-icon">{@html group.cat.svg.replace('width="18" height="18"', 'width="14" height="14"')}</span>
-      <span>{group.cat.label} ({group.items.length})</span>
+      <span>{group.cat.label} ({group.activeCount})</span>
       <svg class="chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
       <button class="svuota-btn" onclick={(e) => { e.stopPropagation(); confirmSvuota = group.cat.id; }} aria-label="Svuota categoria">Svuota</button>
     </div>

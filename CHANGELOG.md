@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.9.0] - 2026-05-12
+
+### Added
+
+- Test: 7 nuovi test per `groupAcquisti` (grouping, activeCount exclude comprati, sorting, categorie vuote, caso misto)
+- Test: 5 nuovi test per `sortDaPagare` (ordinamento sc prima di dt, sc crescente, dt crescente, dt prima di null, caso misto completo)
+
+### Changed
+
+- Contatore categorie "Da acquistare" ora mostra solo item non ancora comprati (es. `Spesa (7)` invece di `Spesa (8)` se 1 item è checkato)
+- Sezione "Pagate" nel tab Spese: collassabile di default (come le categorie acquisti), si apre cliccando sull'header verde
+- Spese "Da pagare" ordinate: prima bollette (sc) per scadenza, poi spese (dt) per data, infine senza data
+- Refactor: `sortDaPagare` estratta in `utils.ts` come funzione pura testabile
+
+### Docs
+
+- `AGENTS.md`: aggiunta sezione `src/lib/group-acquisti.ts`
+
 ## [2.8.0] - 2026-05-11
 
 ### Added
