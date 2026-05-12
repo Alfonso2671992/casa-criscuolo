@@ -5,10 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [2.9.0] - 2026-05-12
+## [3.0.0] - 2026-05-12
 
 ### Added
 
+- **Nuovo tab "Carte"** (5° tab): portafoglio digitale per carte fedeltà (stile Stocard)
+  - Aggiunta carta: nome negozio, codice, colore, note
+  - Visualizzazione con barcode generato su canvas, codice copiabile al tap
+  - 8 colori predefiniti per personalizzare le carte
+  - Salvataggio su Firebase (`casa_criscuolo/carte/`) con cache localStorage
+  - Nuovo tipo `CartaItem` e `TabId = 'carte'` in types.ts
+  - Nuova store `carte` + `cacheCarte` in stores.ts
+  - Nuova API: `GET` (via listener Firebase), `POST /api/carte`, `PATCH /api/carte/[id]`, `DELETE /api/carte/[id]`
 - Test: 7 nuovi test per `groupAcquisti` (grouping, activeCount exclude comprati, sorting, categorie vuote, caso misto)
 - Test: 5 nuovi test per `sortDaPagare` (ordinamento sc prima di dt, sc crescente, dt crescente, dt prima di null, caso misto completo)
 
