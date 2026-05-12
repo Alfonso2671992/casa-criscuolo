@@ -27,4 +27,5 @@ test.describe('App', () => {
     await expect(page.locator('text=Registrati')).toBeVisible();
     await expect(page.locator('text=Password dimenticata?')).toBeVisible();
   });
+
 });

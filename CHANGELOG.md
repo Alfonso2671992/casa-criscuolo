@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Budget mensile**: nel tab Spese, sezione collassabile "Budget Maggio 2026" con barre di progresso per ogni categoria. Tocca l'importo per impostare un budget. Se la spesa supera il budget, l'importo diventa rosso.
 - Nuovo store `budget` (localStorage `cc_budget`) + derived `monthlyStats` (spese del mese corrente raggruppate per categoria)
 - Test E2E: Playwright configurato con 4 test sulla pagina di login (form visibile, titolo, campi email/password, link registrazione/reset)
+- Test: 8 nuovi test per `budgetMonth`, `saveBudget`, `monthlyStats` (filtra solo pagate, per mese, raggruppa per categoria, usa sc come fallback, mappa vuota)
 - Test: 4 nuovi test per `fmtDim` (formato completo, null parziali, tutto null, zero)
 - Test: 7 nuovi test per `groupAcquisti` (grouping, activeCount exclude comprati, sorting, categorie vuote, caso misto)
 - Test: 5 nuovi test per `sortDaPagare` (ordinamento sc prima di dt, sc crescente, dt crescente, dt prima di null, caso misto completo)
