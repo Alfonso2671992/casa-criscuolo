@@ -10,7 +10,7 @@
   let showEdit = $state(false);
   let confirmDel = $state(false);
 
-  let dimDisplay = $derived(fmtDim(misura.l, misura.w, misura.h, misura.unit) || misura.d);
+  let dimDisplay = $derived(fmtDim(misura.l, misura.w, misura.h) || misura.d);
 
   async function del() {
     const res = await authFetch(`/api/mis/${misura._k}`, { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: '{}' });

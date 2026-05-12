@@ -19,7 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Spese "Da pagare" ordinate: prima bollette (sc) per scadenza, poi spese (dt) per data, infine senza data
 - Refactor: `sortDaPagare` estratta in `utils.ts` come funzione pura testabile
 - Dark mode: palette raffinata — sfondo più ricco, card più distinte, testo più contrastato, colori semantici più vividi, overlay meno aggressivo
-- **Tab Misure**: dimensioni ora con campi separati L (lunghezza), W (larghezza), H (altezza) + selettore unità (cm/m/mm), niente più testo libero da scrivere a mano
+- **Tab Misure**: dimensioni con campi separati L (Lunghezza), P (Profondità), A (Altezza) in cm, valori partono da 0 con pulsanti −10/−1/+1/+10, rimosso selettore unità (sempre cm)
 
 ### Removed
 
