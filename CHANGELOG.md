@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Nuovo tipo `CartaItem` e `TabId = 'carte'` in types.ts
   - Nuova store `carte` + `cacheCarte` in stores.ts
   - Nuova API: `GET` (via listener Firebase), `POST /api/carte`, `PATCH /api/carte/[id]`, `DELETE /api/carte/[id]`
+  - Scanner barcode integrato: pulsante "Scannerizza" nel form, usa `BarcodeDetector` API nativa (Chrome/Edge), fotocamera posteriore con mirino animato, rilevamento automatico EAN/UPC/CODE128/CODE39
 - Test: 7 nuovi test per `groupAcquisti` (grouping, activeCount exclude comprati, sorting, categorie vuote, caso misto)
 - Test: 5 nuovi test per `sortDaPagare` (ordinamento sc prima di dt, sc crescente, dt crescente, dt prima di null, caso misto completo)
 
