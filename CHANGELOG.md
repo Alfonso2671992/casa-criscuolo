@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Sezione "Pagate" nel tab Spese: collassabile di default (come le categorie acquisti), si apre cliccando sull'header verde
 - Spese "Da pagare" ordinate: prima bollette (sc) per scadenza, poi spese (dt) per data, infine senza data
 - Refactor: `sortDaPagare` estratta in `utils.ts` come funzione pura testabile
+- Dark mode: palette raffinata — sfondo più ricco, card più distinte, testo più contrastato, colori semantici più vividi, overlay meno aggressivo
 
 ### Docs
 

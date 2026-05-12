@@ -12,15 +12,15 @@
   --btn-close-hover:none;
 }
 html[data-theme="dark"]{
-  --bg-app:#1A1410;--bg-card:#2A221C;--bg-html:#0D0A08;--bg-secondary:#3A2818;
-  --text-primary:#E8DED4;--text-secondary:#B8A89A;--text-muted:#9A8878;
-  --accent:#C4622D;--border:#4A3828;--border-light:#3A2818;
-  --color-white:#FFF;--color-brown:#C4A070;--color-green:#7A9A5A;--color-green-dark:#9AB87A;
-  --urgent-bg:#3A1A10;--scaduta-bg:#4A1A10;--scaduta-border:#D04020;--warning-bg:#3A2A10;--paid-bg:#1A2A10;
-  --paid-border:#4A6A2A;--warning-border:#6A5020;
-  --cal-today-bg:#3A2818;--badge-bg:#3A2818;--badge-border:#4A3828;
-  --photo-ph-bg:#3A2818;--primary-border:#4A3828;--bought-card-bg:#1A2A10;--bought-border:#4A6A2A;
-  --budget-color:#CE93D8;--divider-line-bg:#4A3828;--overlay-bg:rgba(0,0,0,.7);
+  --bg-app:#14100C;--bg-card:#2A2018;--bg-html:#0A0806;--bg-secondary:#382A1E;
+  --text-primary:#F0E8E0;--text-secondary:#C8B8A8;--text-muted:#A89888;
+  --accent:#C4622D;--border:#4A3828;--border-light:#342418;
+  --color-white:#FFF;--color-brown:#C4A070;--color-green:#8AB86A;--color-green-dark:#A8D088;
+  --urgent-bg:#4A1810;--scaduta-bg:#5A1A10;--scaduta-border:#E05030;--warning-bg:#4A3010;--paid-bg:#1A3010;
+  --paid-border:#4A6A2A;--warning-border:#7A6030;
+  --cal-today-bg:#382A1E;--badge-bg:#382A1E;--badge-border:#4A3828;
+  --photo-ph-bg:#382A1E;--primary-border:#4A3828;--bought-card-bg:#1A3010;--bought-border:#5A8A3A;
+  --budget-color:#CE93D8;--divider-line-bg:#4A3828;--overlay-bg:rgba(0,0,0,.55);
   --btn-close-hover:none;
 }
 html,body{height:100%;overflow:hidden;background:var(--bg-html);font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Segoe UI',sans-serif}
