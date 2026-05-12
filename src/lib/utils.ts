@@ -61,6 +61,32 @@ export function fmtDim(l: number | null, w: number | null, h: number | null): st
   return parts.join(' × ');
 }
 
+export function compressImg(file: File, maxDim = 800, quality = 0.7): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => {
+      let w = img.width;
+      let h = img.height;
+      if (w > maxDim || h > maxDim) {
+        const ratio = Math.min(maxDim / w, maxDim / h);
+        w = Math.round(w * ratio);
+        h = Math.round(h * ratio);
+      }
+      const c = document.createElement('canvas');
+      c.width = w; c.height = h;
+      const ctx = c.getContext('2d');
+      if (!ctx) { resolve(URL.createObjectURL(file)); return; }
+      ctx.drawImage(img, 0, 0, w, h);
+      resolve(c.toDataURL('image/jpeg', quality));
+    };
+    img.onerror = () => reject(new Error('Errore caricamento immagine'));
+    const r = new FileReader();
+    r.onload = () => { img.src = r.result as string; };
+    r.onerror = () => reject(new Error('Errore lettura file'));
+    r.readAsDataURL(file);
+  });
+}
+
 export function snap2arr<T extends { ts?: number }>(obj: Record<string, T> | null): (T & { _k: string })[] {
   if (!obj) return [];
   return Object.entries(obj)

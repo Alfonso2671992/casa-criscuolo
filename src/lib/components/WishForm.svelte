@@ -2,6 +2,7 @@
   import { CASA_CATS } from '$lib/constants';
   import { showToast } from '$lib/stores';
   import { authFetch } from '$lib/firebase-client';
+  import { compressImg } from '$lib/utils';
   import CategoryGrid from './CategoryGrid.svelte';
 
   let name = $state('');
@@ -9,18 +10,16 @@
   let dims = $state('');
   let link = $state('');
   let budgetStr = $state('');
-  let photoFile = $state<File | null>(null);
   let previewUrl = $state<string | null>(null);
   let submitting = $state(false);
 
-  function handlePhoto(e: Event) {
+  async function handlePhoto(e: Event) {
     const f = (e.target as HTMLInputElement).files?.[0];
     if (!f) return;
     if (f.size > 5 * 1024 * 1024) { showToast('Foto troppo grande (max 5MB)'); return; }
-    photoFile = f;
-    const r = new FileReader();
-    r.onload = () => { previewUrl = r.result as string; };
-    r.readAsDataURL(f);
+    try {
+      previewUrl = await compressImg(f);
+    } catch { showToast('Errore compressione foto'); }
   }
 
   async function submit() {
@@ -33,12 +32,8 @@
       d: dims,
       l: link,
       bgt,
-      p: null,
+      p: previewUrl,
     };
-
-    if (photoFile) {
-      body.p = previewUrl;
-    }
 
     submitting = true;
     const res = await authFetch('/api/wish', {
@@ -49,7 +44,7 @@
     submitting = false;
     if (!res.ok) { showToast('Errore salvataggio'); return; }
     name = ''; cat = 'Lampada'; dims = ''; link = ''; budgetStr = '';
-    photoFile = null; previewUrl = null;
+    previewUrl = null;
     showToast('Oggetto aggiunto');
   }
 </script>

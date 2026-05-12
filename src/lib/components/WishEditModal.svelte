@@ -2,6 +2,7 @@
   import { CASA_CATS } from '$lib/constants';
   import { showToast } from '$lib/stores';
   import { authFetch } from '$lib/firebase-client';
+  import { compressImg } from '$lib/utils';
   import CategoryGrid from './CategoryGrid.svelte';
   import type { WishItem } from '$lib/types';
 
@@ -12,18 +13,16 @@
   let dims = $state(_wish.d);
   let link = $state(_wish.l);
   let budgetStr = $state(_wish.bgt != null ? _wish.bgt.toFixed(2).replace('.', ',') : '');
-  let photoFile = $state<File | null>(null);
   let previewUrl = $state<string | null>(_wish.p);
   let submitting = $state(false);
 
-  function handlePhoto(e: Event) {
+  async function handlePhoto(e: Event) {
     const f = (e.target as HTMLInputElement).files?.[0];
     if (!f) return;
     if (f.size > 5 * 1024 * 1024) { showToast('Foto troppo grande (max 5MB)'); return; }
-    photoFile = f;
-    const r = new FileReader();
-    r.onload = () => { previewUrl = r.result as string; };
-    r.readAsDataURL(f);
+    try {
+      previewUrl = await compressImg(f);
+    } catch { showToast('Errore compressione foto'); }
   }
 
   async function submit() {
@@ -38,7 +37,7 @@
       l: link,
       bgt,
     };
-    if (photoFile || previewUrl !== _wish.p) {
+    if (previewUrl !== _wish.p) {
       body.p = previewUrl;
     }
     const res = await authFetch(`/api/wish/${_wish._k}`, {

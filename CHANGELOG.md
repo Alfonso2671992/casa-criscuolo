@@ -23,6 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dark mode: palette raffinata — sfondo più ricco, card più distinte, testo più contrastato, colori semantici più vividi, overlay meno aggressivo
 - **Tab Misure**: dimensioni con campi separati L (Lunghezza), P (Profondità), A (Altezza) in cm, valori partono da 0, pulsanti −10/−1/+1/+10 sostituiti da input numerico diretto
 - Modali modifica: warning `state_referenced_locally` silenziati rinominando le prop
+- **Foto compresse**: tutte le foto (Misure + Casa) ora vengono compresse via canvas a max 800px lato lungo, qualità JPEG 0.7 — riduce drasticamente la dimensione dei data URL salvati su Firebase
 
 ### Removed
 

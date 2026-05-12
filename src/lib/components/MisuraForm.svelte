@@ -1,24 +1,23 @@
 <script lang="ts">
   import { showToast } from '$lib/stores';
   import { authFetch } from '$lib/firebase-client';
+  import { compressImg } from '$lib/utils';
 
   let name = $state('');
   let l = $state(0);
   let w = $state(0);
   let h = $state(0);
   let note = $state('');
-  let photoFile = $state<File | null>(null);
   let previewUrl = $state<string | null>(null);
   let submitting = $state(false);
 
-  function handlePhoto(e: Event) {
+  async function handlePhoto(e: Event) {
     const f = (e.target as HTMLInputElement).files?.[0];
     if (!f) return;
     if (f.size > 5 * 1024 * 1024) { showToast('Foto troppo grande (max 5MB)'); return; }
-    photoFile = f;
-    const r = new FileReader();
-    r.onload = () => { previewUrl = r.result as string; };
-    r.readAsDataURL(f);
+    try {
+      previewUrl = await compressImg(f);
+    } catch { showToast('Errore compressione foto'); }
   }
 
   function pn(v: number): number | null {
@@ -28,17 +27,15 @@
   async function submit() {
     if (submitting) return;
     if (!name.trim()) { showToast('Inserisci un nome'); return; }
-    let photoUrl: string | null = null;
-    if (photoFile) photoUrl = previewUrl;
     submitting = true;
     const res = await authFetch('/api/mis', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ n: name, l: pn(l), w: pn(w), h: pn(h), note, p: photoUrl }),
+      body: JSON.stringify({ n: name, l: pn(l), w: pn(w), h: pn(h), note, p: previewUrl }),
     });
     submitting = false;
     if (!res.ok) { showToast('Errore salvataggio'); return; }
-    name = ''; l = 0; w = 0; h = 0; note = ''; photoFile = null; previewUrl = null;
+    name = ''; l = 0; w = 0; h = 0; note = ''; previewUrl = null;
     showToast('Misura salvata');
   }
 </script>

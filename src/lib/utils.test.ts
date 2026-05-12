@@ -114,6 +114,8 @@ describe('fmtDim', () => {
   });
 });
 
+// compressImg tests omitted — requires browser APIs (Image, Canvas)
+
 describe('sortDaPagare', () => {
   it('puts sc items before dt items', () => {
     const items = [
