@@ -5,10 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [3.0.0] - 2026-05-12
+## [4.0.0] - 2026-05-12
 
 ### Added
 
+- **Budget mensile**: nel tab Spese, sezione collassabile "Budget Maggio 2026" con barre di progresso per ogni categoria. Tocca l'importo per impostare un budget. Se la spesa supera il budget, l'importo diventa rosso.
+- Nuovo store `budget` (localStorage `cc_budget`) + derived `monthlyStats` (spese del mese corrente raggruppate per categoria)
+- Test E2E: Playwright configurato con 4 test sulla pagina di login (form visibile, titolo, campi email/password, link registrazione/reset)
 - Test: 4 nuovi test per `fmtDim` (formato completo, null parziali, tutto null, zero)
 - Test: 7 nuovi test per `groupAcquisti` (grouping, activeCount exclude comprati, sorting, categorie vuote, caso misto)
 - Test: 5 nuovi test per `sortDaPagare` (ordinamento sc prima di dt, sc crescente, dt crescente, dt prima di null, caso misto completo)
@@ -24,7 +27,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Tab Misure**: dimensioni con campi separati L (Lunghezza), P (Profondità), A (Altezza) in cm, valori partono da 0, pulsanti −10/−1/+1/+10 sostituiti da input numerico diretto
 - Modali modifica: warning `state_referenced_locally` silenziati rinominando le prop
 - **Foto compresse**: tutte le foto (Misure + Casa) ora vengono compresse via canvas a max 800px lato lungo, qualità JPEG 0.7 — riduce drasticamente la dimensione dei data URL salvati su Firebase
-- Test E2E: Playwright configurato con 4 test sulla pagina di login (form visibile, titolo, campi email/password, link registrazione/reset)
 
 ### Removed
 

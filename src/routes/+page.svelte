@@ -6,6 +6,7 @@
   import { groupAcquisti } from '$lib/group-acquisti';
   import { sortDaPagare } from '$lib/utils';
   import SummaryBar from '$lib/components/SummaryBar.svelte';
+  import BudgetBar from '$lib/components/BudgetBar.svelte';
   import ExpenseForm from '$lib/components/ExpenseForm.svelte';
   import ExpenseCard from '$lib/components/ExpenseCard.svelte';
   import WishForm from '$lib/components/WishForm.svelte';
@@ -62,6 +63,7 @@
 <!-- SPESE -->
 <div class="section" class:active={$currentTab === 'spese'}>
   <SummaryBar />
+  <BudgetBar />
   <ExpenseForm />
   <div class="divider">
     <div class="divider-line"></div>

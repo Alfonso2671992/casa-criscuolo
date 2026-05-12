@@ -77,4 +77,24 @@ export function initDark() {
   document.documentElement.setAttribute('data-theme', d ? 'dark' : 'light');
 }
 
+export const budget = writable<Record<string, number>>(lsCache<Record<string, number>>('cc_budget', {}));
+
+export function saveBudget(b: Record<string, number>) {
+  budget.set(b);
+  try { localStorage.setItem('cc_budget', JSON.stringify(b)); } catch {}
+}
+
+export const monthlyStats = derived(expenses, ($e) => {
+  const now = new Date();
+  const ym = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
+  const cats = new Map<string, number>();
+  for (const exp of $e) {
+    const d = exp.sc ?? exp.dt;
+    if (d && d.startsWith(ym)) {
+      cats.set(exp.c, (cats.get(exp.c) || 0) + exp.a);
+    }
+  }
+  return cats;
+});
+
 
