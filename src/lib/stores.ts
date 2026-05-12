@@ -84,13 +84,16 @@ export function saveBudget(b: Record<string, number>) {
   try { localStorage.setItem('cc_budget', JSON.stringify(b)); } catch {}
 }
 
-export const monthlyStats = derived(expenses, ($e) => {
-  const now = new Date();
-  const ym = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
+export const budgetMonth = writable<string>(
+  new Date().getFullYear() + '-' + String(new Date().getMonth() + 1).padStart(2, '0')
+);
+
+export const monthlyStats = derived([expenses, budgetMonth], ([$e, $bm]) => {
   const cats = new Map<string, number>();
   for (const exp of $e) {
+    if (exp.s !== 'ok') continue;
     const d = exp.sc ?? exp.dt;
-    if (d && d.startsWith(ym)) {
+    if (d && d.startsWith($bm)) {
       cats.set(exp.c, (cats.get(exp.c) || 0) + exp.a);
     }
   }
