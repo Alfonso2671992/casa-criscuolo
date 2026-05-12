@@ -14,9 +14,6 @@
     }));
   });
 
-  let totalSpent = $derived(stats.reduce((s, r) => s + r.spent, 0));
-  let totalBudget = $derived(stats.reduce((s, r) => s + r.budget, 0));
-
   let ym = $derived($budgetMonth);
   let y = $derived(parseInt(ym.split('-')[0]));
   let m = $derived(parseInt(ym.split('-')[1]));
@@ -52,15 +49,15 @@
   <button class="month-nav" onclick={prev} aria-label="Mese precedente">‹</button>
   <span class="budget-title">{meseLabel}</span>
   <button class="month-nav" onclick={next} aria-label="Mese successivo">›</button>
-  <span class="budget-total">{totalSpent.toFixed(0)}€{totalBudget > 0 ? ' / ' + totalBudget.toFixed(0) + '€' : ''}</span>
 </div>
 <div class="budget-body">
   {#each stats as row}
     {#if row.spent > 0 || row.budget > 0}
       <div class="row" style="--bar-color:{row.cat.color}">
-        <span class="cat-label">{row.cat.label}</span>
+        <span class="cat-icon">{@html row.cat.svg.replace('width="18" height="18"', 'width="13" height="13"')}</span>
+        <span class="cat-name" style="color:{row.cat.color}">{row.cat.label}</span>
         <div class="bar-track">
-          <div class="bar-fill" style="width:{row.budget > 0 ? Math.min(100, row.spent / row.budget * 100) : Math.min(100, row.spent / (totalSpent || 1) * 100)}%"></div>
+          <div class="bar-fill" style="width:{row.budget > 0 ? Math.min(100, row.spent / row.budget * 100) : Math.min(100, row.spent / (stats.reduce((s, r) => s + r.spent, 0) || 1) * 100)}%"></div>
         </div>
         <button class="amt" class:over={row.budget > 0 && row.spent > row.budget} onclick={() => { editCat = row.cat.id; editVal = row.budget ? String(row.budget) : ''; }}>
           {row.spent.toFixed(0)}€{row.budget > 0 ? ' / ' + row.budget.toFixed(0) + '€' : ''}
@@ -86,22 +83,22 @@
 {/if}
 
 <style>
-  .budget-head { display: flex; align-items: center; gap: 6px; padding: 0 0 8px; }
+  .budget-head { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; justify-content: center; }
   .month-nav {
     all: unset; font-size: 16px; font-weight: 800; cursor: pointer; color: var(--accent);
     padding: 0 2px; line-height: 1;
   }
   .month-nav:active { opacity: .5; }
-  .budget-title { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .5px; color: var(--accent); }
-  .budget-total { margin-left: auto; font-size: 12px; font-weight: 700; color: var(--text-primary); }
-  .budget-body { display: flex; flex-direction: column; gap: 6px; }
-  .row { display: flex; align-items: center; gap: 6px; }
-  .cat-label { font-size: 9px; font-weight: 700; color: var(--text-muted); width: 52px; flex-shrink: 0; text-transform: uppercase; letter-spacing: .3px; }
-  .bar-track { flex: 1; height: 14px; background: var(--bg-secondary); border-radius: 7px; overflow: hidden; }
-  .bar-fill { height: 100%; background: var(--bar-color); border-radius: 7px; transition: width .3s; min-width: 0; }
+  .budget-title { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: .5px; color: var(--text-muted); }
+  .budget-body { display: flex; flex-direction: column; gap: 5px; }
+  .row { display: flex; align-items: center; gap: 5px; }
+  .cat-icon { display: flex; align-items: center; flex-shrink: 0; }
+  .cat-name { font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: .3px; width: 56px; flex-shrink: 0; }
+  .bar-track { flex: 1; height: 12px; background: var(--bg-secondary); border-radius: 6px; overflow: hidden; }
+  .bar-fill { height: 100%; background: var(--bar-color); border-radius: 6px; transition: width .3s; min-width: 0; }
   .amt {
-    all: unset; font-size: 11px; font-weight: 800; color: var(--text-primary); cursor: pointer;
-    padding: 2px 6px; border-radius: 5px; white-space: nowrap; flex-shrink: 0;
+    all: unset; font-size: 10px; font-weight: 800; color: var(--text-primary); cursor: pointer;
+    padding: 2px 5px; border-radius: 4px; white-space: nowrap; flex-shrink: 0;
   }
   .amt:hover { background: var(--bg-secondary); }
   .amt.over { color: var(--scaduta-border); }
