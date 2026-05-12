@@ -3,7 +3,10 @@
   import { authFetch } from '$lib/firebase-client';
 
   let name = $state('');
-  let dims = $state('');
+  let l = $state('');
+  let w = $state('');
+  let h = $state('');
+  let unit = $state('cm');
   let note = $state('');
   let photoFile = $state<File | null>(null);
   let previewUrl = $state<string | null>(null);
@@ -19,31 +22,50 @@
     r.readAsDataURL(f);
   }
 
+  function pn(v: string): number | null {
+    const n = parseFloat(v.replace(',', '.'));
+    return isNaN(n) ? null : n;
+  }
+
   async function submit() {
     if (submitting) return;
     if (!name.trim()) { showToast('Inserisci un nome'); return; }
     let photoUrl: string | null = null;
-
-    if (photoFile) {
-      photoUrl = previewUrl;
-    }
-
+    if (photoFile) photoUrl = previewUrl;
     submitting = true;
     const res = await authFetch('/api/mis', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ n: name, d: dims, note, p: photoUrl }),
+      body: JSON.stringify({ n: name, l: pn(l), w: pn(w), h: pn(h), unit, note, p: photoUrl }),
     });
     submitting = false;
     if (!res.ok) { showToast('Errore salvataggio'); return; }
-    name = ''; dims = ''; note = ''; photoFile = null; previewUrl = null;
+    name = ''; l = ''; w = ''; h = ''; unit = 'cm'; note = ''; photoFile = null; previewUrl = null;
     showToast('Misura salvata');
   }
 </script>
 
 <div class="card">
   <input class="inp" placeholder="Nome luogo (es. Nicchia soggiorno...)" bind:value={name} />
-  <input class="inp" placeholder="Misure (es. L 80 × H 120 × P 30 cm)" bind:value={dims} />
+  <div class="dim-row">
+    <div class="dim-group">
+      <span class="dim-label">L</span>
+      <input class="inp dim-inp" type="text" inputmode="decimal" placeholder="0" bind:value={l} />
+    </div>
+    <div class="dim-group">
+      <span class="dim-label">W</span>
+      <input class="inp dim-inp" type="text" inputmode="decimal" placeholder="0" bind:value={w} />
+    </div>
+    <div class="dim-group">
+      <span class="dim-label">H</span>
+      <input class="inp dim-inp" type="text" inputmode="decimal" placeholder="0" bind:value={h} />
+    </div>
+    <select class="unit-sel" bind:value={unit}>
+      <option value="cm">cm</option>
+      <option value="m">m</option>
+      <option value="mm">mm</option>
+    </select>
+  </div>
   <input class="inp" placeholder="Note" bind:value={note} />
   <button class="photo-btn" onclick={() => document.getElementById('misFileInput')?.click()}>+ Aggiungi foto</button>
   <input type="file" id="misFileInput" accept="image/*" style="display:none" onchange={handlePhoto} />
@@ -59,6 +81,15 @@
     all: unset; display: block; width: 100%; padding: 10px 12px; border-radius: 10px;
     border: 1.5px solid var(--border); background: var(--bg-app); color: var(--text-primary);
     font-size: 14px; font-weight: 500; margin-bottom: 10px; box-sizing: border-box;
+  }
+  .dim-row { display: flex; gap: 6px; margin-bottom: 10px; align-items: flex-start; }
+  .dim-group { flex: 1; display: flex; flex-direction: column; gap: 3px; }
+  .dim-label { font-size: 10px; font-weight: 800; color: var(--text-muted); text-align: center; letter-spacing: .5px; }
+  .dim-inp { margin-bottom: 0; text-align: center; }
+  .unit-sel {
+    all: unset; width: 52px; padding: 10px 4px; border-radius: 10px;
+    border: 1.5px solid var(--border); background: var(--bg-app); color: var(--text-primary);
+    font-size: 13px; font-weight: 700; text-align: center; cursor: pointer; box-sizing: border-box; flex-shrink: 0;
   }
   .photo-btn {
     all: unset; display: block; width: 100%; height: 50px;

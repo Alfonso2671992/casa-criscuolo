@@ -53,6 +53,15 @@ export function sortDaPagare(a: { sc: string | null; dt: string | null }, b: { s
   return (a.dt ?? '9999-99-99').localeCompare(b.dt ?? '9999-99-99');
 }
 
+export function fmtDim(l: number | null, w: number | null, h: number | null, unit?: string): string {
+  const u = unit || 'cm';
+  const parts: string[] = [];
+  if (l != null) parts.push('L ' + l);
+  if (w != null) parts.push('W ' + w);
+  if (h != null) parts.push('H ' + h);
+  return parts.length ? parts.join(' × ') + ' ' + u : '';
+}
+
 export function snap2arr<T extends { ts?: number }>(obj: Record<string, T> | null): (T & { _k: string })[] {
   if (!obj) return [];
   return Object.entries(obj)

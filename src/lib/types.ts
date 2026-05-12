@@ -28,6 +28,10 @@ export interface Misura {
   _k?: string;
   n: string;
   d: string;
+  l: number | null;
+  w: number | null;
+  h: number | null;
+  unit: string;
   note: string;
   p: string | null;
   ts: number;

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { esc } from '$lib/utils';
+  import { esc, fmtDim } from '$lib/utils';
   import { showToast } from '$lib/stores';
   import { authFetch } from '$lib/firebase-client';
   import type { Misura } from '$lib/types';
@@ -9,6 +9,8 @@
   let { misura }: { misura: Misura } = $props();
   let showEdit = $state(false);
   let confirmDel = $state(false);
+
+  let dimDisplay = $derived(fmtDim(misura.l, misura.w, misura.h, misura.unit) || misura.d);
 
   async function del() {
     const res = await authFetch(`/api/mis/${misura._k}`, { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: '{}' });
@@ -39,10 +41,10 @@
     {#if confirmDel}
       <ConfirmDialog message={'Eliminare "' + misura.n + '"?'} onConfirm={del} onCancel={() => confirmDel = false} />
     {/if}
-    {#if misura.d}
+    {#if dimDisplay}
       <div class="badge">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.5"><path d="M4 20h16M4 4v16"/><path d="M8 16V8M12 16v-4M16 16V6"/></svg>
-        <span>{esc(misura.d)}</span>
+        <span>{esc(dimDisplay)}</span>
       </div>
     {/if}
     {#if misura.note}<div class="note">{esc(misura.note)}</div>{/if}

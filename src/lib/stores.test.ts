@@ -75,7 +75,7 @@ describe('cacheWishes', () => {
 
 describe('cacheMisure', () => {
   it('updates misure store and localStorage', () => {
-    const data = [{ _k: 'm1', n: 'nicchia', d: '40x60', note: '', p: null, ts: 100 }];
+    const data = [{ _k: 'm1', n: 'nicchia', d: 'L 40 x W 60', l: 40, w: 60, h: null, unit: 'cm', note: '', p: null, ts: 100 }];
     cacheMisure(data);
     expect(get(misure)).toEqual(data);
     expect(JSON.parse(localStorage.getItem('cc_m')!)).toEqual(data);
