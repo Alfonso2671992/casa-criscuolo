@@ -2,7 +2,6 @@
   import { CATS, MONTHS } from '$lib/constants';
   import { budget, saveBudget, budgetMonth, monthlyStats, showToast } from '$lib/stores';
 
-  let collapsed = $state(true);
   let editCat = $state<string | null>(null);
   let editVal = $state('');
 
@@ -49,34 +48,28 @@
   }
 </script>
 
-<div class="budget-wrap">
-  <div class="budget-header" class:collapsed onclick={() => collapsed = !collapsed} onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); collapsed = !collapsed; } }} role="button" tabindex="0">
-    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
-    <button class="month-nav" onclick={(e) => { e.stopPropagation(); prev(); }} aria-label="Mese precedente">‹</button>
-    <span class="budget-title">{meseLabel}</span>
-    <button class="month-nav" onclick={(e) => { e.stopPropagation(); next(); }} aria-label="Mese successivo">›</button>
-    <span class="budget-total">{totalSpent.toFixed(0)}€{totalBudget > 0 ? ' / ' + totalBudget.toFixed(0) + '€' : ''}</span>
-    <svg class="chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-  </div>
-  {#if !collapsed}
-    <div class="budget-body">
-      {#each stats as row}
-        {#if row.spent > 0 || row.budget > 0}
-          <div class="row" style="--bar-color:{row.cat.color}">
-            <span class="cat-label">{row.cat.label}</span>
-            <div class="bar-track">
-              <div class="bar-fill" style="width:{row.budget > 0 ? Math.min(100, row.spent / row.budget * 100) : Math.min(100, row.spent / (totalSpent || 1) * 100)}%"></div>
-            </div>
-            <button class="amt" class:over={row.budget > 0 && row.spent > row.budget} onclick={() => { editCat = row.cat.id; editVal = row.budget ? String(row.budget) : ''; }}>
-              {row.spent.toFixed(0)}€{row.budget > 0 ? ' / ' + row.budget.toFixed(0) + '€' : ''}
-            </button>
-          </div>
-        {/if}
-      {/each}
-      {#if stats.every(r => r.spent === 0 && r.budget === 0)}
-        <div class="empty-hint">Nessuna spesa pagata questo mese. Tocca un importo per impostare un budget.</div>
-      {/if}
-    </div>
+<div class="budget-head">
+  <button class="month-nav" onclick={prev} aria-label="Mese precedente">‹</button>
+  <span class="budget-title">{meseLabel}</span>
+  <button class="month-nav" onclick={next} aria-label="Mese successivo">›</button>
+  <span class="budget-total">{totalSpent.toFixed(0)}€{totalBudget > 0 ? ' / ' + totalBudget.toFixed(0) + '€' : ''}</span>
+</div>
+<div class="budget-body">
+  {#each stats as row}
+    {#if row.spent > 0 || row.budget > 0}
+      <div class="row" style="--bar-color:{row.cat.color}">
+        <span class="cat-label">{row.cat.label}</span>
+        <div class="bar-track">
+          <div class="bar-fill" style="width:{row.budget > 0 ? Math.min(100, row.spent / row.budget * 100) : Math.min(100, row.spent / (totalSpent || 1) * 100)}%"></div>
+        </div>
+        <button class="amt" class:over={row.budget > 0 && row.spent > row.budget} onclick={() => { editCat = row.cat.id; editVal = row.budget ? String(row.budget) : ''; }}>
+          {row.spent.toFixed(0)}€{row.budget > 0 ? ' / ' + row.budget.toFixed(0) + '€' : ''}
+        </button>
+      </div>
+    {/if}
+  {/each}
+  {#if stats.every(r => r.spent === 0 && r.budget === 0)}
+    <div class="empty-hint">Nessuna spesa pagata. Tocca un importo per impostare un budget.</div>
   {/if}
 </div>
 
@@ -93,19 +86,15 @@
 {/if}
 
 <style>
-  .budget-wrap { background: var(--bg-card); border-radius: 16px; border: 1.5px solid var(--border); margin-bottom: 10px; overflow: hidden; }
-  .budget-header {
-    display: flex; align-items: center; gap: 6px; padding: 11px 14px;
-    cursor: pointer; user-select: none; color: var(--accent);
-  }
+  .budget-head { display: flex; align-items: center; gap: 6px; padding: 0 0 8px; }
   .month-nav {
     all: unset; font-size: 16px; font-weight: 800; cursor: pointer; color: var(--accent);
     padding: 0 2px; line-height: 1;
   }
   .month-nav:active { opacity: .5; }
-  .budget-title { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .5px; }
+  .budget-title { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .5px; color: var(--accent); }
   .budget-total { margin-left: auto; font-size: 12px; font-weight: 700; color: var(--text-primary); }
-  .budget-body { padding: 0 14px 10px; display: flex; flex-direction: column; gap: 6px; }
+  .budget-body { display: flex; flex-direction: column; gap: 6px; }
   .row { display: flex; align-items: center; gap: 6px; }
   .cat-label { font-size: 9px; font-weight: 700; color: var(--text-muted); width: 52px; flex-shrink: 0; text-transform: uppercase; letter-spacing: .3px; }
   .bar-track { flex: 1; height: 14px; background: var(--bg-secondary); border-radius: 7px; overflow: hidden; }
@@ -116,8 +105,6 @@
   }
   .amt:hover { background: var(--bg-secondary); }
   .amt.over { color: var(--scaduta-border); }
-  .chevron { transition: transform .2s; flex-shrink: 0; }
-  .collapsed .chevron { transform: rotate(-90deg); }
   .empty-hint { font-size: 11px; color: var(--text-muted); text-align: center; padding: 8px 0; }
   .overlay {
     position: fixed; inset: 0; background: rgba(0,0,0,.35); z-index: 100;

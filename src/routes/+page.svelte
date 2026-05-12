@@ -22,7 +22,7 @@
   let unsubMis = $state<() => void>(() => {});
   let unsubAcq = $state<() => void>(() => {});
 
-  let collapsed = $state(new Set<string>(['__paid']));
+  let collapsed = $state(new Set<string>(['__paid', '__budget']));
   let confirmSvuota = $state<string | null>(null);
   let loaded = $state({ exp: false, wish: false, mis: false, acq: false });
 
@@ -63,7 +63,6 @@
 <!-- SPESE -->
 <div class="section" class:active={$currentTab === 'spese'}>
   <SummaryBar />
-  <BudgetBar />
   <ExpenseForm />
   <div class="divider">
     <div class="divider-line"></div>
@@ -79,6 +78,16 @@
       <div class="skel"></div>
     {/if}
   {/each}
+  <div class="group-header" class:collapsed={collapsed.has('__budget')} style="color:var(--accent)" onclick={() => toggleCat('__budget')} onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleCat('__budget'); } }} role="button" tabindex="0">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+    <span>Budget</span>
+    <svg class="chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+  </div>
+  {#if !collapsed.has('__budget')}
+    <div class="budget-section">
+      <BudgetBar />
+    </div>
+  {/if}
   <div class="group-header" class:collapsed={collapsed.has('__paid')} style="color:var(--color-green)" onclick={() => toggleCat('__paid')} onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleCat('__paid'); } }} role="button" tabindex="0">
     <span>Pagate</span>
     <svg class="chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
@@ -166,4 +175,5 @@
     padding: 3px 10px; border-radius: 8px; cursor: pointer;
     background: var(--accent); color: var(--color-white); letter-spacing: .3px;
   }
+  .budget-section { background: var(--bg-card); border-radius: 16px; padding: 12px 14px; margin-bottom: 10px; border: 1.5px solid var(--border-light); }
 </style>
