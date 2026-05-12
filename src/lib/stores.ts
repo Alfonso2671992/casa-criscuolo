@@ -38,7 +38,7 @@ export function showToast(msg: string, duration = 3000) {
   if (duration > 0) setTimeout(() => toast.set(null), duration);
 }
 
-export function saveNames(n: Names) {
+function saveNames(n: Names) {
   names.set(n);
   try { localStorage.setItem('cc_n', JSON.stringify(n)); } catch {}
 }

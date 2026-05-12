@@ -7,7 +7,6 @@ beforeEach(() => {
 
 const {
   showToast,
-  saveNames,
   cacheExpenses,
   cacheWishes,
   cacheMisure,
@@ -40,18 +39,6 @@ describe('showToast', () => {
   it('does not clear toast when duration is 0', async () => {
     showToast('persistent', 0);
     expect(get(toast)).toBe('persistent');
-  });
-});
-
-describe('saveNames', () => {
-  it('updates names store', () => {
-    saveNames({ p1: 'Mario', p2: 'Luigi' });
-    expect(get(names)).toEqual({ p1: 'Mario', p2: 'Luigi' });
-  });
-
-  it('persists to localStorage', () => {
-    saveNames({ p1: 'A', p2: 'B' });
-    expect(JSON.parse(localStorage.getItem('cc_n')!)).toEqual({ p1: 'A', p2: 'B' });
   });
 });
 

@@ -3,15 +3,15 @@
   import { authFetch } from '$lib/firebase-client';
   import type { Misura } from '$lib/types';
 
-  let { misura, onClose }: { misura: Misura; onClose: () => void } = $props();
+  let { misura: _mis, onClose }: { misura: Misura; onClose: () => void } = $props();
 
-  let name = $state(misura.n);
-  let l = $state(misura.l ?? 0);
-  let w = $state(misura.w ?? 0);
-  let h = $state(misura.h ?? 0);
-  let note = $state(misura.note);
+  let name = $state(_mis.n);
+  let l = $state(_mis.l ?? 0);
+  let w = $state(_mis.w ?? 0);
+  let h = $state(_mis.h ?? 0);
+  let note = $state(_mis.note);
   let photoFile = $state<File | null>(null);
-  let previewUrl = $state<string | null>(misura.p);
+  let previewUrl = $state<string | null>(_mis.p);
   let submitting = $state(false);
 
   function handlePhoto(e: Event) {
@@ -31,10 +31,10 @@
     const body: Record<string, unknown> = {
       n: name, l: l || null, w: w || null, h: h || null, note,
     };
-    if (photoFile || previewUrl !== misura.p) {
+    if (photoFile || previewUrl !== _mis.p) {
       body.p = previewUrl;
     }
-    const res = await authFetch(`/api/mis/${misura._k}`, {
+    const res = await authFetch(`/api/mis/${_mis._k}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),

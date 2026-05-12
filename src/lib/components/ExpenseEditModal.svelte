@@ -7,14 +7,14 @@
   import { today } from '$lib/utils';
   import type { Expense } from '$lib/types';
 
-  let { expense, onClose }: { expense: Expense; onClose: () => void } = $props();
+  let { expense: _exp, onClose }: { expense: Expense; onClose: () => void } = $props();
 
-  let name = $state(expense.n);
-  let amountStr = $state(expense.a.toFixed(2).replace('.', ','));
-  let cat = $state(expense.c);
-  let payer = $state(expense.payer);
-  let selectedDate = $state(expense.dt ?? today());
-  let selectedScad = $state<string | null>(expense.sc);
+  let name = $state(_exp.n);
+  let amountStr = $state(_exp.a.toFixed(2).replace('.', ','));
+  let cat = $state(_exp.c);
+  let payer = $state(_exp.payer);
+  let selectedDate = $state(_exp.dt ?? today());
+  let selectedScad = $state<string | null>(_exp.sc);
   let showScad = $derived(BOLLETTE_IDS.includes(cat));
   let submitting = $state(false);
 
@@ -52,7 +52,7 @@
       sc: selectedScad,
       payer,
     };
-    const res = await authFetch(`/api/exp/${expense._k}`, {
+    const res = await authFetch(`/api/exp/${_exp._k}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),

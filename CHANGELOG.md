@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Test: 4 nuovi test per `fmtDim` (formato completo, null parziali, tutto null, zero)
 - Test: 7 nuovi test per `groupAcquisti` (grouping, activeCount exclude comprati, sorting, categorie vuote, caso misto)
 - Test: 5 nuovi test per `sortDaPagare` (ordinamento sc prima di dt, sc crescente, dt crescente, dt prima di null, caso misto completo)
+- Scheletri di caricamento (skeleton pulse) in tutti i tab mentre Firebase carica i dati — evita il flash "Nessuna spesa/misura/etc" all'avvio
 
 ### Changed
 
@@ -20,11 +21,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Spese "Da pagare" ordinate: prima bollette (sc) per scadenza, poi spese (dt) per data, infine senza data
 - Refactor: `sortDaPagare` estratta in `utils.ts` come funzione pura testabile
 - Dark mode: palette raffinata — sfondo più ricco, card più distinte, testo più contrastato, colori semantici più vividi, overlay meno aggressivo
-- **Tab Misure**: dimensioni con campi separati L (Lunghezza), P (Profondità), A (Altezza) in cm, valori partono da 0 con pulsanti −10/−1/+1/+10, rimosso selettore unità (sempre cm)
+- **Tab Misure**: dimensioni con campi separati L (Lunghezza), P (Profondità), A (Altezza) in cm, valori partono da 0, pulsanti −10/−1/+1/+10 sostituiti da input numerico diretto
+- Modali modifica: warning `state_referenced_locally` silenziati rinominando le prop
 
 ### Removed
 
 - Tab "Carte" (5° tab) e tutto il relativo codice: componente scanner barcode, form/card carte, API routes, tipo `CartaItem`, store `carte`, dipendenza `@ericblade/quagga2`
+- CSS variabile `--btn-close-hover` (mai usata)
+- `saveNames` da stores.ts (esportata ma mai usata in produzione) e relativi test
 
 ### Docs
 

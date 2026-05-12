@@ -23,6 +23,7 @@
 
   let collapsed = $state(new Set<string>(['__paid']));
   let confirmSvuota = $state<string | null>(null);
+  let loaded = $state({ exp: false, wish: false, mis: false, acq: false });
 
   function toggleCat(id: string) {
     const next = new Set(collapsed);
@@ -44,10 +45,10 @@
   }
 
   onMount(() => {
-    unsubExp = listenExpenses((data) => cacheExpenses(data));
-    unsubWish = listenWishes((data) => cacheWishes(data));
-    unsubMis = listenMisure((data) => cacheMisure(data));
-    unsubAcq = listenAcquisti((data) => cacheAcquisti(data));
+    unsubExp = listenExpenses((data) => { cacheExpenses(data); loaded.exp = true; });
+    unsubWish = listenWishes((data) => { cacheWishes(data); loaded.wish = true; });
+    unsubMis = listenMisure((data) => { cacheMisure(data); loaded.mis = true; });
+    unsubAcq = listenAcquisti((data) => { cacheAcquisti(data); loaded.acq = true; });
   });
 
   onDestroy(() => {
@@ -70,7 +71,11 @@
   {#each $expenses.filter(e => e.s === 'da').sort(sortDaPagare) as exp (exp._k)}
     <ExpenseCard expense={exp} isDa={true} />
   {:else}
-    <div class="empty">Nessuna spesa da pagare</div>
+    {#if loaded.exp}
+      <div class="empty">Nessuna spesa da pagare</div>
+    {:else}
+      <div class="skel"></div>
+    {/if}
   {/each}
   <div class="group-header" class:collapsed={collapsed.has('__paid')} style="color:var(--color-green)" onclick={() => toggleCat('__paid')} onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleCat('__paid'); } }} role="button" tabindex="0">
     <span>Pagate</span>
@@ -80,7 +85,11 @@
     {#each $expenses.filter(e => e.s === 'ok') as exp (exp._k)}
       <ExpenseCard expense={exp} isDa={false} />
     {:else}
-      <div class="empty">Nessuna spesa pagata</div>
+      {#if loaded.exp}
+        <div class="empty">Nessuna spesa pagata</div>
+      {:else}
+        <div class="skel"></div>
+      {/if}
     {/each}
   {/if}
 </div>
@@ -101,7 +110,11 @@
       {/each}
     {/if}
   {:else}
-    <div class="empty">Nessun articolo in lista</div>
+    {#if loaded.acq}
+      <div class="empty">Nessun articolo in lista</div>
+    {:else}
+      <div class="skel"></div>
+    {/if}
   {/each}
 </div>
 {#if confirmSvuota}
@@ -114,7 +127,11 @@
   {#each $wishes as wish (wish._k)}
     <WishCard {wish} />
   {:else}
-    <div class="empty">Nessun oggetto salvato</div>
+    {#if loaded.wish}
+      <div class="empty">Nessun oggetto salvato</div>
+    {:else}
+      <div class="skel"></div>
+    {/if}
   {/each}
 </div>
 
@@ -124,7 +141,11 @@
   {#each $misure as misura (misura._k)}
     <MisuraCard {misura} />
   {:else}
-    <div class="empty">Nessuna misura salvata</div>
+    {#if loaded.mis}
+      <div class="empty">Nessuna misura salvata</div>
+    {:else}
+      <div class="skel"></div>
+    {/if}
   {/each}
 </div>
 

@@ -5,15 +5,15 @@
   import CategoryGrid from './CategoryGrid.svelte';
   import type { WishItem } from '$lib/types';
 
-  let { wish, onClose }: { wish: WishItem; onClose: () => void } = $props();
+  let { wish: _wish, onClose }: { wish: WishItem; onClose: () => void } = $props();
 
-  let name = $state(wish.n);
-  let cat = $state(wish.c);
-  let dims = $state(wish.d);
-  let link = $state(wish.l);
-  let budgetStr = $state(wish.bgt != null ? wish.bgt.toFixed(2).replace('.', ',') : '');
+  let name = $state(_wish.n);
+  let cat = $state(_wish.c);
+  let dims = $state(_wish.d);
+  let link = $state(_wish.l);
+  let budgetStr = $state(_wish.bgt != null ? _wish.bgt.toFixed(2).replace('.', ',') : '');
   let photoFile = $state<File | null>(null);
-  let previewUrl = $state<string | null>(wish.p);
+  let previewUrl = $state<string | null>(_wish.p);
   let submitting = $state(false);
 
   function handlePhoto(e: Event) {
@@ -38,10 +38,10 @@
       l: link,
       bgt,
     };
-    if (photoFile || previewUrl !== wish.p) {
+    if (photoFile || previewUrl !== _wish.p) {
       body.p = previewUrl;
     }
-    const res = await authFetch(`/api/wish/${wish._k}`, {
+    const res = await authFetch(`/api/wish/${_wish._k}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),

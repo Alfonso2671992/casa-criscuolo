@@ -9,7 +9,6 @@
   --cal-today-bg:#EDD9C0;--badge-bg:#EDD9C0;--badge-border:#D4A574;
   --photo-ph-bg:#EDD9C0;--primary-border:#BCAAA4;--bought-card-bg:#EEF4E4;--bought-border:#A0C060;
   --budget-color:#7B1FA2;--divider-line-bg:#D4A574;--overlay-bg:rgba(0,0,0,.35);
-  --btn-close-hover:none;
 }
 html[data-theme="dark"]{
   --bg-app:#14100C;--bg-card:#2A2018;--bg-html:#0A0806;--bg-secondary:#382A1E;
@@ -21,7 +20,6 @@ html[data-theme="dark"]{
   --cal-today-bg:#382A1E;--badge-bg:#382A1E;--badge-border:#4A3828;
   --photo-ph-bg:#382A1E;--primary-border:#4A3828;--bought-card-bg:#1A3010;--bought-border:#5A8A3A;
   --budget-color:#CE93D8;--divider-line-bg:#4A3828;--overlay-bg:rgba(0,0,0,.55);
-  --btn-close-hover:none;
 }
 html,body{height:100%;overflow:hidden;background:var(--bg-html);font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Segoe UI',sans-serif}
 input[type=number]::-webkit-inner-spin-button,
@@ -29,6 +27,8 @@ input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
 input[type=number]{-moz-appearance:textfield}
 @keyframes fadeIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
 @keyframes calPop{from{opacity:0;transform:translateY(-5px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.skel{height:72px;background:var(--bg-card);border-radius:16px;border:1.5px solid var(--border-light);margin-bottom:10px;animation:pulse 1.5s ease-in-out infinite}
 
 .app{
   max-width:480px;
