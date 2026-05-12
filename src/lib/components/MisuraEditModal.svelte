@@ -24,8 +24,6 @@
     r.readAsDataURL(f);
   }
 
-  function adj(v: number, d: number) { return Math.max(0, v + d); }
-
   async function submit() {
     if (submitting) return;
     if (!name.trim()) { showToast('Inserisci un nome'); return; }
@@ -55,33 +53,15 @@
     <div class="dim-row">
       <div class="dim-group">
         <span class="dim-label">L (cm)</span>
-        <div class="dims">
-          <button class="adj" onclick={() => l = adj(l, -10)} aria-label="-10">−10</button>
-          <button class="adj" onclick={() => l = adj(l, -1)} aria-label="-1">−1</button>
-          <span class="val">{l}</span>
-          <button class="adj" onclick={() => l = adj(l, 1)} aria-label="+1">+1</button>
-          <button class="adj" onclick={() => l = adj(l, 10)} aria-label="+10">+10</button>
-        </div>
+        <input class="inp dim-inp" type="text" inputmode="numeric" bind:value={l} />
       </div>
       <div class="dim-group">
         <span class="dim-label">P (cm)</span>
-        <div class="dims">
-          <button class="adj" onclick={() => w = adj(w, -10)} aria-label="-10">−10</button>
-          <button class="adj" onclick={() => w = adj(w, -1)} aria-label="-1">−1</button>
-          <span class="val">{w}</span>
-          <button class="adj" onclick={() => w = adj(w, 1)} aria-label="+1">+1</button>
-          <button class="adj" onclick={() => w = adj(w, 10)} aria-label="+10">+10</button>
-        </div>
+        <input class="inp dim-inp" type="text" inputmode="numeric" bind:value={w} />
       </div>
       <div class="dim-group">
         <span class="dim-label">A (cm)</span>
-        <div class="dims">
-          <button class="adj" onclick={() => h = adj(h, -10)} aria-label="-10">−10</button>
-          <button class="adj" onclick={() => h = adj(h, -1)} aria-label="-1">−1</button>
-          <span class="val">{h}</span>
-          <button class="adj" onclick={() => h = adj(h, 1)} aria-label="+1">+1</button>
-          <button class="adj" onclick={() => h = adj(h, 10)} aria-label="+10">+10</button>
-        </div>
+        <input class="inp dim-inp" type="text" inputmode="numeric" bind:value={h} />
       </div>
     </div>
     <input class="inp" placeholder="Note" bind:value={note} />
@@ -111,20 +91,10 @@
     border: 1.5px solid var(--border); background: var(--bg-card); color: var(--text-primary);
     font-size: 14px; font-weight: 500; margin-bottom: 10px; box-sizing: border-box;
   }
-  .dim-row { display: flex; gap: 6px; margin-bottom: 10px; }
+  .dim-row { display: flex; gap: 8px; margin-bottom: 10px; }
   .dim-group { flex: 1; display: flex; flex-direction: column; gap: 4px; }
   .dim-label { font-size: 9px; font-weight: 800; color: var(--text-muted); text-align: center; letter-spacing: .5px; }
-  .dims { display: flex; align-items: center; justify-content: center; gap: 2px; }
-  .adj {
-    all: unset; width: 22px; height: 22px; border-radius: 5px;
-    background: var(--bg-secondary); color: var(--color-brown);
-    font-size: 10px; font-weight: 800; cursor: pointer; text-align: center; line-height: 22px; flex-shrink: 0;
-  }
-  .adj:active { opacity: .6; }
-  .val {
-    min-width: 28px; text-align: center; font-size: 16px; font-weight: 800;
-    color: var(--text-primary);
-  }
+  .dim-inp { text-align: center; font-size: 18px; font-weight: 800; margin-bottom: 0; padding: 8px 4px; }
   .photo-btn {
     all: unset; display: block; width: 100%; height: 50px;
     border: 2px dashed var(--border); border-radius: 10px; background: var(--bg-card);
