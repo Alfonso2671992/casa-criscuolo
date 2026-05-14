@@ -57,7 +57,7 @@
     {#each catStats as row}
       <div class="bar-cell">
         <span class="bar-amt">€{row.spent.toFixed(0)}</span>
-        <div class="bar-wrap">
+        <div class="bar-track">
           <div class="bar" style="height:{row.barH}%;background:{row.cat.color}"></div>
         </div>
         <span class="bar-icon">{@html row.cat.svg.replace('width="18" height="18"', 'width="14" height="14"')}</span>
@@ -85,11 +85,11 @@
   .stats-total { display: flex; align-items: baseline; gap: 8px; justify-content: center; margin-bottom: 12px; }
   .total-label { font-size: 11px; color: var(--text-muted); font-weight: 600; }
   .total-amount { font-size: 22px; font-weight: 900; color: var(--text-primary); }
-  .bar-chart { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; height: 100px; }
-  .bar-cell { display: flex; flex-direction: column; align-items: center; gap: 3px; min-width: 56px; flex-shrink: 0; height: 100%; }
-  .bar-amt { font-size: 10px; font-weight: 800; color: var(--text-primary); flex-shrink: 0; }
-  .bar-wrap { flex: 1; width: 28px; display: flex; flex-direction: column-reverse; align-items: center; min-height: 0; }
-  .bar { width: 22px; border-radius: 6px 6px 0 0; transition: height .3s; min-height: 0; }
+  .bar-chart { display: flex; gap: 10px; overflow-x: auto; padding: 4px 4px 0; }
+  .bar-cell { display: flex; flex-direction: column; align-items: center; gap: 2px; min-width: 52px; flex-shrink: 0; }
+  .bar-amt { font-size: 10px; font-weight: 800; color: var(--text-primary); }
+  .bar-track { width: 24px; height: 60px; position: relative; background: var(--bg-secondary); border-radius: 5px; overflow: hidden; }
+  .bar { width: 24px; position: absolute; bottom: 0; border-radius: 5px 5px 0 0; }
   .bar-icon { display: flex; align-items: center; color: var(--text-muted); }
   .bar-label { font-size: 8px; font-weight: 700; color: var(--text-muted); text-align: center; text-transform: uppercase; letter-spacing: .3px; white-space: nowrap; }
   .bar-diff { font-size: 9px; font-weight: 800; padding: 1px 5px; border-radius: 4px; }
