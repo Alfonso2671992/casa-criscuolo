@@ -85,8 +85,8 @@
 <style>
   .budget-head { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; justify-content: center; }
   .month-nav {
-    all: unset; font-size: 16px; font-weight: 800; cursor: pointer; color: var(--accent);
-    padding: 0 2px; line-height: 1;
+    all: unset; font-size: 22px; font-weight: 800; cursor: pointer; color: var(--accent);
+    padding: 8px 12px; line-height: 1; min-width: 44px; text-align: center;
   }
   .month-nav:active { opacity: .5; }
   .budget-title { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: .5px; color: var(--text-muted); }
