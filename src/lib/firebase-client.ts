@@ -3,6 +3,8 @@ import {
   getDatabase,
   ref,
   onValue,
+  get,
+  child,
 } from 'firebase/database';
 import {
   getAuth,
@@ -81,4 +83,25 @@ export async function authFetch(url: string, init?: RequestInit): Promise<Respon
     ...init,
     headers: { ...init?.headers, Authorization: 'Bearer ' + token },
   });
+}
+
+const photoCache = new Map<string, string>();
+
+export async function getPhoto(refKey: string): Promise<string | null> {
+  if (photoCache.has(refKey)) return photoCache.get(refKey)!;
+  try {
+    const snap = await get(child(ref(db), ROOT + '/photos/' + refKey));
+    const val = snap.val();
+    const url: string | null = val?.data || null;
+    if (url) photoCache.set(refKey, url);
+    return url;
+  } catch { return null; }
+}
+
+export function isPhotoRef(p: string | null): boolean {
+  return !!p && !p.startsWith('data:');
+}
+
+export function isDataUrl(p: string | null): boolean {
+  return !!p && p.startsWith('data:');
 }

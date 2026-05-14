@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **Collapse sezione "Da pagare"** nel tab Spese (aperta di default), con stessa freccetta di navigazione di Pagate e Riepilogo
 - **Nuove categorie Acquisto**: Salute & Farmacia, Fai da te & Casa, Tempo libero
+- **Validazione server PATCH** endpoint: ogni campo viene filtrato e validato prima di scrivere su Firebase
+- **Foto salvate separatamente**: le foto non sono più embeddate nei dati degli item ma salvate in un path dedicato nel DB, riducendo il payload caricato dai listener realtime
 
 ### Changed
 

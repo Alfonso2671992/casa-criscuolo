@@ -1,7 +1,7 @@
 <script lang="ts">
   import { esc, fmtDim } from '$lib/utils';
   import { showToast } from '$lib/stores';
-  import { authFetch } from '$lib/firebase-client';
+  import { authFetch, getPhoto, isPhotoRef, isDataUrl } from '$lib/firebase-client';
   import type { Misura } from '$lib/types';
   import MisuraEditModal from './MisuraEditModal.svelte';
   import ConfirmDialog from './ConfirmDialog.svelte';
@@ -9,6 +9,13 @@
   let { misura }: { misura: Misura } = $props();
   let showEdit = $state(false);
   let confirmDel = $state(false);
+  let photoUrl = $state<string | null>(null);
+
+  $effect(() => {
+    if (isDataUrl(misura.p)) photoUrl = misura.p;
+    else if (isPhotoRef(misura.p)) getPhoto(misura.p!.replace('photos/', '')).then(url => photoUrl = url);
+    else photoUrl = null;
+  });
 
   let dimDisplay = $derived(fmtDim(misura.l, misura.w, misura.h) || misura.d);
 
@@ -20,8 +27,8 @@
 </script>
 
 <div class="card">
-  {#if misura.p}
-    <img src={misura.p} class="photo" alt={misura.n} />
+  {#if photoUrl}
+    <img src={photoUrl} class="photo" alt={misura.n} />
   {:else}
     <div class="ph">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="1.5"><path d="M3 6h18M3 12h12M3 18h8"/><rect x="2" y="4" width="20" height="16" rx="2"/></svg>

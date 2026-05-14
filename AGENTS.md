@@ -72,3 +72,40 @@ Cloudflare Pages via `@sveltejs/adapter-cloudflare`. Set `FIREBASE_SERVICE_ACCOU
 
 - Firebase Admin SDK requires `FIREBASE_SERVICE_ACCOUNT` env var (service account JSON) — fails at runtime if unset
 - `firebase-admin` npm package not used — project uses REST API directly with OAuth2 JWT
+
+## Session notes (12/05/2026)
+
+This project was originally set up on another PC (Windows). It was cloned/configured on this Linux PC.
+To work on this project, use Node 22 via nvm:
+```bash
+source "$HOME/.nvm/nvm.sh" && nvm use 22
+```
+
+### Current state
+
+- **Branch**: `develop` (lavoro in corso), `main` (produzione)
+- **GitHub**: `https://github.com/Alfonso2671992/casa-criscuolo.git`
+- **Cloudflare Pages**: già connesso (`casa-criscuolo.pages.dev`), deploy auto da `main` e `develop`
+- **Firebase**: connesso (client SDK + admin REST API). `.dev.vars` contiene il service account su una riga. Il secret è già impostato su Cloudflare Pages.
+- **Tests**: 109 unit (6 files), 4 e2e — tutti passati
+- **Dev server**: `npm run dev` su `localhost:5173`
+- **Credenziali GitHub**: salvate in `~/.git-credentials-casa` (token)
+- **Workflow**: modifica su `develop` → test → merge in `main` → push → Cloudflare deploy
+
+### Per ripartire
+
+```bash
+cd /home/acriscuolo/Progetti/AppPrivata/casa-criscuolo
+source "$HOME/.nvm/nvm.sh" && nvm use 22
+npm run dev          # avvia server
+npm test             # unit test
+npx playwright test --config=e2e/playwright.config.ts  # e2e test
+```
+
+### Ultime cose fatte
+
+- Configurato Firebase service account su questo PC
+- Testato API (spesa aggiunta/rimossa OK)
+- Verificato GitHub, Cloudflare, Firebase coordinati
+- Modifica "- Test" su develop e poi rimossa (era solo un test)
+- Pull remote già configurato con token

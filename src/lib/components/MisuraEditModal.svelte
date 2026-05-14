@@ -1,6 +1,6 @@
 <script lang="ts">
   import { showToast } from '$lib/stores';
-  import { authFetch } from '$lib/firebase-client';
+  import { authFetch, getPhoto, isPhotoRef } from '$lib/firebase-client';
   import type { Misura } from '$lib/types';
   import { compressImg } from '$lib/utils';
 
@@ -11,8 +11,14 @@
   let w = $state(_mis.w ?? 0);
   let h = $state(_mis.h ?? 0);
   let note = $state(_mis.note);
-  let previewUrl = $state<string | null>(_mis.p);
+  let previewUrl = $state<string | null>(null);
+  let photoChanged = $state(false);
   let submitting = $state(false);
+
+  $effect(() => {
+    if (_mis.p && isPhotoRef(_mis.p)) getPhoto(_mis.p.replace('photos/', '')).then(url => { previewUrl = url; });
+    else previewUrl = _mis.p;
+  });
 
   async function handlePhoto(e: Event) {
     const f = (e.target as HTMLInputElement).files?.[0];
@@ -20,6 +26,7 @@
     if (f.size > 5 * 1024 * 1024) { showToast('Foto troppo grande (max 5MB)'); return; }
     try {
       previewUrl = await compressImg(f);
+      photoChanged = true;
     } catch { showToast('Errore compressione foto'); }
   }
 
@@ -30,7 +37,7 @@
     const body: Record<string, unknown> = {
       n: name, l: l || null, w: w || null, h: h || null, note,
     };
-    if (previewUrl !== _mis.p) {
+    if (photoChanged) {
       body.p = previewUrl;
     }
     const res = await authFetch(`/api/mis/${_mis._k}`, {

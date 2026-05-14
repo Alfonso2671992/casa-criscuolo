@@ -92,12 +92,54 @@ export async function requireAuth(request: Request): Promise<string> {
 export async function addExpense(d: Expense) { d.ts = Date.now(); await db('POST', 'exp', d); }
 export async function updateExpense(k: string, d: Partial<Expense>) { await db('PATCH', 'exp/' + k, d); }
 export async function deleteExpense(k: string) { await db('DELETE', 'exp/' + k); }
-export async function addWish(d: WishItem) { d.ts = Date.now(); await db('POST', 'wish', d); }
-export async function updateWish(k: string, d: Partial<WishItem>) { await db('PATCH', 'wish/' + k, d); }
-export async function deleteWish(k: string) { await db('DELETE', 'wish/' + k); }
-export async function addMisura(d: Misura) { d.ts = Date.now(); await db('POST', 'mis', d); }
-export async function updateMisura(k: string, d: Partial<Misura>) { await db('PATCH', 'mis/' + k, d); }
-export async function deleteMisura(k: string) { await db('DELETE', 'mis/' + k); }
+
+function isDataUrl(v: string): boolean {
+  return typeof v === 'string' && v.startsWith('data:');
+}
+
+async function storePhoto(id: string, dataUrl: string): Promise<void> {
+  await db('PUT', 'photos/' + id, { data: dataUrl, ts: Date.now() });
+}
+
+async function storeItemWithPhoto(path: string, data: Record<string, unknown>): Promise<string | null> {
+  const photo = data.p as string | undefined;
+  delete data.p;
+  data.ts = Date.now();
+  const result: any = await db('POST', path, data);
+  const key = result?.name || null;
+  if (key && photo && isDataUrl(photo)) {
+    await storePhoto(key, photo);
+    await db('PATCH', path + '/' + key, { p: 'photos/' + key });
+  } else if (key && photo) {
+    await db('PATCH', path + '/' + key, { p: photo });
+  }
+  return key;
+}
+
+export async function addWish(d: WishItem) {
+  return storeItemWithPhoto('wish', d as any);
+}
+export async function updateWish(k: string, d: Partial<WishItem>) {
+  if (d.p && isDataUrl(d.p)) {
+    await storePhoto(k, d.p);
+    d.p = 'photos/' + k;
+  }
+  await db('PATCH', 'wish/' + k, d);
+}
+export async function deleteWish(k: string) { await db('DELETE', 'wish/' + k); await db('DELETE', 'photos/' + k); }
+
+export async function addMisura(d: Misura) {
+  return storeItemWithPhoto('mis', d as any);
+}
+export async function updateMisura(k: string, d: Partial<Misura>) {
+  if (d.p && isDataUrl(d.p)) {
+    await storePhoto(k, d.p);
+    d.p = 'photos/' + k;
+  }
+  await db('PATCH', 'mis/' + k, d);
+}
+export async function deleteMisura(k: string) { await db('DELETE', 'mis/' + k); await db('DELETE', 'photos/' + k); }
+
 export async function addAcquisto(d: AcquistoItem) { d.ts = Date.now(); await db('POST', 'acquisti', d); }
 export async function updateAcquisto(k: string, d: Partial<AcquistoItem>) { await db('PATCH', 'acquisti/' + k, d); }
 export async function deleteAcquisto(k: string) { await db('DELETE', 'acquisti/' + k); }
@@ -112,5 +154,10 @@ export async function deleteAcquistiByCat(cat: string) {
   if (keys.length > 0) {
     await db('PATCH', 'acquisti', updates);
   }
+}
+
+export async function getPhoto(key: string): Promise<string | null> {
+  const d: any = await db('GET', 'photos/' + key);
+  return d?.data || null;
 }
 

@@ -1,7 +1,7 @@
 <script lang="ts">
   import { CASA_CATS } from '$lib/constants';
   import { showToast } from '$lib/stores';
-  import { authFetch } from '$lib/firebase-client';
+  import { authFetch, getPhoto, isPhotoRef } from '$lib/firebase-client';
   import { compressImg } from '$lib/utils';
   import CategoryGrid from './CategoryGrid.svelte';
   import type { WishItem } from '$lib/types';
@@ -13,8 +13,14 @@
   let dims = $state(_wish.d);
   let link = $state(_wish.l);
   let budgetStr = $state(_wish.bgt != null ? _wish.bgt.toFixed(2).replace('.', ',') : '');
-  let previewUrl = $state<string | null>(_wish.p);
+  let previewUrl = $state<string | null>(null);
+  let photoChanged = $state(false);
   let submitting = $state(false);
+
+  $effect(() => {
+    if (_wish.p && isPhotoRef(_wish.p)) getPhoto(_wish.p.replace('photos/', '')).then(url => { previewUrl = url; });
+    else previewUrl = _wish.p;
+  });
 
   async function handlePhoto(e: Event) {
     const f = (e.target as HTMLInputElement).files?.[0];
@@ -22,6 +28,7 @@
     if (f.size > 5 * 1024 * 1024) { showToast('Foto troppo grande (max 5MB)'); return; }
     try {
       previewUrl = await compressImg(f);
+      photoChanged = true;
     } catch { showToast('Errore compressione foto'); }
   }
 
@@ -37,7 +44,7 @@
       l: link,
       bgt,
     };
-    if (previewUrl !== _wish.p) {
+    if (photoChanged) {
       body.p = previewUrl;
     }
     const res = await authFetch(`/api/wish/${_wish._k}`, {

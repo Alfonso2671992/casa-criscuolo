@@ -2,7 +2,7 @@
   import { CASA_CATS } from '$lib/constants';
   import { esc, safeUrl } from '$lib/utils';
   import { showToast } from '$lib/stores';
-  import { authFetch } from '$lib/firebase-client';
+  import { authFetch, getPhoto, isPhotoRef, isDataUrl } from '$lib/firebase-client';
   import type { WishItem } from '$lib/types';
   import WishEditModal from './WishEditModal.svelte';
   import ConfirmDialog from './ConfirmDialog.svelte';
@@ -10,7 +10,14 @@
   let { wish }: { wish: WishItem } = $props();
   let showEdit = $state(false);
   let confirmDel = $state(false);
+  let photoUrl = $state<string | null>(null);
   const cat = $derived(CASA_CATS.find(c => c.id === wish.c) || CASA_CATS[5]);
+
+  $effect(() => {
+    if (isDataUrl(wish.p)) photoUrl = wish.p;
+    else if (isPhotoRef(wish.p)) getPhoto(wish.p!.replace('photos/', '')).then(url => photoUrl = url);
+    else photoUrl = null;
+  });
 
   async function toggle() {
     const res = await authFetch(`/api/wish/${wish._k}`, {
@@ -29,8 +36,8 @@
 </script>
 
 <div class="card" class:bought={wish.b}>
-  {#if wish.p}
-    <img src={wish.p} class="photo" alt={wish.n} />
+  {#if photoUrl}
+    <img src={photoUrl} class="photo" alt={wish.n} />
   {:else}
     <div class="photo-ph" style="background:{cat.bg};color:{cat.color}">{@html cat.svg.replace('width="18" height="18"', 'width="26" height="26"')}</div>
   {/if}
