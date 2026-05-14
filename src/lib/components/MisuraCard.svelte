@@ -65,9 +65,9 @@
   .body { padding: 10px 13px 12px; }
   .top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; margin-bottom: 5px; }
   .name { font-size: 14px; font-weight: 700; color: var(--text-primary); font-family: Georgia, serif; }
-  .top-actions { display: flex; gap: 6px; align-items: center; }
-  .btn-edit { all: unset; background: var(--accent); color: var(--color-white); border-radius: 7px; padding: 4px 9px; font-size: 11px; cursor: pointer; font-weight: 700; display: inline-block; }
-  .btn-del { all: unset; background: var(--badge-bg); border-radius: 7px; padding: 4px 9px; font-size: 11px; color: var(--color-brown); cursor: pointer; font-weight: 700; display: inline-block; flex-shrink: 0; }
+  .top-actions { display: flex; gap: 8px; align-items: center; }
+  .btn-edit { all: unset; background: var(--accent); color: var(--color-white); border-radius: 10px; padding: 8px 14px; font-size: 13px; cursor: pointer; font-weight: 700; display: inline-block; }
+  .btn-del { all: unset; background: var(--badge-bg); border-radius: 10px; padding: 8px 14px; font-size: 13px; color: var(--color-brown); cursor: pointer; font-weight: 700; display: inline-block; flex-shrink: 0; }
   .badge { display: inline-flex; align-items: center; gap: 6px; background: var(--badge-bg); border: 1.5px solid var(--badge-border); border-radius: 9px; padding: 5px 12px; margin-bottom: 5px; }
   .badge span { font-size: 13px; font-weight: 800; color: var(--accent); }
   .note { font-size: 12px; color: var(--text-secondary); font-weight: 500; }
