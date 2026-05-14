@@ -75,7 +75,7 @@
   <div class="overlay" onclick={() => editCat = null} role="presentation" use:trapFocus>
     <div class="modal" onclick={(e) => e.stopPropagation()} onkeydown={(e) => { if (e.key === 'Escape') editCat = null; }} role="dialog" tabindex="-1">
       <div class="modal-title">Budget {CATS.find(c => c.id === editCat)?.label}</div>
-      <input class="inp" type="text" inputmode="decimal" placeholder="Budget mensile (€)" bind:value={editVal} />
+      <input class="inp" type="text" inputmode="decimal" placeholder="Budget mensile (€)" aria-label="Budget mensile" bind:value={editVal} />
       <button class="btn-primary" onclick={() => setBudget(editCat!)}>Salva</button>
       <button class="btn-cancel" onclick={() => resetBudget(editCat!)}>Rimuovi budget</button>
       <button class="btn-cancel" onclick={() => editCat = null}>Annulla</button>

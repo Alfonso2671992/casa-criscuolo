@@ -27,5 +27,5 @@
   }
   .title { font-size: 17px; font-weight: 700; color: var(--text-primary); font-family: Georgia, serif; line-height: 1.2; }
   .subtitle { font-size: 12px; font-weight: 600; color: var(--accent); font-family: Georgia, serif; font-style: italic; line-height: 1.2; }
-  .gear-btn { all: unset; cursor: pointer; padding: 4px; border-radius: 8px; color: var(--text-muted); flex-shrink: 0; margin-top: 2px; }
+  .gear-btn { all: unset; cursor: pointer; padding: 8px; border-radius: 10px; color: var(--text-muted); flex-shrink: 0; margin-top: 2px; }
 </style>

@@ -67,13 +67,13 @@
 <div class="overlay" onclick={onClose} role="presentation" use:trapFocus>
   <div class="box" onclick={(e) => e.stopPropagation()} onkeydown={(e) => { if (e.key === 'Escape') onClose(); }} role="dialog" tabindex="-1">
     <div class="title">Modifica spesa</div>
-    <input class="inp" placeholder="Nome spesa (opzionale)" bind:value={name} />
+    <input class="inp" placeholder="Nome spesa (opzionale)" aria-label="Nome spesa" bind:value={name} />
     <div class="label">Categoria</div>
     <CategoryGrid categories={allCats} bind:selected={cat} columns={4} />
     <div class="label">Importo</div>
     <div class="amt-wrap">
-      <span class="euro">€</span>
-      <input type="text" inputmode="decimal" class="inp amt" placeholder="0,00" value={amountStr} oninput={onAmtInput} />
+      <span class="euro" aria-hidden="true">€</span>
+      <input type="text" inputmode="decimal" class="inp amt" placeholder="0,00" aria-label="Importo" value={amountStr} oninput={onAmtInput} />
     </div>
     <div class="adj-row">
       <button class="adj adj-minus" onclick={() => changeAmt(-10)} aria-label="Riduci di 10">−10</button>

@@ -81,7 +81,7 @@
   </div>
   <div class="label">Categoria</div>
   <CategoryGrid categories={ACQUISTO_CATS} bind:selected={cat} columns={3} />
-  <input class="inp" placeholder="Quantità (es. 1 kg, 2 confezioni)" bind:value={qta} />
+  <input class="inp" placeholder="Quantità (es. 1 kg, 2 confezioni)" aria-label="Quantità" bind:value={qta} />
   <button class="btn-primary" disabled={submitting} onclick={submit}>{submitting ? 'Salvataggio...' : '+ Aggiungi alla lista'}</button>
 </div>
 

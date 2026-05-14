@@ -186,8 +186,8 @@
   .chevron { transition: transform .2s; flex-shrink: 0; }
   .collapsed .chevron { transform: rotate(-90deg); }
   .svuota-btn {
-    all: unset; margin-left: auto; font-size: 10px; font-weight: 700;
-    padding: 3px 10px; border-radius: 8px; cursor: pointer;
+    all: unset; margin-left: auto; font-size: 12px; font-weight: 700;
+    padding: 8px 14px; border-radius: 9px; cursor: pointer;
     background: var(--accent); color: var(--color-white); letter-spacing: .3px;
   }
   .budget-section { background: var(--bg-card); border-radius: 16px; padding: 12px 14px; margin-bottom: 10px; border: 1.5px solid var(--border-light); }
