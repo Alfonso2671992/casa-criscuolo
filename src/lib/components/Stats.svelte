@@ -29,9 +29,9 @@
     return CATS.map(c => {
       const spent = thisMap.get(c.id) || 0;
       const prev = prevMap.get(c.id) || 0;
-      const diffPct = prev > 0 ? ((spent - prev) / prev * 100) : (spent > 0 ? 100 : 0);
+      const diffEuro = spent - prev;
       const pct = totalThis > 0 ? ((spent) / totalThis * 100) : 0;
-      return { cat: c, spent, prev, diffPct, pct, barH: maxCat > 0 ? (spent / maxCat * 100) : 0 };
+      return { cat: c, spent, prev, diffEuro, pct, barH: maxCat > 0 ? (spent / maxCat * 100) : 0 };
     }).filter(r => r.spent > 0).sort((a, b) => b.spent - a.spent);
   });
 
@@ -62,9 +62,9 @@
         </div>
         <span class="bar-icon">{@html row.cat.svg.replace('width="18" height="18"', 'width="14" height="14"')}</span>
         <span class="bar-label">{row.cat.label}</span>
-        {#if row.prev > 0}
-          <span class="bar-diff" class:up={row.diffPct > 0} class:down={row.diffPct < 0}>
-            {row.diffPct > 0 ? '↑' : '↓'}{Math.abs(row.diffPct).toFixed(0)}%
+        {#if row.prev > 0 && row.diffEuro !== 0}
+          <span class="bar-diff" class:up={row.diffEuro > 0} class:down={row.diffEuro < 0}>
+            {row.diffEuro > 0 ? '↑' : '↓'}€{Math.abs(row.diffEuro).toFixed(0)}
           </span>
         {/if}
       </div>
