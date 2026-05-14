@@ -108,14 +108,26 @@ export function trapFocus(node: HTMLElement) {
 
 export function scrollLock(node: HTMLElement) {
   const scrollY = window.scrollY;
+  document.documentElement.style.overflow = 'hidden';
+  document.body.style.overflow = 'hidden';
   document.body.style.position = 'fixed';
   document.body.style.top = `-${scrollY}px`;
   document.body.style.width = '100%';
+
+  function preventTouch(e: TouchEvent) {
+    if (e.target === node || node.contains(e.target as Node)) return;
+    e.preventDefault();
+  }
+  document.addEventListener('touchmove', preventTouch, { passive: false });
+
   return {
     destroy() {
+      document.documentElement.style.overflow = '';
+      document.body.style.overflow = '';
       document.body.style.position = '';
       document.body.style.top = '';
       document.body.style.width = '';
+      document.removeEventListener('touchmove', preventTouch);
       window.scrollTo(0, scrollY);
     }
   };
