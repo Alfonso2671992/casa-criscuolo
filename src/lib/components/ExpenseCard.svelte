@@ -66,8 +66,12 @@
 
   <div class="actions">
     <button class={isDa ? 'btn-primary-sm' : 'btn-secondary-sm'} onclick={toggle}>{isDa ? 'Segna come pagata' : 'Annulla pagamento'}</button>
-    <button class="btn-edit" onclick={() => showEdit = true}>Modifica</button>
-    <button class="btn-del" onclick={() => confirmDel = true} aria-label="Elimina spesa">✕</button>
+    <button class="btn-edit" onclick={() => showEdit = true} aria-label="Modifica">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+    </button>
+    <button class="btn-del" onclick={() => confirmDel = true} aria-label="Elimina spesa">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
   </div>
 </div>
 
@@ -91,8 +95,10 @@
   .amt { font-size: 16px; font-weight: 800; color: var(--text-primary); font-family: Georgia, serif; flex-shrink: 0; }
   .badge { display: inline-flex; align-items: center; gap: 5px; margin-top: 8px; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; }
   .actions { display: flex; gap: 8px; margin-top: 10px; }
-  .btn-primary-sm, .btn-secondary-sm, .btn-edit { all: unset; flex: 1; height: 36px; border-radius: 9px; font-size: 13px; font-weight: 800; text-align: center; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-  .btn-primary-sm, .btn-edit { background: var(--accent); color: var(--color-white); }
+  .btn-primary-sm, .btn-secondary-sm { all: unset; flex: 1; height: 36px; border-radius: 9px; font-size: 13px; font-weight: 800; text-align: center; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+  .btn-primary-sm { background: var(--accent); color: var(--color-white); }
   .btn-secondary-sm { background: var(--bg-secondary); color: var(--color-brown); }
-  .btn-del { all: unset; width: 36px; height: 36px; border-radius: 9px; background: var(--bg-secondary); color: var(--color-brown); font-size: 13px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .btn-edit, .btn-del { all: unset; width: 36px; height: 36px; border-radius: 9px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .btn-edit { background: var(--accent); color: var(--color-white); }
+  .btn-del { background: var(--bg-secondary); color: var(--color-brown); }
 </style>
