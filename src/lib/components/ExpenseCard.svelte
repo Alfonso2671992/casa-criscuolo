@@ -90,8 +90,8 @@
   .amt { font-size: 14px; font-weight: 800; color: var(--text-primary); font-family: Georgia, serif; flex-shrink: 0; }
   .badge { display: inline-flex; align-items: center; gap: 5px; margin-top: 7px; padding: 3px 10px; border-radius: 20px; font-size: 10px; font-weight: 700; }
   .actions { display: flex; gap: 8px; margin-top: 10px; }
-  .btn-primary-sm, .btn-secondary-sm, .btn-edit { all: unset; flex: 1; padding: 12px 0; border-radius: 12px; font-size: 13px; font-weight: 700; text-align: center; cursor: pointer; display: block; }
+  .btn-primary-sm, .btn-secondary-sm, .btn-edit { all: unset; flex: 1; padding: 14px 0; border-radius: 14px; font-size: 14px; font-weight: 700; text-align: center; cursor: pointer; display: block; }
   .btn-primary-sm, .btn-edit { background: var(--accent); color: var(--color-white); }
   .btn-secondary-sm { background: var(--bg-secondary); color: var(--color-brown); }
-  .btn-del { all: unset; padding: 12px 16px; border-radius: 12px; background: var(--bg-secondary); color: var(--color-brown); font-size: 13px; font-weight: 700; cursor: pointer; display: inline-block; }
+  .btn-del { all: unset; padding: 14px 18px; border-radius: 14px; background: var(--bg-secondary); color: var(--color-brown); font-size: 14px; font-weight: 700; cursor: pointer; display: inline-block; }
 </style>
