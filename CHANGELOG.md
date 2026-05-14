@@ -23,6 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **Icone categorie Acquisto**: Spesa (carrello), Igiene (goccia), Pulizia (stelline), Elettronica (PC), Salute (valigetta medica), Abbigliamento (maglietta)
 - **Frecce navigazione mesi più grandi** nel Riepilogo Spese: touch target aumentato (padding 8px 12px, font-size 22px, min-width 44px) per facilitare il tap da mobile
+- **Riepilogo Spese rinnovato**: sostituito il budget per categoria con statistiche mensili (totale, confronto %, barre per categoria)
 
 ## [4.0.0] - 2026-05-12
 
