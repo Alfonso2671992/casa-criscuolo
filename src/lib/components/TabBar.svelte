@@ -28,8 +28,8 @@
     padding: 0 4px; flex-shrink: 0;
   }
   .tab {
-    all: unset; flex: 1; padding: 12px 0 11px; text-align: center;
-    font-size: 11px; font-weight: 700; color: var(--text-secondary); cursor: pointer;
+    all: unset; flex: 1; padding: 14px 0 12px; text-align: center;
+    font-size: 12px; font-weight: 700; color: var(--text-secondary); cursor: pointer;
     border-radius: 10px 10px 0 0; margin: 4px 2px 0;
   }
   .tab.active { color: var(--color-white); background: var(--accent); }
