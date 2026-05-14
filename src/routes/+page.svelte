@@ -6,7 +6,6 @@
   import { groupAcquisti } from '$lib/group-acquisti';
   import { sortDaPagare } from '$lib/utils';
   import SummaryBar from '$lib/components/SummaryBar.svelte';
-  import BudgetBar from '$lib/components/BudgetBar.svelte';
   import Stats from '$lib/components/Stats.svelte';
   import ExpenseForm from '$lib/components/ExpenseForm.svelte';
   import ExpenseCard from '$lib/components/ExpenseCard.svelte';
@@ -23,7 +22,7 @@
   let unsubMis = $state<() => void>(() => {});
   let unsubAcq = $state<() => void>(() => {});
 
-  let collapsed = $state(new Set<string>(['__paid', '__budget', '__stats']));
+  let collapsed = $state(new Set<string>(['__paid', '__stats']));
   let confirmSvuota = $state<string | null>(null);
   let loaded = $state({ exp: false, wish: false, mis: false, acq: false });
 
@@ -110,17 +109,8 @@
       {/if}
     {/each}
   {/if}
-  <div class="group-header" class:collapsed={collapsed.has('__budget')} style="color:var(--accent)" onclick={() => toggleCat('__budget')} onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleCat('__budget'); } }} role="button" tabindex="0">
+  <div class="group-header" class:collapsed={collapsed.has('__stats')} style="color:var(--accent)" onclick={() => toggleCat('__stats')} onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleCat('__stats'); } }} role="button" tabindex="0">
     <span>Riepilogo Spese</span>
-    <svg class="chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-  </div>
-  {#if !collapsed.has('__budget')}
-    <div class="budget-section">
-      <BudgetBar />
-    </div>
-  {/if}
-  <div class="group-header" class:collapsed={collapsed.has('__stats')} style="color:var(--text-muted)" onclick={() => toggleCat('__stats')} onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleCat('__stats'); } }} role="button" tabindex="0">
-    <span>Statistiche</span>
     <svg class="chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
   </div>
   {#if !collapsed.has('__stats')}
