@@ -85,10 +85,10 @@
   .header { display: flex; align-items: center; gap: 9px; }
   .icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
   .info { flex: 1; min-width: 0; }
-  .name { font-size: 13px; font-weight: 700; color: var(--text-primary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .meta { font-size: 10px; color: var(--text-muted); font-weight: 500; margin-top: 1px; }
-  .amt { font-size: 14px; font-weight: 800; color: var(--text-primary); font-family: Georgia, serif; flex-shrink: 0; }
-  .badge { display: inline-flex; align-items: center; gap: 5px; margin-top: 7px; padding: 3px 10px; border-radius: 20px; font-size: 10px; font-weight: 700; }
+  .name { font-size: 14px; font-weight: 700; color: var(--text-primary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .meta { font-size: 11px; color: var(--text-muted); font-weight: 500; margin-top: 4px; }
+  .amt { font-size: 16px; font-weight: 800; color: var(--text-primary); font-family: Georgia, serif; flex-shrink: 0; }
+  .badge { display: inline-flex; align-items: center; gap: 5px; margin-top: 8px; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; }
   .actions { display: flex; gap: 8px; margin-top: 10px; }
   .btn-primary-sm, .btn-secondary-sm, .btn-edit { all: unset; flex: 1; height: 36px; border-radius: 9px; font-size: 13px; font-weight: 800; text-align: center; cursor: pointer; display: flex; align-items: center; justify-content: center; }
   .btn-primary-sm, .btn-edit { background: var(--accent); color: var(--color-white); }
