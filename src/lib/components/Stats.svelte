@@ -48,7 +48,7 @@
 </div>
 
 <div class="stats-total">
-  <span class="total-label">Totale pagato</span>
+  <span class="total-label">Totale pagato:</span>
   <span class="total-amount">€{totalThis.toFixed(0)}</span>
 </div>
 
@@ -82,10 +82,10 @@
   }
   .month-nav:active { opacity: .5; }
   .stats-title { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: .5px; color: var(--text-muted); }
-  .stats-total { display: flex; align-items: baseline; gap: 8px; justify-content: center; margin-bottom: 12px; }
+  .stats-total { display: flex; align-items: baseline; gap: 8px; justify-content: center; margin-bottom: 16px; }
   .total-label { font-size: 11px; color: var(--text-muted); font-weight: 600; }
   .total-amount { font-size: 22px; font-weight: 900; color: var(--text-primary); }
-  .bar-chart { display: flex; gap: 10px; overflow-x: auto; padding: 4px 4px 0; }
+  .bar-chart { display: flex; gap: 10px; overflow-x: auto; padding: 4px 4px 0; margin-top: 4px; }
   .bar-cell { display: flex; flex-direction: column; align-items: center; gap: 2px; min-width: 52px; flex-shrink: 0; }
   .bar-amt { font-size: 10px; font-weight: 800; color: var(--text-primary); }
   .bar-track { width: 24px; height: 60px; position: relative; background: var(--bg-secondary); border-radius: 5px; overflow: hidden; }
