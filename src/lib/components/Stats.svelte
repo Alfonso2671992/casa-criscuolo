@@ -92,7 +92,7 @@
   .bar { width: 24px; position: absolute; bottom: 0; border-radius: 5px 5px 0 0; }
   .bar-icon { display: flex; align-items: center; color: var(--text-muted); }
   .bar-label { font-size: 10px; font-weight: 700; color: var(--text-muted); text-align: center; text-transform: uppercase; letter-spacing: .3px; white-space: nowrap; }
-  .bar-diff { font-size: 9px; font-weight: 800; padding: 1px 5px; border-radius: 4px; }
+  .bar-diff { font-size: 10px; font-weight: 800; padding: 1px 5px; border-radius: 4px; }
   .bar-diff.up { color: var(--scaduta-border); background: var(--scaduta-bg); }
   .bar-diff.down { color: var(--color-green-dark); background: var(--bought-card-bg); }
   .empty { font-size: 11px; color: var(--text-muted); text-align: center; padding: 8px 0; }

@@ -87,7 +87,7 @@
   }
   .cal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
   .cal-title { font-size: 12px; font-weight: 700; color: var(--text-primary); }
-  .nav { all: unset; width: 28px; height: 28px; border-radius: 8px; background: var(--accent); color: var(--color-white); font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-weight: 700; }
+  .nav { all: unset; width: 36px; height: 36px; border-radius: 9px; background: var(--accent); color: var(--color-white); font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-weight: 700; }
   .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
   .day-name { text-align: center; font-size: 10px; font-weight: 700; color: var(--text-muted); padding: 2px 0; }
   .day { all: unset; text-align: center; padding: 5px 2px; border-radius: 7px; font-size: 12px; cursor: pointer; color: var(--text-primary); display: block; width: 100%; }

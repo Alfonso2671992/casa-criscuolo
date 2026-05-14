@@ -94,7 +94,7 @@
   .budget-body { display: flex; flex-direction: column; gap: 5px; }
   .row { display: flex; align-items: center; gap: 5px; }
   .cat-icon { display: flex; align-items: center; flex-shrink: 0; }
-  .cat-name { font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: .3px; width: 56px; flex-shrink: 0; }
+  .cat-name { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: .3px; width: 56px; flex-shrink: 0; }
   .bar-track { flex: 1; height: 12px; background: var(--bg-secondary); border-radius: 6px; overflow: hidden; }
   .bar-fill { height: 100%; background: var(--bar-color); border-radius: 6px; transition: width .3s; min-width: 0; }
   .amt {

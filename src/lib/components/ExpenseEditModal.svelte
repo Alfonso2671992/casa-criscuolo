@@ -76,10 +76,10 @@
       <input type="text" inputmode="decimal" class="inp amt" placeholder="0,00" value={amountStr} oninput={onAmtInput} />
     </div>
     <div class="adj-row">
-      <button class="adj adj-minus" onclick={() => changeAmt(-10)}>−10</button>
-      <button class="adj adj-minus" onclick={() => changeAmt(-1)}>−1</button>
-      <button class="adj adj-plus" onclick={() => changeAmt(1)}>+1</button>
-      <button class="adj adj-plus" onclick={() => changeAmt(10)}>+10</button>
+      <button class="adj adj-minus" onclick={() => changeAmt(-10)} aria-label="Riduci di 10">−10</button>
+      <button class="adj adj-minus" onclick={() => changeAmt(-1)} aria-label="Riduci di 1">−1</button>
+      <button class="adj adj-plus" onclick={() => changeAmt(1)} aria-label="Aumenta di 1">+1</button>
+      <button class="adj adj-plus" onclick={() => changeAmt(10)} aria-label="Aumenta di 10">+10</button>
     </div>
     <div class="label">Chi paga?</div>
     <div class="payer-row">
@@ -133,7 +133,7 @@
   .payer-row { display: flex; gap: 8px; margin-bottom: 12px; }
   .payer-btn { all: unset; flex: 1; padding: 9px 4px; border-radius: 10px; background: var(--bg-card); border: 2px solid var(--primary-border); cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 3px; box-sizing: border-box; }
   .avatar { width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 800; }
-  .payer-btn span { font-size: 9px; font-weight: 600; color: var(--text-secondary); text-align: center; line-height: 1.2; }
+  .payer-btn span { font-size: 10px; font-weight: 600; color: var(--text-secondary); text-align: center; line-height: 1.2; }
   .btn-primary {
     all: unset; display: block; width: 100%; padding: 13px; border-radius: 12px;
     background: var(--accent); color: var(--color-white); font-size: 15px; font-weight: 700;

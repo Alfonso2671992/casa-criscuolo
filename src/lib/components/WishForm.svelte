@@ -50,12 +50,12 @@
 </script>
 
 <div class="card">
-  <input class="inp" placeholder="Nome oggetto (opzionale)" bind:value={name} />
+  <input class="inp" placeholder="Nome oggetto (opzionale)" aria-label="Nome oggetto" bind:value={name} />
   <div class="label">Categoria</div>
   <CategoryGrid categories={CASA_CATS} bind:selected={cat} columns={3} />
-  <input class="inp" placeholder="Misure (es. 40×60 cm)" bind:value={dims} />
-  <input class="inp" placeholder="Link prodotto (Amazon, IKEA...)" bind:value={link} />
-  <input type="text" inputmode="decimal" class="inp" placeholder="Budget indicativo (€)" bind:value={budgetStr} />
+  <input class="inp" placeholder="Misure (es. 40×60 cm)" aria-label="Misure" bind:value={dims} />
+  <input class="inp" placeholder="Link prodotto (Amazon, IKEA...)" aria-label="Link prodotto" bind:value={link} />
+  <input type="text" inputmode="decimal" class="inp" placeholder="Budget indicativo (€)" aria-label="Budget" bind:value={budgetStr} />
   <button class="photo-btn" onclick={() => document.getElementById('wishFileInput')?.click()}>+ Aggiungi foto</button>
   <input type="file" id="wishFileInput" accept="image/*" style="display:none" onchange={handlePhoto} />
   {#if previewUrl}

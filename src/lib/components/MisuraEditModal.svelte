@@ -55,22 +55,22 @@
 <div class="overlay" onclick={onClose} role="presentation" use:trapFocus>
   <div class="box" onclick={(e) => e.stopPropagation()} onkeydown={(e) => { if (e.key === 'Escape') onClose(); }} role="dialog" tabindex="-1">
     <div class="title">Modifica misura</div>
-    <input class="inp" placeholder="Nome luogo (es. Nicchia soggiorno...)" bind:value={name} />
+    <input class="inp" placeholder="Nome luogo (es. Nicchia soggiorno...)" aria-label="Nome luogo" bind:value={name} />
     <div class="dim-row">
       <div class="dim-group">
         <span class="dim-label">Lunghezza (cm)</span>
-        <input class="inp dim-inp" type="text" inputmode="numeric" bind:value={l} />
+        <input class="inp dim-inp" type="text" inputmode="numeric" aria-label="Lunghezza" bind:value={l} />
       </div>
       <div class="dim-group">
         <span class="dim-label">Profondità (cm)</span>
-        <input class="inp dim-inp" type="text" inputmode="numeric" bind:value={w} />
+        <input class="inp dim-inp" type="text" inputmode="numeric" aria-label="Profondità" bind:value={w} />
       </div>
       <div class="dim-group">
         <span class="dim-label">Altezza (cm)</span>
-        <input class="inp dim-inp" type="text" inputmode="numeric" bind:value={h} />
+        <input class="inp dim-inp" type="text" inputmode="numeric" aria-label="Altezza" bind:value={h} />
       </div>
     </div>
-    <input class="inp" placeholder="Note" bind:value={note} />
+    <input class="inp" placeholder="Note" aria-label="Note" bind:value={note} />
     <button class="photo-btn" onclick={() => document.getElementById('misEditFileInput')?.click()}>+ Cambia foto</button>
     <input type="file" id="misEditFileInput" accept="image/*" style="display:none" onchange={handlePhoto} />
     {#if previewUrl}
@@ -99,7 +99,7 @@
   }
   .dim-row { display: flex; gap: 8px; margin-bottom: 10px; }
   .dim-group { flex: 1; display: flex; flex-direction: column; gap: 4px; }
-  .dim-label { font-size: 9px; font-weight: 800; color: var(--text-muted); text-align: center; letter-spacing: .5px; }
+  .dim-label { font-size: 10px; font-weight: 800; color: var(--text-muted); text-align: center; letter-spacing: .5px; }
   .dim-inp { text-align: center; font-size: 18px; font-weight: 800; margin-bottom: 0; padding: 8px 4px; }
   .photo-btn {
     all: unset; display: block; width: 100%; height: 50px;

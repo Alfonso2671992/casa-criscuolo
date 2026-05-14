@@ -27,6 +27,6 @@
     padding: 8px 3px; border-radius: 11px; background: var(--bg-app);
     border: 2px solid var(--border-light); cursor: pointer; box-sizing: border-box; color: #C4A070;
   }
-  .cat-btn span { font-size: 9px; font-weight: 600; color: var(--text-secondary); line-height: 1.2; text-align: center; }
+  .cat-btn span { font-size: 10px; font-weight: 600; color: var(--text-secondary); line-height: 1.2; text-align: center; }
   .active span { font-weight: 800; }
 </style>
