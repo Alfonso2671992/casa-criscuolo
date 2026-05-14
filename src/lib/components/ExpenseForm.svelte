@@ -63,19 +63,20 @@
 </script>
 
 <div class="card">
-  <input class="inp" placeholder="Nome spesa (opzionale)" bind:value={name} />
+  <div class="label">Nome</div>
+  <input class="inp" placeholder="Nome spesa (opzionale)" aria-label="Nome spesa" bind:value={name} />
   <div class="label">Categoria</div>
   <CategoryGrid categories={allCats} bind:selected={cat} columns={4} />
   <div class="label">Importo</div>
   <div class="amt-wrap">
-    <span class="euro">€</span>
-    <input type="text" inputmode="decimal" class="inp amt" placeholder="0,00" value={amountStr} oninput={onAmtInput} />
+    <span class="euro" aria-hidden="true">€</span>
+    <input type="text" inputmode="decimal" class="inp amt" placeholder="0,00" aria-label="Importo" value={amountStr} oninput={onAmtInput} />
   </div>
   <div class="adj-row">
-    <button class="adj adj-minus" onclick={() => changeAmt(-10)}>−10</button>
-    <button class="adj adj-minus" onclick={() => changeAmt(-1)}>−1</button>
-    <button class="adj adj-plus" onclick={() => changeAmt(1)}>+1</button>
-    <button class="adj adj-plus" onclick={() => changeAmt(10)}>+10</button>
+    <button class="adj adj-minus" onclick={() => changeAmt(-10)} aria-label="Riduci di 10">−10</button>
+    <button class="adj adj-minus" onclick={() => changeAmt(-1)} aria-label="Riduci di 1">−1</button>
+    <button class="adj adj-plus" onclick={() => changeAmt(1)} aria-label="Aumenta di 1">+1</button>
+    <button class="adj adj-plus" onclick={() => changeAmt(10)} aria-label="Aumenta di 10">+10</button>
   </div>
   <div class="label">Chi paga?</div>
   <div class="payer-row">

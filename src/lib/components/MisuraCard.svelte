@@ -31,7 +31,7 @@
     <img src={photoUrl} class="photo" alt={misura.n} />
   {:else}
     <div class="ph">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="1.5"><path d="M3 6h18M3 12h12M3 18h8"/><rect x="2" y="4" width="20" height="16" rx="2"/></svg>
+      <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="1.5"><path d="M3 6h18M3 12h12M3 18h8"/><rect x="2" y="4" width="20" height="16" rx="2"/></svg>
     </div>
   {/if}
   <div class="body">
@@ -39,7 +39,7 @@
       <span class="name">{esc(misura.n)}</span>
       <div class="top-actions">
         <button class="btn-edit" onclick={() => showEdit = true}>Modifica</button>
-        <button class="btn-del" onclick={() => confirmDel = true}>✕</button>
+        <button class="btn-del" onclick={() => confirmDel = true} aria-label="Elimina misura">✕</button>
       </div>
     </div>
     {#if showEdit}
@@ -50,7 +50,7 @@
     {/if}
     {#if dimDisplay}
       <div class="badge">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.5"><path d="M4 20h16M4 4v16"/><path d="M8 16V8M12 16v-4M16 16V6"/></svg>
+        <svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.5"><path d="M4 20h16M4 4v16"/><path d="M8 16V8M12 16v-4M16 16V6"/></svg>
         <span>{esc(dimDisplay)}</span>
       </div>
     {/if}

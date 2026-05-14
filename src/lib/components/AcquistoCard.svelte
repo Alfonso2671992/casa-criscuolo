@@ -29,9 +29,9 @@
 <div class="card" class:bought={item.b}>
   <button class="check" class:checked={item.b} onclick={toggleBought} aria-label={item.b ? 'Segna da comprare' : 'Segna comprato'}>
     {#if item.b}
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
     {:else}
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/></svg>
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/></svg>
     {/if}
   </button>
   <div class="left">
@@ -60,7 +60,7 @@
   }
   .bought { opacity: .5; }
   .check {
-    all: unset; width: 28px; height: 28px; border-radius: 50%; cursor: pointer;
+    all: unset; width: 44px; height: 44px; border-radius: 50%; cursor: pointer;
     display: flex; align-items: center; justify-content: center; flex-shrink: 0;
     color: var(--text-muted); transition: color .15s;
   }
@@ -74,12 +74,12 @@
   .name { font-size: 14px; font-weight: 700; font-family: Georgia, serif; color: var(--text-primary); }
   .bought .name { text-decoration: line-through; }
   .qta-badge {
-    font-size: 10px; font-weight: 800; color: var(--accent);
-    background: var(--bg-secondary); padding: 3px 10px; border-radius: 20px;
+    font-size: 11px; font-weight: 800; color: var(--accent);
+    background: var(--bg-secondary); padding: 4px 12px; border-radius: 20px;
     white-space: nowrap; flex-shrink: 0;
   }
   .remove {
-    all: unset; width: 32px; height: 32px; border-radius: 8px; cursor: pointer;
+    all: unset; width: 44px; height: 44px; border-radius: 10px; cursor: pointer;
     display: flex; align-items: center; justify-content: center;
     color: var(--text-muted); flex-shrink: 0;
   }

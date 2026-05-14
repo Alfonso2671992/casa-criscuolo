@@ -81,7 +81,7 @@
   <ExpenseForm />
   <div class="group-header" class:collapsed={collapsed.has('__dapagare')} style="color:var(--accent)" onclick={() => toggleCat('__dapagare')} onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleCat('__dapagare'); } }} role="button" tabindex="0">
     <span>Da pagare</span>
-    <svg class="chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+    <svg class="chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
   </div>
   {#if !collapsed.has('__dapagare')}
     {#each $expenses.filter(e => e.s === 'da').sort(sortDaPagare) as exp (exp._k)}
@@ -96,7 +96,7 @@
   {/if}
   <div class="group-header" class:collapsed={collapsed.has('__paid')} style="color:var(--color-green)" onclick={() => toggleCat('__paid')} onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleCat('__paid'); } }} role="button" tabindex="0">
     <span>Pagate</span>
-    <svg class="chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+    <svg class="chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
   </div>
   {#if !collapsed.has('__paid')}
     {#each $expenses.filter(e => e.s === 'ok') as exp (exp._k)}
@@ -111,7 +111,7 @@
   {/if}
   <div class="group-header" class:collapsed={collapsed.has('__stats')} style="color:var(--accent)" onclick={() => toggleCat('__stats')} onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleCat('__stats'); } }} role="button" tabindex="0">
     <span>Riepilogo Spese</span>
-    <svg class="chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+    <svg class="chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
   </div>
   {#if !collapsed.has('__stats')}
     <div class="budget-section">
@@ -127,7 +127,7 @@
     <div class="group-header" class:collapsed={collapsed.has(group.cat.id)} style="color:{group.cat.color}" onclick={() => toggleCat(group.cat.id)} onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleCat(group.cat.id); } }} role="button" tabindex="0">
       <span class="group-icon">{@html group.cat.svg.replace('width="18" height="18"', 'width="14" height="14"')}</span>
       <span>{group.cat.label} ({group.activeCount})</span>
-      <svg class="chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      <svg class="chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
       <button class="svuota-btn" onclick={(e) => { e.stopPropagation(); confirmSvuota = group.cat.id; }} aria-label="Svuota categoria">Svuota</button>
     </div>
     {#if !collapsed.has(group.cat.id)}

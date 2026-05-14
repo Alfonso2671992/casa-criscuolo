@@ -41,16 +41,16 @@
 
 <div class="wrap">
   <button class="date-btn" onclick={(e) => { e.stopPropagation(); open = !open; }}>
-    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+    <svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
     <span>{display(selected)}</span>
   </button>
 
   {#if open}
     <div class="dropdown" onclick={(e) => e.stopPropagation()} role="presentation">
       <div class="cal-header">
-        <button class="nav" onclick={() => navMonth(-1)}>‹</button>
+        <button class="nav" onclick={() => navMonth(-1)} aria-label="Mese precedente">‹</button>
         <span class="cal-title">{MONTHS[nav.getMonth()]} {nav.getFullYear()}</span>
-        <button class="nav" onclick={() => navMonth(1)}>›</button>
+        <button class="nav" onclick={() => navMonth(1)} aria-label="Mese successivo">›</button>
       </div>
       <div class="cal-grid">
         {#each DAYS as d}<div class="day-name">{d}</div>{/each}

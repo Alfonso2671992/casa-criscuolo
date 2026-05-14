@@ -66,15 +66,15 @@
     {#if showReset}
       <div class="subtitle">Inserisci email per il reset password</div>
       <form onsubmit={handleReset}>
-        <input class="inp" type="email" placeholder="La tua email" bind:value={resetEmail} />
+        <input class="inp" type="email" placeholder="La tua email" aria-label="Email" bind:value={resetEmail} />
         <button class="btn-primary" type="submit">Invia email reset</button>
       </form>
       <button class="btn-link" onclick={() => showReset = false}>Torna al login</button>
     {:else}
       <div class="subtitle">{isRegister ? 'Crea un account' : 'Accedi per continuare'}</div>
       <form onsubmit={submit}>
-        <input class="inp" type="email" placeholder="Email" bind:value={email} />
-        <input class="inp" type="password" placeholder="Password" bind:value={password} />
+        <input class="inp" type="email" placeholder="Email" aria-label="Email" bind:value={email} />
+        <input class="inp" type="password" placeholder="Password" aria-label="Password" bind:value={password} />
         <button class="btn-primary" type="submit" disabled={loading}>
           {loading ? '...' : (isRegister ? 'Registrati' : 'Accedi')}
         </button>

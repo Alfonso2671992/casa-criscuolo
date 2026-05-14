@@ -67,11 +67,11 @@
 
 <div class="card">
   <div class="field">
-    <input class="inp" placeholder="Cosa devi comprare?" bind:value={name} onfocus={onFocus} onblur={onBlur} oninput={() => { if (suggestions.length > 0) showSuggestions = true; }} />
+    <input class="inp" placeholder="Cosa devi comprare?" aria-label="Cosa devi comprare" bind:value={name} onfocus={onFocus} onblur={onBlur} oninput={() => { if (suggestions.length > 0) showSuggestions = true; }} />
     {#if showSuggestions && suggestions.length > 0}
       <div class="suggestions" role="listbox">
         {#each suggestions as s (s.n)}
-          <button class="suggestion" role="option" tabindex="-1" onclick={() => pickSuggestion(s)}>
+          <button class="suggestion" role="option" onclick={() => pickSuggestion(s)}>
             <span class="sug-name">{s.n}</span>
             <span class="sug-cat">{ACQUISTO_CATS.find(c => c.id === s.c)?.label || s.c}</span>
           </button>

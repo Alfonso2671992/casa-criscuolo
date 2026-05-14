@@ -67,7 +67,7 @@
   <div class="actions">
     <button class={isDa ? 'btn-primary-sm' : 'btn-secondary-sm'} onclick={toggle}>{isDa ? 'Segna come pagata' : 'Annulla pagamento'}</button>
     <button class="btn-edit" onclick={() => showEdit = true}>Modifica</button>
-    <button class="btn-del" onclick={() => confirmDel = true}>✕</button>
+    <button class="btn-del" onclick={() => confirmDel = true} aria-label="Elimina spesa">✕</button>
   </div>
 </div>
 
