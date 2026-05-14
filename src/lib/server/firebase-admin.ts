@@ -143,17 +143,23 @@ export async function deleteMisura(k: string) { await db('DELETE', 'mis/' + k); 
 export async function addAcquisto(d: AcquistoItem) { d.ts = Date.now(); await db('POST', 'acquisti', d); }
 export async function updateAcquisto(k: string, d: Partial<AcquistoItem>) { await db('PATCH', 'acquisti/' + k, d); }
 export async function deleteAcquisto(k: string) { await db('DELETE', 'acquisti/' + k); }
-export async function deleteAcquistiByCat(cat: string) {
+export async function restoreAcquisti(items: Record<string, AcquistoItem>) {
+  for (const [k, v] of Object.entries(items)) {
+    await db('PUT', 'acquisti/' + k, v);
+  }
+}
+
+export async function deleteAcquistiByCat(cat: string): Promise<Record<string, unknown> | null> {
   const all = await db('GET', 'acquisti');
-  if (!all) return;
+  if (!all) return null;
   const updates: Record<string, null> = {};
+  const deleted: Record<string, unknown> = {};
   for (const [k, v] of Object.entries(all)) {
-    if ((v as any).c === cat) updates[k] = null;
+    if ((v as any).c === cat) { updates[k] = null; deleted[k] = v; }
   }
   const keys = Object.keys(updates);
-  if (keys.length > 0) {
-    await db('PATCH', 'acquisti', updates);
-  }
+  if (keys.length > 0) await db('PATCH', 'acquisti', updates);
+  return deleted;
 }
 
 export async function getPhoto(key: string): Promise<string | null> {

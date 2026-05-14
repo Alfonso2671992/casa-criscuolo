@@ -87,6 +87,25 @@ export function compressImg(file: File, maxDim = 800, quality = 0.7): Promise<st
   });
 }
 
+const FOCUSABLE = 'a[href],button:not([disabled]),input:not([disabled]),textarea:not([disabled]),select:not([disabled]),[tabindex]:not([tabindex="-1"])';
+
+export function trapFocus(node: HTMLElement) {
+  const prev = document.activeElement as HTMLElement | null;
+  function handler(e: KeyboardEvent) {
+    if (e.key !== 'Tab') return;
+    const els = node.querySelectorAll<HTMLElement>(FOCUSABLE);
+    if (!els.length) return;
+    const first = els[0], last = els[els.length - 1];
+    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+  }
+  setTimeout(() => (node.querySelector<HTMLElement>(FOCUSABLE)?.focus(), 0));
+  node.addEventListener('keydown', handler);
+  return {
+    destroy() { node.removeEventListener('keydown', handler); prev?.focus(); }
+  };
+}
+
 export function snap2arr<T extends { ts?: number }>(obj: Record<string, T> | null): (T & { _k: string })[] {
   if (!obj) return [];
   return Object.entries(obj)

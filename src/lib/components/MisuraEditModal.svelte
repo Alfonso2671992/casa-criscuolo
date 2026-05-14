@@ -2,7 +2,7 @@
   import { showToast } from '$lib/stores';
   import { authFetch, getPhoto, isPhotoRef } from '$lib/firebase-client';
   import type { Misura } from '$lib/types';
-  import { compressImg } from '$lib/utils';
+  import { compressImg, trapFocus } from '$lib/utils';
 
   let { misura: _mis, onClose }: { misura: Misura; onClose: () => void } = $props();
 
@@ -52,7 +52,7 @@
   }
 </script>
 
-<div class="overlay" onclick={onClose} role="presentation">
+<div class="overlay" onclick={onClose} role="presentation" use:trapFocus>
   <div class="box" onclick={(e) => e.stopPropagation()} onkeydown={(e) => { if (e.key === 'Escape') onClose(); }} role="dialog" tabindex="-1">
     <div class="title">Modifica misura</div>
     <input class="inp" placeholder="Nome luogo (es. Nicchia soggiorno...)" bind:value={name} />

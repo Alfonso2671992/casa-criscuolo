@@ -1,6 +1,7 @@
 <script lang="ts">
   import { CATS, MONTHS } from '$lib/constants';
   import { budget, saveBudget, budgetMonth, monthlyStats, showToast } from '$lib/stores';
+  import { trapFocus } from '$lib/utils';
 
   let editCat = $state<string | null>(null);
   let editVal = $state('');
@@ -71,7 +72,7 @@
 </div>
 
 {#if editCat}
-  <div class="overlay" onclick={() => editCat = null} role="presentation">
+  <div class="overlay" onclick={() => editCat = null} role="presentation" use:trapFocus>
     <div class="modal" onclick={(e) => e.stopPropagation()} onkeydown={(e) => { if (e.key === 'Escape') editCat = null; }} role="dialog" tabindex="-1">
       <div class="modal-title">Budget {CATS.find(c => c.id === editCat)?.label}</div>
       <input class="inp" type="text" inputmode="decimal" placeholder="Budget mensile (€)" bind:value={editVal} />

@@ -7,6 +7,7 @@
   import { sortDaPagare } from '$lib/utils';
   import SummaryBar from '$lib/components/SummaryBar.svelte';
   import BudgetBar from '$lib/components/BudgetBar.svelte';
+  import Stats from '$lib/components/Stats.svelte';
   import ExpenseForm from '$lib/components/ExpenseForm.svelte';
   import ExpenseCard from '$lib/components/ExpenseCard.svelte';
   import WishForm from '$lib/components/WishForm.svelte';
@@ -22,7 +23,7 @@
   let unsubMis = $state<() => void>(() => {});
   let unsubAcq = $state<() => void>(() => {});
 
-  let collapsed = $state(new Set<string>(['__paid', '__budget']));
+  let collapsed = $state(new Set<string>(['__paid', '__budget', '__stats']));
   let confirmSvuota = $state<string | null>(null);
   let loaded = $state({ exp: false, wish: false, mis: false, acq: false });
 
@@ -41,8 +42,23 @@
       body: JSON.stringify({ c: cat }),
     });
     if (!res.ok) { const d = await res.json(); showToast(d?.error || 'Errore'); return; }
-    showToast('Categoria svuotata');
+    const data = await res.json();
     confirmSvuota = null;
+    if (data?.deleted) {
+      showToast('Categoria svuotata', 5000, {
+        label: 'Annulla',
+        fn: async () => {
+          await authFetch('/api/acquisto', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: 'restore', items: data.deleted }),
+          });
+          showToast('Ripristinato');
+        }
+      });
+    } else {
+      showToast('Categoria svuotata');
+    }
   }
 
   onMount(() => {
@@ -101,6 +117,15 @@
   {#if !collapsed.has('__budget')}
     <div class="budget-section">
       <BudgetBar />
+    </div>
+  {/if}
+  <div class="group-header" class:collapsed={collapsed.has('__stats')} style="color:var(--text-muted)" onclick={() => toggleCat('__stats')} onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleCat('__stats'); } }} role="button" tabindex="0">
+    <span>Statistiche</span>
+    <svg class="chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+  </div>
+  {#if !collapsed.has('__stats')}
+    <div class="budget-section">
+      <Stats />
     </div>
   {/if}
 </div>

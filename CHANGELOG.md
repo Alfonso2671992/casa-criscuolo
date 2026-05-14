@@ -13,6 +13,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Nuove categorie Acquisto**: Salute & Farmacia, Fai da te & Casa, Tempo libero
 - **Validazione server PATCH** endpoint: ogni campo viene filtrato e validato prima di scrivere su Firebase
 - **Foto salvate separatamente**: le foto non sono più embeddate nei dati degli item ma salvate in un path dedicato nel DB, riducendo il payload caricato dai listener realtime
+- **Focus trap** nei modali: da tastiera non si esce più dai modali
+- **Toast chiudibile**: tap-to-dismiss, supporto azioni undo, aria-live per screen reader
+- **Fallback categorie nominate**: lookup sicuri invece di indici d'array fissi (CATS[5], CATS[7])
+- **Undo "Svuota categoria"**: toast con pulsante Annulla per ripristinare gli articoli cancellati
+- **Statistiche mensili**: nuova sezione collassabile nel tab Spese con totale pagato, confronto col mese precedente e barre per categoria
 
 ### Changed
 

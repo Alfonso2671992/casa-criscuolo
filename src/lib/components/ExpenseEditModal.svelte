@@ -4,7 +4,7 @@
   import { authFetch } from '$lib/firebase-client';
   import CategoryGrid from './CategoryGrid.svelte';
   import Calendar from './Calendar.svelte';
-  import { today } from '$lib/utils';
+  import { today, trapFocus } from '$lib/utils';
   import type { Expense } from '$lib/types';
 
   let { expense: _exp, onClose }: { expense: Expense; onClose: () => void } = $props();
@@ -64,7 +64,7 @@
   }
 </script>
 
-<div class="overlay" onclick={onClose} role="presentation">
+<div class="overlay" onclick={onClose} role="presentation" use:trapFocus>
   <div class="box" onclick={(e) => e.stopPropagation()} onkeydown={(e) => { if (e.key === 'Escape') onClose(); }} role="dialog" tabindex="-1">
     <div class="title">Modifica spesa</div>
     <input class="inp" placeholder="Nome spesa (opzionale)" bind:value={name} />

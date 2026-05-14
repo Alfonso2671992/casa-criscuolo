@@ -2,7 +2,7 @@
   import { CASA_CATS } from '$lib/constants';
   import { showToast } from '$lib/stores';
   import { authFetch, getPhoto, isPhotoRef } from '$lib/firebase-client';
-  import { compressImg } from '$lib/utils';
+  import { compressImg, trapFocus } from '$lib/utils';
   import CategoryGrid from './CategoryGrid.svelte';
   import type { WishItem } from '$lib/types';
 
@@ -59,7 +59,7 @@
   }
 </script>
 
-<div class="overlay" onclick={onClose} role="presentation">
+<div class="overlay" onclick={onClose} role="presentation" use:trapFocus>
   <div class="box" onclick={(e) => e.stopPropagation()} onkeydown={(e) => { if (e.key === 'Escape') onClose(); }} role="dialog" tabindex="-1">
     <div class="title">Modifica oggetto</div>
     <input class="inp" placeholder="Nome oggetto (opzionale)" bind:value={name} />

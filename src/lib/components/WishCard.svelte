@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { CASA_CATS } from '$lib/constants';
+  import { CASA_CATS, FALLBACK_CASA } from '$lib/constants';
   import { esc, safeUrl } from '$lib/utils';
   import { showToast } from '$lib/stores';
   import { authFetch, getPhoto, isPhotoRef, isDataUrl } from '$lib/firebase-client';
@@ -11,7 +11,7 @@
   let showEdit = $state(false);
   let confirmDel = $state(false);
   let photoUrl = $state<string | null>(null);
-  const cat = $derived(CASA_CATS.find(c => c.id === wish.c) || CASA_CATS[5]);
+  const cat = $derived(CASA_CATS.find(c => c.id === wish.c) || FALLBACK_CASA);
 
   $effect(() => {
     if (isDataUrl(wish.p)) photoUrl = wish.p;

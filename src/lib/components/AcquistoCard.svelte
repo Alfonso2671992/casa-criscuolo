@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { ACQUISTO_CATS } from '$lib/constants';
+  import { ACQUISTO_CATS, FALLBACK_ACQ } from '$lib/constants';
   import { showToast } from '$lib/stores';
   import { authFetch } from '$lib/firebase-client';
   import type { AcquistoItem } from '$lib/types';
@@ -8,7 +8,7 @@
   let { item }: { item: AcquistoItem } = $props();
   let confirmDel = $state(false);
 
-  const cat = $derived(ACQUISTO_CATS.find(c => c.id === item.c) || ACQUISTO_CATS[5]);
+  const cat = $derived(ACQUISTO_CATS.find(c => c.id === item.c) || FALLBACK_ACQ);
 
   async function toggleBought() {
     const res = await authFetch(`/api/acquisto/${item._k}`, {

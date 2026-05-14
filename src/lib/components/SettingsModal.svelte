@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { trapFocus } from '$lib/utils';
   import { logout, auth } from '$lib/firebase-client';
   import { showToast, darkMode } from '$lib/stores';
 
@@ -31,7 +32,7 @@
   }
 </script>
 
-<div class="overlay" onclick={onClose} role="presentation">
+<div class="overlay" onclick={onClose} role="presentation" use:trapFocus>
   <div class="box" onclick={(e) => e.stopPropagation()} onkeydown={(e) => { if (e.key === 'Escape') onClose(); }} role="dialog" tabindex="-1">
     <div class="avatar" style="background:{bg};color:{text}">{initial}</div>
     <div class="email">{email}</div>

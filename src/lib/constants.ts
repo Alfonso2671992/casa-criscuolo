@@ -34,5 +34,8 @@ export const ACQUISTO_CATS: Category[] = [
 
 export const MONTHS = ['Gennaio','Febbraio','Marzo','Aprile','Maggio','Giugno','Luglio','Agosto','Settembre','Ottobre','Novembre','Dicembre'];
 export const DAYS = ['Lu','Ma','Me','Gi','Ve','Sa','Do'];
+export const FALLBACK_CAT: Category = { id: 'altro', label: 'Altro', color: '#6B7280', bg: '#F3F4F6', svg: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>` };
+export const FALLBACK_CASA: Category = { id: 'Altro', label: 'Altro', color: '#6B7280', bg: '#F3F4F6', svg: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>` };
+export const FALLBACK_ACQ: Category = { id: 'Altro', label: 'Altro', color: '#6B7280', bg: '#F3F4F6', svg: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>` };
 export const BOLLETTE_IDS = ['luce','acqua','gas'];
 export const ROOT = 'casa_criscuolo';

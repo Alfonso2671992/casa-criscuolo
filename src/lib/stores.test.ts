@@ -28,13 +28,13 @@ const {
 describe('showToast', () => {
   it('sets toast message', () => {
     showToast('test message');
-    expect(get(toast)).toBe('test message');
+    expect(get(toast)?.msg).toBe('test message');
   });
 
   it('clears toast after duration', async () => {
     vi.useFakeTimers();
     showToast('test', 100);
-    expect(get(toast)).toBe('test');
+    expect(get(toast)?.msg).toBe('test');
     vi.advanceTimersByTime(150);
     expect(get(toast)).toBeNull();
     vi.useRealTimers();
@@ -42,7 +42,7 @@ describe('showToast', () => {
 
   it('does not clear toast when duration is 0', async () => {
     showToast('persistent', 0);
-    expect(get(toast)).toBe('persistent');
+    expect(get(toast)?.msg).toBe('persistent');
   });
 });
 

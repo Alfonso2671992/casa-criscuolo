@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { CATS } from '$lib/constants';
+  import { CATS, FALLBACK_CAT } from '$lib/constants';
   import { strToDisplay, daysUntil, esc } from '$lib/utils';
   import { showToast } from '$lib/stores';
   import { authFetch } from '$lib/firebase-client';
@@ -11,7 +11,7 @@
   let showEdit = $state(false);
   let confirmDel = $state(false);
 
-  const cat = $derived(CATS.find(c => c.id === expense.c) || CATS[7]);
+  const cat = $derived(CATS.find(c => c.id === expense.c) || FALLBACK_CAT);
   const payerText = $derived(expense.payer === 'A metà' ? `A metà · €${expense.half} a testa` : expense.payer);
   const days = $derived(expense.sc ? daysUntil(expense.sc) : null);
   const urgClass = $derived(isDa && days !== null ? (days < 0 ? 'scaduta' : days <= 5 ? 'urgente' : '') : '');

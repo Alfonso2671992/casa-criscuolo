@@ -1,8 +1,9 @@
 <script lang="ts">
+  import { trapFocus } from '$lib/utils';
   let { message, onConfirm, onCancel }: { message: string; onConfirm: () => void; onCancel: () => void } = $props();
 </script>
 
-<div class="overlay" onclick={onCancel} role="presentation">
+<div class="overlay" onclick={onCancel} role="presentation" use:trapFocus>
   <div class="box" onclick={(e) => e.stopPropagation()} onkeydown={(e) => { if (e.key === 'Escape') onCancel(); }} role="dialog" tabindex="-1">
     <div class="title">Conferma</div>
     <p class="msg">{message}</p>

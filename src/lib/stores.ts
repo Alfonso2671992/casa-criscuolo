@@ -24,7 +24,12 @@ export const acquisti = writable<AcquistoItem[]>(lsCache<AcquistoItem[]>('cc_a',
 export const user = writable<User | null>(null);
 export const currentTab = writable<TabId>('spese');
 export const names = writable<Names>(lsNames());
-export const toast = writable<string | null>(null);
+export interface ToastMsg {
+  msg: string;
+  action?: { label: string; fn: () => void };
+}
+export const toast = writable<ToastMsg | null>(null);
+let _toastTimer: ReturnType<typeof setTimeout> | null = null;
 
 export const totalUnpaid = derived(expenses, ($e) =>
   $e.filter((e) => e.s === 'da').reduce((s, e) => s + e.a, 0)
@@ -33,9 +38,10 @@ export const totalPaid = derived(expenses, ($e) =>
   $e.filter((e) => e.s === 'ok').reduce((s, e) => s + e.a, 0)
 );
 
-export function showToast(msg: string, duration = 3000) {
-  toast.set(msg);
-  if (duration > 0) setTimeout(() => toast.set(null), duration);
+export function showToast(msg: string, duration = 3000, action?: { label: string; fn: () => void }) {
+  if (_toastTimer) clearTimeout(_toastTimer);
+  toast.set({ msg, action });
+  if (duration > 0) _toastTimer = setTimeout(() => toast.set(null), duration);
 }
 
 function saveNames(n: Names) {
