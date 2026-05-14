@@ -1,6 +1,6 @@
-import { describe, it, expect, vi, beforeAll } from 'vitest';
+import { describe, it, expect, vi, beforeAll, beforeEach } from 'vitest';
 
-const { cap, esc, safeUrl, pad, dateToStr, strToDisplay, today, daysUntil, snap2arr, sortDaPagare, fmtDim } = await import('./utils');
+const { cap, esc, safeUrl, pad, dateToStr, strToDisplay, today, daysUntil, snap2arr, sortDaPagare, fmtDim, compressImg, trapFocus } = await import('./utils');
 
 describe('cap', () => {
   it('capitalizes first letter', () => {
@@ -185,5 +185,66 @@ describe('snap2arr', () => {
   });
   it('returns empty array for null', () => {
     expect(snap2arr(null)).toEqual([]);
+  });
+});
+
+describe.skip('compressImg', () => {
+  // Skip: jsdom doesn't support FileReader/Image/Canvas APIs
+});
+
+describe('trapFocus', () => {
+  let container: HTMLElement;
+
+  beforeEach(() => {
+    container = document.createElement('div');
+    container.innerHTML = '<button class="first">A</button><input class="second"><button class="third">C</button>';
+    document.body.appendChild(container);
+  });
+
+  it('returns destroy function', () => {
+    const result = trapFocus(container);
+    expect(result).toHaveProperty('destroy');
+    expect(typeof result.destroy).toBe('function');
+    result.destroy();
+  });
+
+  it('wraps Tab from last to first element', () => {
+    const result = trapFocus(container);
+    const first = container.querySelector('.first') as HTMLElement;
+    const last = container.querySelector('.third') as HTMLElement;
+    last.focus();
+    const event = new KeyboardEvent('keydown', { key: 'Tab', bubbles: true });
+    const preventDefault = vi.spyOn(event, 'preventDefault');
+    container.dispatchEvent(event);
+    expect(preventDefault).toHaveBeenCalled();
+    result.destroy();
+  });
+
+  it('wraps Shift+Tab from first to last', () => {
+    const result = trapFocus(container);
+    const first = container.querySelector('.first') as HTMLElement;
+    const last = container.querySelector('.third') as HTMLElement;
+    first.focus();
+    const event = new KeyboardEvent('keydown', { key: 'Tab', shiftKey: true, bubbles: true });
+    const preventDefault = vi.spyOn(event, 'preventDefault');
+    container.dispatchEvent(event);
+    expect(preventDefault).toHaveBeenCalled();
+    result.destroy();
+  });
+
+  it('ignores non-Tab keys', () => {
+    const result = trapFocus(container);
+    const event = new KeyboardEvent('keydown', { key: 'Escape', bubbles: true });
+    const preventDefault = vi.spyOn(event, 'preventDefault');
+    container.dispatchEvent(event);
+    expect(preventDefault).not.toHaveBeenCalled();
+    result.destroy();
+  });
+
+  it('removes keydown listener on destroy', () => {
+    const result = trapFocus(container);
+    const spy = vi.spyOn(container, 'removeEventListener');
+    result.destroy();
+    expect(spy).toHaveBeenCalledWith('keydown', expect.any(Function));
   });
 });

@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Fallback categorie nominate**: lookup sicuri invece di indici d'array fissi (CATS[5], CATS[7])
 - **Undo "Svuota categoria"**: toast con pulsante Annulla per ripristinare gli articoli cancellati
 - **Statistiche mensili**: nuova sezione collassabile nel tab Spese con totale pagato, confronto col mese precedente e barre per categoria
+- **Test espansi**: 143 test (da 109), copertura aggiunta per apiHandler, authFetch, validazione API route, trapFocus modali, cacheAcquisti
 
 ### Changed
 
