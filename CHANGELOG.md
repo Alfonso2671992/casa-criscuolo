@@ -23,6 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - **Miglioramenti UX/accessibilità**: focus-visible navigazione tastiera, aria-label su tutti gli input e bottoni icona, touch target 36-44px, testo minimo 10px, SVG decorative con aria-hidden, bottoni uniformati a 36px/13px/800
+- **Pulsanti Modifica**: diventati icone matita 36×36 in Spese e Misure, allineati al pulsante Elimina
 
 ### Changed
 
