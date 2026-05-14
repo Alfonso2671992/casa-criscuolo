@@ -38,8 +38,12 @@
     <div class="top">
       <span class="name">{esc(misura.n)}</span>
       <div class="top-actions">
-        <button class="btn-edit" onclick={() => showEdit = true}>Modifica</button>
-        <button class="btn-del" onclick={() => confirmDel = true} aria-label="Elimina misura">✕</button>
+        <button class="btn-edit" onclick={() => showEdit = true} aria-label="Modifica">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        </button>
+        <button class="btn-del" onclick={() => confirmDel = true} aria-label="Elimina misura">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
       </div>
     </div>
     {#if showEdit}
@@ -66,7 +70,7 @@
   .top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; margin-bottom: 5px; }
   .name { font-size: 14px; font-weight: 700; color: var(--text-primary); font-family: Georgia, serif; }
   .top-actions { display: flex; gap: 8px; align-items: center; }
-  .btn-edit, .btn-del { all: unset; height: 36px; border-radius: 9px; font-size: 13px; font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; padding: 0 14px; }
+  .btn-edit, .btn-del { all: unset; width: 36px; height: 36px; border-radius: 9px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
   .btn-edit { background: var(--accent); color: var(--color-white); }
   .btn-del { background: var(--badge-bg); color: var(--color-brown); }
   .badge { display: inline-flex; align-items: center; gap: 6px; background: var(--badge-bg); border: 1.5px solid var(--badge-border); border-radius: 9px; padding: 5px 12px; margin-bottom: 5px; }
