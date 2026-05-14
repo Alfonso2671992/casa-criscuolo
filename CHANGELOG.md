@@ -22,9 +22,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **Miglioramenti UX/accessibilità**: focus-visible navigazione tastiera, aria-label su tutti gli input e bottoni icona, touch target 36-44px, testo minimo 10px, SVG decorative con aria-hidden, bottoni uniformati a 36px/13px/800
+
+### Changed
+
 - **Icone categorie Acquisto**: Spesa (carrello), Igiene (goccia), Pulizia (stelline), Elettronica (PC), Salute (valigetta medica), Abbigliamento (maglietta)
 - **Frecce navigazione mesi più grandi** nel Riepilogo Spese: touch target aumentato (padding 8px 12px, font-size 22px, min-width 44px) per facilitare il tap da mobile
-- **Riepilogo Spese rinnovato**: sostituito il budget per categoria con statistiche mensili (totale, confronto %, barre per categoria)
+- **Riepilogo Spese rinnovato**: sostituito il budget per categoria con statistiche mensili (totale, confronto €, barre per categoria)
 
 ## [4.0.0] - 2026-05-12
 
