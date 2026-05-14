@@ -81,6 +81,7 @@
   .budget { font-size: 12px; color: var(--budget-color); font-weight: 700; margin-bottom: 4px; }
   .link { font-size: 12px; color: var(--accent); text-decoration: none; font-weight: 700; display: inline-block; margin-bottom: 6px; }
   .actions { display: flex; gap: 7px; margin-top: 8px; }
-  .btn-edit, .btn-remove { all: unset; background: var(--accent); color: var(--color-white); border-radius: 9px; padding: 7px 13px; font-size: 12px; cursor: pointer; font-weight: 700; display: inline-block; }
-  .btn-bought { all: unset; border-radius: 9px; padding: 7px 13px; font-size: 12px; cursor: pointer; font-weight: 700; display: inline-block; color: var(--color-white); }
+  .btn-edit, .btn-remove { all: unset; height: 36px; border-radius: 9px; font-size: 13px; font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; padding: 0 14px; }
+  .btn-edit, .btn-remove { background: var(--accent); color: var(--color-white); }
+  .btn-bought { all: unset; height: 36px; border-radius: 9px; font-size: 13px; font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; padding: 0 14px; color: var(--color-white); }
 </style>

@@ -66,8 +66,9 @@
   .top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; margin-bottom: 5px; }
   .name { font-size: 14px; font-weight: 700; color: var(--text-primary); font-family: Georgia, serif; }
   .top-actions { display: flex; gap: 8px; align-items: center; }
-  .btn-edit { all: unset; background: var(--accent); color: var(--color-white); border-radius: 12px; padding: 10px 18px; font-size: 14px; cursor: pointer; font-weight: 700; display: inline-block; }
-  .btn-del { all: unset; background: var(--badge-bg); border-radius: 12px; padding: 10px 18px; font-size: 14px; color: var(--color-brown); cursor: pointer; font-weight: 700; display: inline-block; flex-shrink: 0; }
+  .btn-edit, .btn-del { all: unset; height: 36px; border-radius: 9px; font-size: 13px; font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; padding: 0 14px; }
+  .btn-edit { background: var(--accent); color: var(--color-white); }
+  .btn-del { background: var(--badge-bg); color: var(--color-brown); }
   .badge { display: inline-flex; align-items: center; gap: 6px; background: var(--badge-bg); border: 1.5px solid var(--badge-border); border-radius: 9px; padding: 5px 12px; margin-bottom: 5px; }
   .badge span { font-size: 13px; font-weight: 800; color: var(--accent); }
   .note { font-size: 12px; color: var(--text-secondary); font-weight: 500; }
