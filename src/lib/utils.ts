@@ -108,27 +108,16 @@ export function trapFocus(node: HTMLElement) {
 
 export function scrollLock(node: HTMLElement) {
   const scrollY = window.scrollY;
-  document.documentElement.style.overflow = 'hidden';
-  document.body.style.overflow = 'hidden';
-  document.body.style.position = 'fixed';
-  document.body.style.top = `-${scrollY}px`;
-  document.body.style.width = '100%';
-
-  function preventTouch(e: TouchEvent) {
-    if (e.target === node || node.contains(e.target as Node)) return;
-    e.preventDefault();
-  }
-  document.addEventListener('touchmove', preventTouch, { passive: false });
+  node.style.touchAction = 'none';
+  node.style.overscrollBehavior = 'contain';
+  const inner = node.querySelector('.box, .modal') as HTMLElement | null;
+  if (inner) inner.style.touchAction = 'auto';
 
   return {
     destroy() {
-      document.documentElement.style.overflow = '';
-      document.body.style.overflow = '';
-      document.body.style.position = '';
-      document.body.style.top = '';
-      document.body.style.width = '';
-      document.removeEventListener('touchmove', preventTouch);
-      window.scrollTo(0, scrollY);
+      node.style.touchAction = '';
+      node.style.overscrollBehavior = '';
+      if (inner) inner.style.touchAction = '';
     }
   };
 }

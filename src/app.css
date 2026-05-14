@@ -1,7 +1,7 @@
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 :focus-visible{outline:2.5px solid var(--accent);outline-offset:2px;border-radius:4px}
 button:focus-visible{outline:2.5px solid var(--accent);outline-offset:2px;border-radius:8px}
-.overlay{touch-action:none;overscroll-behavior:contain}
+
 :root{
   --bg-app:#FAF3E8;--bg-card:#FDF6EC;--bg-html:#EDD5B0;--bg-secondary:#EDD9C0;
   --text-primary:#3D2010;--text-secondary:#8B6040;--text-muted:#A07850;
