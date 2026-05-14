@@ -64,20 +64,21 @@
 <div class="section" class:active={$currentTab === 'spese'}>
   <SummaryBar />
   <ExpenseForm />
-  <div class="divider">
-    <div class="divider-line"></div>
-    <span class="divider-label" style="color:var(--accent)">Da pagare</span>
-    <div class="divider-line"></div>
+  <div class="group-header" class:collapsed={collapsed.has('__dapagare')} style="color:var(--accent)" onclick={() => toggleCat('__dapagare')} onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleCat('__dapagare'); } }} role="button" tabindex="0">
+    <span>Da pagare</span>
+    <svg class="chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
   </div>
-  {#each $expenses.filter(e => e.s === 'da').sort(sortDaPagare) as exp (exp._k)}
-    <ExpenseCard expense={exp} isDa={true} />
-  {:else}
-    {#if loaded.exp}
-      <div class="empty">Nessuna spesa da pagare</div>
+  {#if !collapsed.has('__dapagare')}
+    {#each $expenses.filter(e => e.s === 'da').sort(sortDaPagare) as exp (exp._k)}
+      <ExpenseCard expense={exp} isDa={true} />
     {:else}
-      <div class="skel"></div>
-    {/if}
-  {/each}
+      {#if loaded.exp}
+        <div class="empty">Nessuna spesa da pagare</div>
+      {:else}
+        <div class="skel"></div>
+      {/if}
+    {/each}
+  {/if}
   <div class="group-header" class:collapsed={collapsed.has('__paid')} style="color:var(--color-green)" onclick={() => toggleCat('__paid')} onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleCat('__paid'); } }} role="button" tabindex="0">
     <span>Pagate</span>
     <svg class="chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
