@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Modali renderizzate fuori da `.body` nel layout**: tutte le modali (edit, confirm, settings, svuota) ora sono gestite via store `currentModal` e renderizzate in `+layout.svelte` come siblings di `.app`, fuori dal contenitore scrollabile `.body`. `scrollLock` inoltre setta `overflow:hidden` su `.body` all'apertura. Risolve definitivamente i problemi di `position:fixed` su iOS Safari (scroll chaining e overlay visualmente rotto)
 - **Zero warnings svelte-check**: risolti `state_referenced_locally` nelle edit modal (destrutturazione prop a monte), `aria-selected` mancante in AcquistoForm, e `noninteractive tabIndex` in Toast
 - **Verifica firma JWT server-side**: `verifyToken` ora verifica la firma RS256 dei token Firebase Auth usando le chiavi pubbliche di Google (endpoint X.509 + Web Crypto). Prima la firma non veniva verificata — un JWT falsificato con `sub`, `exp`, `iss` arbitrari sarebbe stato accettato
+- **Parsing X.509 certificati**: fix `pemToSPKI` che saltava l'intero certificato invece di posizionarsi al TBSCertificate, causando "Invalid keyData" su `importKey`
 
 ### Added
 
