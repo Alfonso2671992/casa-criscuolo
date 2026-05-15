@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- **Scroll e rendering modali su iOS**: `scrollLock` sposta il DOM dell'overlay in `document.body` per evitare che `position:fixed` si rompa dentro il parent scrollabile `.body` su iOS Safari, con `touchAction`/`overscrollBehavior` CSS per prevenire scroll chaining (senza `touchmove` handler JS che bloccano i tap)
+- **Scroll chaining dai modali**: `scrollLock` ora imposta `overscrollBehavior:contain` anche sul `.box` per prevenire che lo scroll del contenuto della modale si propaghi al `.body` sottostante
 
 ### Added
 
