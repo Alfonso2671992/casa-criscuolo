@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, beforeAll } from 'vitest';
 
 function b64url(s: string) {
   return btoa(s).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
@@ -122,7 +122,25 @@ async function requireAuth(headers: Record<string, string>): Promise<string> {
   return ra(new Request('http://localhost', { headers }));
 }
 
+function ab2b64(ab: ArrayBuffer) {
+  return btoa(String.fromCharCode(...new Uint8Array(ab)));
+}
+
+function b64urlFromBuf(ab: ArrayBuffer) {
+  return ab2b64(ab).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+}
+
+function wrapSPKIasPEM(spki: ArrayBuffer): string {
+  const b64 = ab2b64(spki);
+  const lines = ['-----BEGIN PUBLIC KEY-----'];
+  for (let i = 0; i < b64.length; i += 64) lines.push(b64.slice(i, i + 64));
+  lines.push('-----END PUBLIC KEY-----');
+  return lines.join('\n');
+}
+
 describe('requireAuth', () => {
+  const origFetch = globalThis.fetch;
+
   it('throws without authorization header', async () => {
     await expect(requireAuth({})).rejects.toThrow('Autenticazione richiesta');
   });
@@ -142,14 +160,34 @@ describe('requireAuth', () => {
   });
 
   it('returns uid for valid token', async () => {
+    const kp = await crypto.subtle.generateKey(
+      { name: 'RSASSA-PKCS1-v1_5', hash: 'SHA-256', modulusLength: 2048, publicExponent: new Uint8Array([1, 0, 1]) },
+      true, ['sign', 'verify']
+    );
+    const spki = await crypto.subtle.exportKey('spki', kp.publicKey);
+    const pem = wrapSPKIasPEM(spki);
+    const keysJson = JSON.stringify({ 'test-key-1': pem });
+
+    globalThis.fetch = async (url: RequestInfo | URL) => {
+      if (String(url).includes('googleapis.com')) {
+        return new Response(keysJson, { headers: { 'cache-control': 'public, max-age=3600' } });
+      }
+      return origFetch(url);
+    };
+
     const farFuture = Math.floor(Date.now() / 1000) + 3600;
-    const token = makeToken({
-      sub: 'user42',
-      email: 'a@b.com',
-      exp: farFuture,
-      iss: 'https://securetoken.google.com/casa-criscuolo',
-    });
+    const header = { alg: 'RS256', typ: 'JWT', kid: 'test-key-1' };
+    const payload = { sub: 'user42', email: 'a@b.com', exp: farFuture, iss: 'https://securetoken.google.com/casa-criscuolo' };
+    const hB64 = b64url(JSON.stringify(header));
+    const pB64 = b64url(JSON.stringify(payload));
+    const sigData = new TextEncoder().encode(hB64 + '.' + pB64);
+    const sigBytes = await crypto.subtle.sign({ name: 'RSASSA-PKCS1-v1_5' }, kp.privateKey, sigData);
+    const sigB64 = b64urlFromBuf(sigBytes);
+    const token = hB64 + '.' + pB64 + '.' + sigB64;
+
     const uid = await requireAuth({ authorization: 'Bearer ' + token });
     expect(uid).toBe('user42');
+
+    globalThis.fetch = origFetch;
   });
 });

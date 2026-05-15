@@ -64,21 +64,91 @@ async function db(method: string, path: string, data?: any) {
   try { return JSON.parse(txt); } catch { return null; }
 }
 
-function b64decode(s: string): any {
+function b64urlDecode(s: string): string {
   s = s.replace(/-/g, '+').replace(/_/g, '/');
   while (s.length % 4) s += '=';
-  return JSON.parse(atob(s));
+  return atob(s);
 }
 
-function verifyToken(idToken: string): { sub: string; email?: string } | null {
+function b64decode(s: string): any {
+  return JSON.parse(b64urlDecode(s));
+}
+
+let _certsCache: { keys: Record<string, string>; exp: number } | null = null;
+
+async function fetchPublicKeys(): Promise<Record<string, string>> {
+  if (_certsCache && Date.now() < _certsCache.exp) return _certsCache.keys;
+  const r = await fetch('https://www.googleapis.com/robot/v1/metadata/x509/securetoken@system.gserviceaccount.com');
+  const txt = await r.text();
+  const keys: Record<string, string> = JSON.parse(txt);
+  const cc = r.headers.get('cache-control') || '';
+  const maxAge = parseInt(cc.match(/max-age=(\d+)/)?.[1] || '3600', 10);
+  _certsCache = { keys, exp: Date.now() + maxAge * 1000 };
+  return keys;
+}
+
+function derReadLength(buf: Uint8Array, pos: number): { length: number; bytes: number } {
+  const b = buf[pos];
+  if (!(b & 0x80)) return { length: b, bytes: 1 };
+  const n = b & 0x7f;
+  let len = 0;
+  for (let i = 0; i < n; i++) len = (len << 8) | buf[pos + 1 + i];
+  return { length: len, bytes: 1 + n };
+}
+
+function derSkipTLV(buf: Uint8Array, pos: number): number {
+  const { length, bytes } = derReadLength(buf, pos + 1);
+  return pos + 1 + bytes + length;
+}
+
+function pemToSPKI(pem: string): ArrayBuffer {
+  const b64 = pem.replace(/-----[^-]+-----/g, '').replace(/\s/g, '');
+  const der = Uint8Array.from(atob(b64), c => c.charCodeAt(0));
+  if (pem.includes('BEGIN CERTIFICATE')) {
+    let pos = 0;
+    pos = derSkipTLV(der, pos);
+    const { bytes: tbsLenBytes } = derReadLength(der, pos + 1);
+    pos += 1 + tbsLenBytes;
+    if (der[pos] === 0xa0) pos = derSkipTLV(der, pos);
+    for (let i = 0; i < 5; i++) pos = derSkipTLV(der, pos);
+    const spkiStart = pos;
+    pos = derSkipTLV(der, pos);
+    return der.slice(spkiStart, pos).buffer;
+  }
+  return der.buffer;
+}
+
+let _importedKeys = new Map<string, CryptoKey>();
+
+async function getPublicKey(kid: string): Promise<CryptoKey | null> {
+  const cached = _importedKeys.get(kid);
+  if (cached) return cached;
+  const keys = await fetchPublicKeys();
+  const pem = keys[kid];
+  if (!pem) return null;
+  const spki = pemToSPKI(pem);
+  const key = await crypto.subtle.importKey('spki', spki, { name: 'RSASSA-PKCS1-v1_5', hash: 'SHA-256' }, false, ['verify']);
+  _importedKeys.set(kid, key);
+  return key;
+}
+
+async function verifyToken(idToken: string): Promise<{ sub: string; email?: string } | null> {
   const parts = idToken.split('.');
   if (parts.length !== 3) return null;
-  let p: any;
-  try { p = b64decode(parts[1]); } catch { return null; }
-  if (!p.sub || !p.exp) return null;
-  if (Date.now() > p.exp * 1000) return null;
-  if (p.iss !== 'https://securetoken.google.com/casa-criscuolo') return null;
-  return { sub: p.sub, email: p.email || undefined };
+  let header: any, payload: any;
+  try { header = b64decode(parts[0]); payload = b64decode(parts[1]); } catch { return null; }
+  if (!payload.sub || !payload.exp) return null;
+  if (Date.now() > payload.exp * 1000) return null;
+  if (payload.iss !== 'https://securetoken.google.com/casa-criscuolo') return null;
+  const kid = header.kid;
+  if (!kid) return null;
+  const key = await getPublicKey(kid);
+  if (!key) return null;
+  const sig = Uint8Array.from(b64urlDecode(parts[2]), c => c.charCodeAt(0));
+  const data = new TextEncoder().encode(parts[0] + '.' + parts[1]);
+  const ok = await crypto.subtle.verify({ name: 'RSASSA-PKCS1-v1_5' }, key, sig, data);
+  if (!ok) return null;
+  return { sub: payload.sub, email: payload.email || undefined };
 }
 
 export async function requireAuth(request: Request): Promise<string> {
