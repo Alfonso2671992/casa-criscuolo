@@ -107,7 +107,16 @@ export function trapFocus(node: HTMLElement) {
 }
 
 export function scrollLock(node: HTMLElement) {
-  const scrollY = window.scrollY;
+  const parent = node.parentNode;
+  const nextSib = node.nextSibling;
+  const placeholder = document.createComment('sl');
+  let moved = false;
+  if (parent && parent !== document.body) {
+    parent.insertBefore(placeholder, node);
+    document.body.appendChild(node);
+    moved = true;
+  }
+
   node.style.touchAction = 'none';
   node.style.overscrollBehavior = 'contain';
   const inner = node.querySelector('.box, .modal') as HTMLElement | null;
@@ -141,6 +150,10 @@ export function scrollLock(node: HTMLElement) {
 
   return {
     destroy() {
+      if (moved && placeholder.parentNode && parent) {
+        parent.insertBefore(node, placeholder);
+        placeholder.remove();
+      }
       node.style.touchAction = '';
       node.style.overscrollBehavior = '';
       if (inner) {
