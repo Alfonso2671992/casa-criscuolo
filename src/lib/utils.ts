@@ -115,6 +115,10 @@ export function scrollLock(node: HTMLElement) {
     inner.style.overscrollBehavior = 'contain';
   }
 
+  const bodyEl = document.querySelector<HTMLElement>('.body');
+  const origOverflow = bodyEl?.style.overflow ?? '';
+  if (bodyEl) bodyEl.style.overflow = 'hidden';
+
   return {
     destroy() {
       node.style.touchAction = '';
@@ -123,6 +127,7 @@ export function scrollLock(node: HTMLElement) {
         inner.style.touchAction = '';
         inner.style.overscrollBehavior = '';
       }
+      if (bodyEl) bodyEl.style.overflow = origOverflow;
     }
   };
 }
