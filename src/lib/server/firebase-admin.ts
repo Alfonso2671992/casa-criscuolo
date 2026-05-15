@@ -105,8 +105,12 @@ function pemToSPKI(pem: string): ArrayBuffer {
   const b64 = pem.replace(/-----[^-]+-----/g, '').replace(/\s/g, '');
   const der = Uint8Array.from(atob(b64), c => c.charCodeAt(0));
   if (pem.includes('BEGIN CERTIFICATE')) {
-    let pos = 0;
-    pos = derSkipTLV(der, pos);
+    // Certificate ::= SEQUENCE { TBSCertificate, SignatureAlgorithm, SignatureValue }
+    // Skip Certificate tag + length to reach TBSCertificate
+    const { bytes: certLenBytes } = derReadLength(der, 1);
+    let pos = 1 + certLenBytes;
+    // TBSCertificate ::= SEQUENCE { ... SubjectPublicKeyInfo ... }
+    // Skip TBSCertificate tag + length to reach its content
     const { bytes: tbsLenBytes } = derReadLength(der, pos + 1);
     pos += 1 + tbsLenBytes;
     if (der[pos] === 0xa0) pos = derSkipTLV(der, pos);
