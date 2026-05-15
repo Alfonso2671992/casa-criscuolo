@@ -1,14 +1,10 @@
 <script lang="ts">
   import { esc, fmtDim } from '$lib/utils';
-  import { showToast } from '$lib/stores';
+  import { showToast, currentModal } from '$lib/stores';
   import { authFetch, getPhoto, isPhotoRef, isDataUrl } from '$lib/firebase-client';
   import type { Misura } from '$lib/types';
-  import MisuraEditModal from './MisuraEditModal.svelte';
-  import ConfirmDialog from './ConfirmDialog.svelte';
 
   let { misura }: { misura: Misura } = $props();
-  let showEdit = $state(false);
-  let confirmDel = $state(false);
   let photoUrl = $state<string | null>(null);
 
   $effect(() => {
@@ -22,7 +18,7 @@
   async function del() {
     const res = await authFetch(`/api/mis/${misura._k}`, { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: '{}' });
     if (!res.ok) showToast('Errore eliminazione');
-    confirmDel = false;
+    currentModal.set(null);
   }
 </script>
 
@@ -38,20 +34,14 @@
     <div class="top">
       <span class="name">{esc(misura.n)}</span>
       <div class="top-actions">
-        <button class="btn-edit" onclick={() => showEdit = true} aria-label="Modifica">
+        <button class="btn-edit" onclick={() => currentModal.set({ type: 'misura-edit', misura })} aria-label="Modifica">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
         </button>
-        <button class="btn-del" onclick={() => confirmDel = true} aria-label="Elimina misura">
+        <button class="btn-del" onclick={() => currentModal.set({ type: 'confirm', message: 'Eliminare "' + misura.n + '"?', onConfirm: del, onCancel: () => currentModal.set(null) })} aria-label="Elimina misura">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
         </button>
       </div>
     </div>
-    {#if showEdit}
-      <MisuraEditModal {misura} onClose={() => showEdit = false} />
-    {/if}
-    {#if confirmDel}
-      <ConfirmDialog message={'Eliminare "' + misura.n + '"?'} onConfirm={del} onCancel={() => confirmDel = false} />
-    {/if}
     {#if dimDisplay}
       <div class="badge">
         <svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.5"><path d="M4 20h16M4 4v16"/><path d="M8 16V8M12 16v-4M16 16V6"/></svg>

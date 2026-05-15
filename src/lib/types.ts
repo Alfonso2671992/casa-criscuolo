@@ -52,6 +52,15 @@ export interface Names {
   p2: string;
 }
 
+export type ModalState = 
+  | { type: 'misura-edit'; misura: Misura }
+  | { type: 'expense-edit'; expense: Expense }
+  | { type: 'wish-edit'; wish: WishItem }
+  | { type: 'confirm'; message: string; onConfirm: () => void; onCancel: () => void }
+  | { type: 'settings' }
+  | { type: 'svuota'; cat: string; onConfirm: () => void; onCancel: () => void }
+  | null;
+
 export interface Category {
   id: string;
   label: string;

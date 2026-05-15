@@ -1,15 +1,11 @@
 <script lang="ts">
   import { CATS, FALLBACK_CAT } from '$lib/constants';
   import { strToDisplay, daysUntil, esc } from '$lib/utils';
-  import { showToast } from '$lib/stores';
+  import { showToast, currentModal } from '$lib/stores';
   import { authFetch } from '$lib/firebase-client';
   import type { Expense } from '$lib/types';
-  import ExpenseEditModal from './ExpenseEditModal.svelte';
-  import ConfirmDialog from './ConfirmDialog.svelte';
 
   let { expense, isDa = false }: { expense: Expense; isDa?: boolean } = $props();
-  let showEdit = $state(false);
-  let confirmDel = $state(false);
 
   const cat = $derived(CATS.find(c => c.id === expense.c) || FALLBACK_CAT);
   const payerText = $derived(expense.payer === 'A metà' ? `A metà · €${expense.half} a testa` : expense.payer);
@@ -41,7 +37,7 @@
   async function del() {
     const res = await authFetch(`/api/exp/${expense._k}`, { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: '{}' });
     if (!res.ok) showToast('Errore eliminazione');
-    confirmDel = false;
+    currentModal.set(null);
   }
 </script>
 
@@ -66,21 +62,14 @@
 
   <div class="actions">
     <button class={isDa ? 'btn-primary-sm' : 'btn-secondary-sm'} onclick={toggle}>{isDa ? 'Segna come pagata' : 'Annulla pagamento'}</button>
-    <button class="btn-edit" onclick={() => showEdit = true} aria-label="Modifica">
+    <button class="btn-edit" onclick={() => currentModal.set({ type: 'expense-edit', expense })} aria-label="Modifica">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
     </button>
-    <button class="btn-del" onclick={() => confirmDel = true} aria-label="Elimina spesa">
+    <button class="btn-del" onclick={() => currentModal.set({ type: 'confirm', message: 'Eliminare "' + (expense.n || expense.c) + '"?', onConfirm: del, onCancel: () => currentModal.set(null) })} aria-label="Elimina spesa">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
     </button>
   </div>
 </div>
-
-{#if showEdit}
-  <ExpenseEditModal {expense} onClose={() => showEdit = false} />
-{/if}
-{#if confirmDel}
-  <ConfirmDialog message={'Eliminare "' + (expense.n || expense.c) + '"?'} onConfirm={del} onCancel={() => confirmDel = false} />
-{/if}
 
 <style>
   .card { background: var(--bg-card); border-radius: 14px; padding: 12px 13px; border: 1.5px solid var(--border-light); margin-bottom: 8px; }

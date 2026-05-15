@@ -1,5 +1,5 @@
 import { writable, derived } from 'svelte/store';
-import type { Expense, WishItem, Misura, AcquistoItem, TabId, Names } from './types';
+import type { Expense, WishItem, Misura, AcquistoItem, TabId, Names, ModalState } from './types';
 import type { User } from 'firebase/auth';
 
 function lsNames(): Names {
@@ -82,6 +82,8 @@ export function initDark() {
   darkMode.set(d);
   document.documentElement.setAttribute('data-theme', d ? 'dark' : 'light');
 }
+
+export const currentModal = writable<ModalState>(null);
 
 export const budget = writable<Record<string, number>>(lsCache<Record<string, number>>('cc_budget', {}));
 

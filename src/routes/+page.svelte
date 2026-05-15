@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';
-  import { currentTab, expenses, wishes, misure, acquisti, cacheExpenses, cacheWishes, cacheMisure, cacheAcquisti, showToast } from '$lib/stores';
+  import { currentTab, expenses, wishes, misure, acquisti, currentModal, cacheExpenses, cacheWishes, cacheMisure, cacheAcquisti, showToast } from '$lib/stores';
   import { listenExpenses, listenWishes, listenMisure, listenAcquisti, authFetch } from '$lib/firebase-client';
   import { ACQUISTO_CATS } from '$lib/constants';
   import { groupAcquisti } from '$lib/group-acquisti';
@@ -15,15 +15,12 @@
   import MisuraCard from '$lib/components/MisuraCard.svelte';
   import AcquistoForm from '$lib/components/AcquistoForm.svelte';
   import AcquistoCard from '$lib/components/AcquistoCard.svelte';
-  import ConfirmDialog from '$lib/components/ConfirmDialog.svelte';
-
   let unsubExp = $state<() => void>(() => {});
   let unsubWish = $state<() => void>(() => {});
   let unsubMis = $state<() => void>(() => {});
   let unsubAcq = $state<() => void>(() => {});
 
   let collapsed = $state(new Set<string>(['__paid', '__stats']));
-  let confirmSvuota = $state<string | null>(null);
   let loaded = $state({ exp: false, wish: false, mis: false, acq: false });
 
   function toggleCat(id: string) {
@@ -42,7 +39,7 @@
     });
     if (!res.ok) { const d = await res.json(); showToast(d?.error || 'Errore'); return; }
     const data = await res.json();
-    confirmSvuota = null;
+    currentModal.set(null);
     if (data?.deleted) {
       showToast('Categoria svuotata', 5000, {
         label: 'Annulla',
@@ -128,7 +125,7 @@
       <span class="group-icon">{@html group.cat.svg.replace('width="18" height="18"', 'width="14" height="14"')}</span>
       <span>{group.cat.label} ({group.activeCount})</span>
       <svg class="chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
-      <button class="svuota-btn" onclick={(e) => { e.stopPropagation(); confirmSvuota = group.cat.id; }} aria-label="Svuota categoria">Svuota</button>
+      <button class="svuota-btn" onclick={(e) => { e.stopPropagation(); currentModal.set({ type: 'svuota', cat: group.cat.id, onConfirm: () => { const c = group.cat.id; svuotaCat(c); }, onCancel: () => currentModal.set(null) }); }} aria-label="Svuota categoria">Svuota</button>
     </div>
     {#if !collapsed.has(group.cat.id)}
       {#each group.items as item (item._k)}
@@ -143,10 +140,6 @@
     {/if}
   {/each}
 </div>
-{#if confirmSvuota}
-  <ConfirmDialog message="Svuotare tutta la categoria?" onConfirm={() => { if (confirmSvuota) svuotaCat(confirmSvuota); }} onCancel={() => confirmSvuota = null} />
-{/if}
-
 <!-- CASA -->
 <div class="section" class:active={$currentTab === 'casa'}>
   <WishForm />

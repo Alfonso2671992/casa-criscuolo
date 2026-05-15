@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- **Scroll chaining dai modali**: `scrollLock` ora imposta `overscrollBehavior:contain` anche sul `.box` per prevenire che lo scroll del contenuto della modale si propaghi al `.body` sottostante
+- **Modali renderizzate fuori da `.body` nel layout**: tutte le modali (edit, confirm, settings, svuota) ora sono gestite via store `currentModal` e renderizzate in `+layout.svelte` come siblings di `.app`, fuori dal contenitore scrollabile `.body`. Risolve definitivamente i problemi di `position:fixed` su iOS Safari (scroll chaining e overlay visualmente rotto)
 
 ### Added
 

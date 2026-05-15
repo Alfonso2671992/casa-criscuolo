@@ -4,13 +4,20 @@
   import TabBar from '$lib/components/TabBar.svelte';
   import Toast from '$lib/components/Toast.svelte';
   import LoginForm from '$lib/components/LoginForm.svelte';
-  import { user, initDark } from '$lib/stores';
+  import MisuraEditModal from '$lib/components/MisuraEditModal.svelte';
+  import ExpenseEditModal from '$lib/components/ExpenseEditModal.svelte';
+  import WishEditModal from '$lib/components/WishEditModal.svelte';
+  import ConfirmDialog from '$lib/components/ConfirmDialog.svelte';
+  import SettingsModal from '$lib/components/SettingsModal.svelte';
+  import { user, initDark, currentModal } from '$lib/stores';
   import { onAuth } from '$lib/firebase-client';
   import { onMount } from 'svelte';
 
   let { children }: { children: import('svelte').Snippet } = $props();
 
   let authed = $state(false);
+
+  function closeModal() { currentModal.set(null); }
 
   onMount(() => {
     initDark();
@@ -35,6 +42,20 @@
   {/if}
   <Toast />
 </div>
+
+{#if $currentModal?.type === 'misura-edit'}
+  <MisuraEditModal misura={$currentModal.misura} onClose={closeModal} />
+{:else if $currentModal?.type === 'expense-edit'}
+  <ExpenseEditModal expense={$currentModal.expense} onClose={closeModal} />
+{:else if $currentModal?.type === 'wish-edit'}
+  <WishEditModal wish={$currentModal.wish} onClose={closeModal} />
+{:else if $currentModal?.type === 'confirm'}
+  <ConfirmDialog message={$currentModal.message} onConfirm={$currentModal.onConfirm} onCancel={$currentModal.onCancel} />
+{:else if $currentModal?.type === 'settings'}
+  <SettingsModal onClose={closeModal} />
+{:else if $currentModal?.type === 'svuota'}
+  <ConfirmDialog message={'Svuotare tutta la categoria?'} onConfirm={$currentModal.onConfirm} onCancel={$currentModal.onCancel} />
+{/if}
 
 <style>
   .loader {

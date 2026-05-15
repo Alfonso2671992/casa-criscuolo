@@ -1,15 +1,11 @@
 <script lang="ts">
   import { CASA_CATS, FALLBACK_CASA } from '$lib/constants';
   import { esc, safeUrl } from '$lib/utils';
-  import { showToast } from '$lib/stores';
+  import { showToast, currentModal } from '$lib/stores';
   import { authFetch, getPhoto, isPhotoRef, isDataUrl } from '$lib/firebase-client';
   import type { WishItem } from '$lib/types';
-  import WishEditModal from './WishEditModal.svelte';
-  import ConfirmDialog from './ConfirmDialog.svelte';
 
   let { wish }: { wish: WishItem } = $props();
-  let showEdit = $state(false);
-  let confirmDel = $state(false);
   let photoUrl = $state<string | null>(null);
   const cat = $derived(CASA_CATS.find(c => c.id === wish.c) || FALLBACK_CASA);
 
@@ -31,7 +27,7 @@
   async function del() {
     const res = await authFetch(`/api/wish/${wish._k}`, { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: '{}' });
     if (!res.ok) showToast('Errore eliminazione');
-    confirmDel = false;
+    currentModal.set(null);
   }
 </script>
 
@@ -53,19 +49,12 @@
       <a href={safeUrl(wish.l)} target="_blank" class="link">Apri link →</a>
     {/if}
     <div class="actions">
-      <button class="btn-edit" onclick={() => showEdit = true}>Modifica</button>
-      <button class="btn-remove" onclick={() => confirmDel = true}>Rimuovi</button>
+      <button class="btn-edit" onclick={() => currentModal.set({ type: 'wish-edit', wish })}>Modifica</button>
+      <button class="btn-remove" onclick={() => currentModal.set({ type: 'confirm', message: 'Eliminare "' + wish.n + '"?', onConfirm: del, onCancel: () => currentModal.set(null) })}>Rimuovi</button>
       <button class="btn-bought" style="background:{wish.b ? 'var(--text-muted)' : 'var(--color-green)'}" onclick={toggle}>{wish.b ? 'Annulla' : 'Segna comprato'}</button>
     </div>
   </div>
 </div>
-
-{#if showEdit}
-  <WishEditModal {wish} onClose={() => showEdit = false} />
-{/if}
-{#if confirmDel}
-  <ConfirmDialog message={'Eliminare "' + wish.n + '"?'} onConfirm={del} onCancel={() => confirmDel = false} />
-{/if}
 
 <style>
   .card { border-radius: 16px; overflow: hidden; border: 1.5px solid var(--border-light); margin-bottom: 10px; }
