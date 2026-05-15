@@ -6,20 +6,22 @@
   import CategoryGrid from './CategoryGrid.svelte';
   import type { WishItem } from '$lib/types';
 
-  let { wish: _wish, onClose }: { wish: WishItem; onClose: () => void } = $props();
+  let { wish, onClose }: { wish: WishItem; onClose: () => void } = $props();
+  // svelte-ignore state_referenced_locally
+  const { n: n0, c: c0, d: d0, l: l0, bgt: bgt0, _k, p: p0 } = wish;
 
-  let name = $state(_wish.n);
-  let cat = $state(_wish.c);
-  let dims = $state(_wish.d);
-  let link = $state(_wish.l);
-  let budgetStr = $state(_wish.bgt != null ? _wish.bgt.toFixed(2).replace('.', ',') : '');
+  let name = $state(n0);
+  let cat = $state(c0);
+  let dims = $state(d0);
+  let link = $state(l0);
+  let budgetStr = $state(bgt0 != null ? bgt0.toFixed(2).replace('.', ',') : '');
   let previewUrl = $state<string | null>(null);
   let photoChanged = $state(false);
   let submitting = $state(false);
 
   $effect(() => {
-    if (_wish.p && isPhotoRef(_wish.p)) getPhoto(_wish.p.replace('photos/', '')).then(url => { previewUrl = url; });
-    else previewUrl = _wish.p;
+    if (p0 && isPhotoRef(p0)) getPhoto(p0.replace('photos/', '')).then(url => { previewUrl = url; });
+    else previewUrl = p0;
   });
 
   async function handlePhoto(e: Event) {
@@ -47,7 +49,7 @@
     if (photoChanged) {
       body.p = previewUrl;
     }
-    const res = await authFetch(`/api/wish/${_wish._k}`, {
+    const res = await authFetch(`/api/wish/${_k}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),

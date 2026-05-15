@@ -4,20 +4,22 @@
   import type { Misura } from '$lib/types';
   import { compressImg, trapFocus, scrollLock } from '$lib/utils';
 
-  let { misura: _mis, onClose }: { misura: Misura; onClose: () => void } = $props();
+  let { misura, onClose }: { misura: Misura; onClose: () => void } = $props();
+  // svelte-ignore state_referenced_locally
+  const { n: n0, l: l0, w: w0, h: h0, note: note0, _k, p: p0 } = misura;
 
-  let name = $state(_mis.n);
-  let l = $state(_mis.l ?? 0);
-  let w = $state(_mis.w ?? 0);
-  let h = $state(_mis.h ?? 0);
-  let note = $state(_mis.note);
+  let name = $state(n0);
+  let l = $state(l0 ?? 0);
+  let w = $state(w0 ?? 0);
+  let h = $state(h0 ?? 0);
+  let note = $state(note0);
   let previewUrl = $state<string | null>(null);
   let photoChanged = $state(false);
   let submitting = $state(false);
 
   $effect(() => {
-    if (_mis.p && isPhotoRef(_mis.p)) getPhoto(_mis.p.replace('photos/', '')).then(url => { previewUrl = url; });
-    else previewUrl = _mis.p;
+    if (p0 && isPhotoRef(p0)) getPhoto(p0.replace('photos/', '')).then(url => { previewUrl = url; });
+    else previewUrl = p0;
   });
 
   async function handlePhoto(e: Event) {
@@ -40,7 +42,7 @@
     if (photoChanged) {
       body.p = previewUrl;
     }
-    const res = await authFetch(`/api/mis/${_mis._k}`, {
+    const res = await authFetch(`/api/mis/${_k}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),

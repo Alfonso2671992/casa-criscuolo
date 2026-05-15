@@ -5,7 +5,7 @@
 </script>
 
 {#if $toast}
-  <div class="toast" role="status" aria-live="polite" onclick={dismiss} onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); dismiss(); } }} tabindex="0">
+  <div class="toast" role="button" tabindex="0" aria-live="polite" onclick={dismiss} onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); dismiss(); } }}>
     <span class="toast-msg">{$toast.msg}</span>
     {#if $toast.action}
       <button class="toast-action" onclick={(e) => { e.stopPropagation(); $toast!.action!.fn(); dismiss(); }}>{$toast.action.label}</button>

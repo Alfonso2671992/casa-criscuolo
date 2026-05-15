@@ -7,14 +7,16 @@
   import { today, trapFocus, scrollLock } from '$lib/utils';
   import type { Expense } from '$lib/types';
 
-  let { expense: _exp, onClose }: { expense: Expense; onClose: () => void } = $props();
+  let { expense, onClose }: { expense: Expense; onClose: () => void } = $props();
+  // svelte-ignore state_referenced_locally
+  const { n: n0, a: a0, c: c0, payer: p0, dt: dt0, sc: sc0, _k } = expense;
 
-  let name = $state(_exp.n);
-  let amountStr = $state(_exp.a.toFixed(2).replace('.', ','));
-  let cat = $state(_exp.c);
-  let payer = $state(_exp.payer);
-  let selectedDate = $state(_exp.dt ?? today());
-  let selectedScad = $state<string | null>(_exp.sc);
+  let name = $state(n0);
+  let amountStr = $state(a0.toFixed(2).replace('.', ','));
+  let cat = $state(c0);
+  let payer = $state(p0);
+  let selectedDate = $state(dt0 ?? today());
+  let selectedScad = $state<string | null>(sc0);
   let showScad = $derived(BOLLETTE_IDS.includes(cat));
   let submitting = $state(false);
 
@@ -52,7 +54,7 @@
       sc: selectedScad,
       payer,
     };
-    const res = await authFetch(`/api/exp/${_exp._k}`, {
+    const res = await authFetch(`/api/exp/${_k}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
