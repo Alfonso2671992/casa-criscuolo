@@ -108,7 +108,6 @@ export function trapFocus(node: HTMLElement) {
 
 export function scrollLock(node: HTMLElement) {
   const parent = node.parentNode;
-  const nextSib = node.nextSibling;
   const placeholder = document.createComment('sl');
   let moved = false;
   if (parent && parent !== document.body) {
@@ -125,29 +124,6 @@ export function scrollLock(node: HTMLElement) {
     inner.style.overscrollBehavior = 'contain';
   }
 
-  function overlayTouch(e: TouchEvent) {
-    if (inner && inner.contains(e.target as Node)) return;
-    e.preventDefault();
-  }
-  node.addEventListener('touchmove', overlayTouch, { passive: false });
-
-  let touchStartY = 0;
-  function boxTouchStart(e: TouchEvent) {
-    touchStartY = e.touches[0].clientY;
-  }
-  function boxTouchMove(e: TouchEvent) {
-    if (!inner) return;
-    const y = e.touches[0].clientY;
-    const atTop = inner.scrollTop <= 0;
-    const atBottom = inner.scrollTop + inner.clientHeight >= inner.scrollHeight;
-    if ((y < touchStartY && atBottom) || (y > touchStartY && atTop)) {
-      e.preventDefault();
-    }
-    touchStartY = y;
-  }
-  inner?.addEventListener('touchstart', boxTouchStart, { passive: true });
-  inner?.addEventListener('touchmove', boxTouchMove, { passive: false });
-
   return {
     destroy() {
       if (moved && placeholder.parentNode && parent) {
@@ -160,9 +136,6 @@ export function scrollLock(node: HTMLElement) {
         inner.style.touchAction = '';
         inner.style.overscrollBehavior = '';
       }
-      node.removeEventListener('touchmove', overlayTouch);
-      inner?.removeEventListener('touchstart', boxTouchStart);
-      inner?.removeEventListener('touchmove', boxTouchMove);
     }
   };
 }
