@@ -116,15 +116,28 @@ export function scrollLock(node: HTMLElement) {
     inner.style.overscrollBehavior = 'contain';
   }
 
-  const bodyEl = document.querySelector<HTMLElement>('.body');
-  const origOverflow = bodyEl?.style.overflow ?? '';
-  if (bodyEl) bodyEl.style.overflow = 'hidden';
-
-  function touchHandler(e: TouchEvent) {
+  function overlayTouch(e: TouchEvent) {
     if (inner && inner.contains(e.target as Node)) return;
     e.preventDefault();
   }
-  node.addEventListener('touchmove', touchHandler, { passive: false });
+  node.addEventListener('touchmove', overlayTouch, { passive: false });
+
+  let touchStartY = 0;
+  function boxTouchStart(e: TouchEvent) {
+    touchStartY = e.touches[0].clientY;
+  }
+  function boxTouchMove(e: TouchEvent) {
+    if (!inner) return;
+    const y = e.touches[0].clientY;
+    const atTop = inner.scrollTop <= 0;
+    const atBottom = inner.scrollTop + inner.clientHeight >= inner.scrollHeight;
+    if ((y < touchStartY && atBottom) || (y > touchStartY && atTop)) {
+      e.preventDefault();
+    }
+    touchStartY = y;
+  }
+  inner?.addEventListener('touchstart', boxTouchStart, { passive: true });
+  inner?.addEventListener('touchmove', boxTouchMove, { passive: false });
 
   return {
     destroy() {
@@ -134,8 +147,9 @@ export function scrollLock(node: HTMLElement) {
         inner.style.touchAction = '';
         inner.style.overscrollBehavior = '';
       }
-      if (bodyEl) bodyEl.style.overflow = origOverflow;
-      node.removeEventListener('touchmove', touchHandler);
+      node.removeEventListener('touchmove', overlayTouch);
+      inner?.removeEventListener('touchstart', boxTouchStart);
+      inner?.removeEventListener('touchmove', boxTouchMove);
     }
   };
 }

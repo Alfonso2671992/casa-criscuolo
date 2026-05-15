@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- **Scroll bloccato nei modali su mobile**: `scrollLock` ora previene anche lo scroll del `.body` sottostante via `overflow:hidden`, `overscrollBehavior:contain` sul box e intercept `touchmove` sull'overlay
+- **Scroll bloccato nei modali su mobile**: `scrollLock` previene scroll chaining dal box al `.body` via `overscrollBehavior:contain` e intercettazione `touchmove` ai boundary del box, senza toccare l'overflow di `.body` (che su iOS rompe `position:fixed` dell'overlay)
 
 ### Added
 
