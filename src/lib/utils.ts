@@ -111,13 +111,31 @@ export function scrollLock(node: HTMLElement) {
   node.style.touchAction = 'none';
   node.style.overscrollBehavior = 'contain';
   const inner = node.querySelector('.box, .modal') as HTMLElement | null;
-  if (inner) inner.style.touchAction = 'auto';
+  if (inner) {
+    inner.style.touchAction = 'auto';
+    inner.style.overscrollBehavior = 'contain';
+  }
+
+  const bodyEl = document.querySelector<HTMLElement>('.body');
+  const origOverflow = bodyEl?.style.overflow ?? '';
+  if (bodyEl) bodyEl.style.overflow = 'hidden';
+
+  function touchHandler(e: TouchEvent) {
+    if (inner && inner.contains(e.target as Node)) return;
+    e.preventDefault();
+  }
+  node.addEventListener('touchmove', touchHandler, { passive: false });
 
   return {
     destroy() {
       node.style.touchAction = '';
       node.style.overscrollBehavior = '';
-      if (inner) inner.style.touchAction = '';
+      if (inner) {
+        inner.style.touchAction = '';
+        inner.style.overscrollBehavior = '';
+      }
+      if (bodyEl) bodyEl.style.overflow = origOverflow;
+      node.removeEventListener('touchmove', touchHandler);
     }
   };
 }

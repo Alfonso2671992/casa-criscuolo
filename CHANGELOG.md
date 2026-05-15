@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- **Scroll bloccato nei modali su mobile**: `scrollLock` ora previene anche lo scroll del `.body` sottostante via `overflow:hidden`, `overscrollBehavior:contain` sul box e intercept `touchmove` sull'overlay
+
 ### Added
 
 - **Collapse sezione "Da pagare"** nel tab Spese (aperta di default), con stessa freccetta di navigazione di Pagate e Riepilogo
