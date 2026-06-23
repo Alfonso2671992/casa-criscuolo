@@ -3,7 +3,7 @@ import { apiHandler, ApiError } from '$lib/server/api-utils';
 import { updateAcquisto, deleteAcquisto } from '$lib/server/firebase-admin';
 import { cap } from '$lib/utils';
 
-const VALID_ACQ_FIELDS = ['n', 'c', 'b', 'qta'];
+const VALID_ACQ_FIELDS = ['n', 'c', 'qta'];
 
 export async function PATCH({ params, request }) {
   return apiHandler(request, async () => {

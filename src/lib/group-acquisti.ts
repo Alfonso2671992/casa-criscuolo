@@ -14,6 +14,6 @@ export function groupAcquisti(acquisti: AcquistoItem[], cats: Category[]): Acqui
   }
   return cats.map(c => {
     const items = (map.get(c.id) || []).sort((a, b) => a.ts - b.ts);
-    return { cat: c, items, activeCount: items.filter(i => !i.b).length };
+    return { cat: c, items, activeCount: items.length };
   }).filter(g => g.items.length > 0);
 }

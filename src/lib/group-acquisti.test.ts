@@ -21,7 +21,7 @@ describe('groupAcquisti', () => {
     expect(groups[1].cat.id).toBe('Igiene');
   });
 
-  it('activeCount excludes bought items', () => {
+  it('activeCount equals total items (bought state ignored)', () => {
     const items = [
       item({ _k: 'a', c: 'Spesa', n: 'Pomodori', b: false }),
       item({ _k: 'b', c: 'Spesa', n: 'Pasta', b: true }),
@@ -30,16 +30,7 @@ describe('groupAcquisti', () => {
     const groups = groupAcquisti(items, ACQUISTO_CATS);
     expect(groups).toHaveLength(1);
     expect(groups[0].items).toHaveLength(3);
-    expect(groups[0].activeCount).toBe(2);
-  });
-
-  it('activeCount is 0 when all items are bought', () => {
-    const items = [
-      item({ _k: 'a', c: 'Spesa', n: 'Pomodori', b: true }),
-      item({ _k: 'b', c: 'Spesa', n: 'Pasta', b: true }),
-    ];
-    const groups = groupAcquisti(items, ACQUISTO_CATS);
-    expect(groups[0].activeCount).toBe(0);
+    expect(groups[0].activeCount).toBe(3);
   });
 
   it('activeCount equals items.length when none bought', () => {
@@ -84,7 +75,7 @@ describe('groupAcquisti', () => {
     const groups = groupAcquisti(items, ACQUISTO_CATS);
     expect(groups).toHaveLength(3);
     const spesa = groups.find(g => g.cat.id === 'Spesa')!;
-    expect(spesa.activeCount).toBe(1);
+    expect(spesa.activeCount).toBe(2);
     const igiene = groups.find(g => g.cat.id === 'Igiene')!;
     expect(igiene.activeCount).toBe(1);
     const pulizia = groups.find(g => g.cat.id === 'Pulizia')!;
