@@ -45,15 +45,15 @@
   <div class="dim-row">
     <div class="dim-group">
       <span class="dim-label">Lunghezza (cm)</span>
-      <input class="inp dim-inp" type="text" inputmode="numeric" aria-label="Lunghezza" bind:value={l} />
+      <input class="inp dim-inp" type="number" min="0" step="any" aria-label="Lunghezza" bind:value={l} />
     </div>
     <div class="dim-group">
       <span class="dim-label">Profondità (cm)</span>
-      <input class="inp dim-inp" type="text" inputmode="numeric" aria-label="Profondità" bind:value={w} />
+      <input class="inp dim-inp" type="number" min="0" step="any" aria-label="Profondità" bind:value={w} />
     </div>
     <div class="dim-group">
       <span class="dim-label">Altezza (cm)</span>
-      <input class="inp dim-inp" type="text" inputmode="numeric" aria-label="Altezza" bind:value={h} />
+      <input class="inp dim-inp" type="number" min="0" step="any" aria-label="Altezza" bind:value={h} />
     </div>
   </div>
   <input class="inp" placeholder="Note" aria-label="Note" bind:value={note} />
@@ -76,6 +76,8 @@
   .dim-group { flex: 1; display: flex; flex-direction: column; gap: 4px; }
   .dim-label { font-size: 10px; font-weight: 800; color: var(--text-muted); text-align: center; letter-spacing: .5px; }
   .dim-inp { text-align: center; font-size: 18px; font-weight: 800; margin-bottom: 0; padding: 8px 4px; }
+  .dim-inp::-webkit-inner-spin-button, .dim-inp::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+  .dim-inp[type=number] { -moz-appearance: textfield; }
   .photo-btn {
     all: unset; display: block; width: 100%; height: 50px;
     border: 2px dashed var(--border); border-radius: 10px; background: var(--bg-app);

@@ -17,7 +17,6 @@
     try {
       if (isRegister) await register(email, password);
       else await login(email, password);
-      window.location.reload();
     } catch (e: unknown) {
       const msg = e instanceof Error ? e.message : '';
       if (msg.includes('user-not-found') || msg.includes('wrong-password') || msg.includes('invalid-credential'))
@@ -82,9 +81,9 @@
       {#if !isRegister}
         <button class="btn-link" onclick={() => { showReset = true; resetEmail = email; }}>Password dimenticata?</button>
       {/if}
-      <button class="btn-link" onclick={toggleMode}>
-        {isRegister ? 'Hai gi\u00E0 un account? Accedi' : 'Non hai un account? Registrati'}
-      </button>
+      {#if isRegister}
+        <button class="btn-link" onclick={toggleMode}>Hai gi\u00E0 un account? Accedi</button>
+      {/if}
     {/if}
   </div>
 </div>

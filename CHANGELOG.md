@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Removed
+
+- **Checkbox "segna comprato" nel tab Da acquistare**: rimossa la funzionalità di spunta degli articoli (con strikethrough e opacità ridotta) — gli articoli si eliminano direttamente quando acquistati
+- **Link "Non hai un account? Registrati"**: nascosto dalla schermata di login (app privata)
+
+### Changed
+
+- **Icona elimina**: sostituita la X con un'icona cestino in AcquistoCard, ExpenseCard e MisuraCard
+- **Header**: titolo unificato "Casa Criscuolo / Falabella" su una riga, con "/ Falabella" in colore accent, allineato verticalmente all'ingranaggio
+
+### Fixed
+
+- **Login senza reload**: rimosso `window.location.reload()` dopo il login — l'aggiornamento UI avviene già tramite il listener `onAuth`
+- **Campi dimensioni MisuraForm**: ora accettano solo valori numerici (`type="number"`), le frecce spinner sono nascoste
+
 ### Fixed
 
 - **Modali renderizzate fuori da `.body` nel layout**: tutte le modali (edit, confirm, settings, svuota) ora sono gestite via store `currentModal` e renderizzate in `+layout.svelte` come siblings di `.app`, fuori dal contenitore scrollabile `.body`. `scrollLock` inoltre setta `overflow:hidden` su `.body` all'apertura. Risolve definitivamente i problemi di `position:fixed` su iOS Safari (scroll chaining e overlay visualmente rotto)
