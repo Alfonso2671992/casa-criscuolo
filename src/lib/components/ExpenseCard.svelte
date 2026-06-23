@@ -78,7 +78,7 @@
   .header { display: flex; align-items: center; gap: 9px; }
   .icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
   .info { flex: 1; min-width: 0; }
-  .name { font-size: 14px; font-weight: 700; color: var(--text-primary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .name { font-size: 14px; font-weight: 700; color: var(--text-primary); font-family: Georgia, serif; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .meta { font-size: 11px; color: var(--text-muted); font-weight: 500; margin-top: 4px; }
   .card > .meta { margin-top: 8px; }
   .amt { font-size: 16px; font-weight: 800; color: var(--text-primary); font-family: Georgia, serif; flex-shrink: 0; }
