@@ -16,7 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **Icona elimina**: sostituita la X con un'icona cestino in AcquistoCard, ExpenseCard e MisuraCard
 - **Header**: titolo unificato "Casa Criscuolo / Falabella" su una riga, con "/ Falabella" in colore accent, allineato verticalmente all'ingranaggio
-- **Header**: aggiunta icona chiave stilizzata (accent) a sinistra del titolo
+- **Header**: aggiunta icona chiave stilizzata (accent) a sinistra del titolo; titolo su due righe ("Casa Criscuolo" + "/ Falabella" italic accent) coerente con la schermata di login
 - **ExpenseCard**: font Georgia, serif per i nomi delle spese, coerente con AcquistoCard
 
 ### Fixed
