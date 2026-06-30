@@ -21,10 +21,6 @@ const {
   totalUnpaid,
   totalPaid,
   darkMode,
-  budget,
-  budgetMonth,
-  monthlyStats,
-  saveBudget,
 } = await import('./stores');
 
 describe('showToast', () => {
@@ -99,76 +95,6 @@ describe('totalUnpaid / totalPaid', () => {
     cacheExpenses([]);
     expect(get(totalUnpaid)).toBe(0);
     expect(get(totalPaid)).toBe(0);
-  });
-});
-
-describe('budgetMonth', () => {
-  it('defaults to current YYYY-MM', () => {
-    const now = new Date();
-    const ym = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
-    expect(get(budgetMonth)).toBe(ym);
-  });
-});
-
-describe('saveBudget', () => {
-  it('persists to store and localStorage', () => {
-    saveBudget({ luce: 100, spesa: 300 });
-    expect(get(budget)).toEqual({ luce: 100, spesa: 300 });
-    expect(JSON.parse(localStorage.getItem('cc_budget')!)).toEqual({ luce: 100, spesa: 300 });
-  });
-
-  it('overwrites previous budget', () => {
-    saveBudget({ luce: 50 });
-    saveBudget({ luce: 80, gas: 60 });
-    expect(get(budget)).toEqual({ luce: 80, gas: 60 });
-  });
-});
-
-describe('monthlyStats', () => {
-  it('only counts paid expenses (s=ok)', () => {
-    budgetMonth.set('2026-05');
-    cacheExpenses([
-      { _k: 'e1', n: 'a', a: 100, c: 'luce', dt: '2026-05-10', sc: null, payer: 'A', half: null, s: 'ok' as const, ts: 1 },
-      { _k: 'e2', n: 'b', a: 50, c: 'luce', dt: '2026-05-10', sc: null, payer: 'A', half: null, s: 'da' as const, ts: 2 },
-    ]);
-    expect(get(monthlyStats).get('luce')).toBe(100);
-  });
-
-  it('filters by budgetMonth', () => {
-    budgetMonth.set('2026-04');
-    cacheExpenses([
-      { _k: 'e1', n: 'a', a: 30, c: 'spesa', dt: '2026-04-15', sc: null, payer: 'A', half: null, s: 'ok' as const, ts: 1 },
-      { _k: 'e2', n: 'b', a: 20, c: 'spesa', dt: '2026-05-01', sc: null, payer: 'A', half: null, s: 'ok' as const, ts: 2 },
-    ]);
-    expect(get(monthlyStats).get('spesa')).toBe(30);
-  });
-
-  it('uses sc (scadenza) as fallback date', () => {
-    budgetMonth.set('2026-06');
-    cacheExpenses([
-      { _k: 'e1', n: 'a', a: 75, c: 'luce', dt: null, sc: '2026-06-05', payer: 'A', half: null, s: 'ok' as const, ts: 1 },
-    ]);
-    expect(get(monthlyStats).get('luce')).toBe(75);
-  });
-
-  it('groups by category', () => {
-    budgetMonth.set('2026-05');
-    cacheExpenses([
-      { _k: 'e1', n: 'a', a: 10, c: 'luce', dt: '2026-05-01', sc: null, payer: 'A', half: null, s: 'ok' as const, ts: 1 },
-      { _k: 'e2', n: 'b', a: 20, c: 'luce', dt: '2026-05-02', sc: null, payer: 'A', half: null, s: 'ok' as const, ts: 2 },
-      { _k: 'e3', n: 'c', a: 30, c: 'acqua', dt: '2026-05-03', sc: null, payer: 'A', half: null, s: 'ok' as const, ts: 3 },
-    ]);
-    const m = get(monthlyStats);
-    expect(m.get('luce')).toBe(30);
-    expect(m.get('acqua')).toBe(30);
-  });
-
-  it('returns empty map when no expenses match', () => {
-    budgetMonth.set('2026-01');
-    cacheExpenses([
-      { _k: 'e1', n: 'a', a: 10, c: 'luce', dt: '2026-05-01', sc: null, payer: 'A', half: null, s: 'ok' as const, ts: 1 },
-    ]);
-    expect(get(monthlyStats).size).toBe(0);
   });
 });
 

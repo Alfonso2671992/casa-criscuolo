@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Removed
+
+- **`BudgetBar.svelte`**: componente rimasto orfano dopo la sostituzione con `Stats` — eliminato insieme a `budget`, `saveBudget`, `budgetMonth`, `monthlyStats` da stores.ts e relativi test
+
 ### Fixed
 
 - **Condominio usa "Scadenza" invece di "Data"**: aggiunto `condominio` a `BOLLETTE_IDS`; categoria spostata subito dopo Gas nella griglia categorie spese

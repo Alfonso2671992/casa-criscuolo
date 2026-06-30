@@ -80,27 +80,4 @@ export function initDark() {
 
 export const currentModal = writable<ModalState>(null);
 
-export const budget = writable<Record<string, number>>(lsCache<Record<string, number>>('cc_budget', {}));
-
-export function saveBudget(b: Record<string, number>) {
-  budget.set(b);
-  try { localStorage.setItem('cc_budget', JSON.stringify(b)); } catch {}
-}
-
-export const budgetMonth = writable<string>(
-  new Date().getFullYear() + '-' + String(new Date().getMonth() + 1).padStart(2, '0')
-);
-
-export const monthlyStats = derived([expenses, budgetMonth], ([$e, $bm]) => {
-  const cats = new Map<string, number>();
-  for (const exp of $e) {
-    if (exp.s !== 'ok') continue;
-    const d = exp.sc ?? exp.dt;
-    if (d && d.startsWith($bm)) {
-      cats.set(exp.c, (cats.get(exp.c) || 0) + exp.a);
-    }
-  }
-  return cats;
-});
-
 
