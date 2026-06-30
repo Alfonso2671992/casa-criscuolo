@@ -6,7 +6,6 @@
   import { groupAcquisti } from '$lib/group-acquisti';
   import { sortDaPagare } from '$lib/utils';
   import SummaryBar from '$lib/components/SummaryBar.svelte';
-  import Stats from '$lib/components/Stats.svelte';
   import ExpenseForm from '$lib/components/ExpenseForm.svelte';
   import ExpenseCard from '$lib/components/ExpenseCard.svelte';
   import WishForm from '$lib/components/WishForm.svelte';
@@ -20,7 +19,7 @@
   let unsubMis = $state<() => void>(() => {});
   let unsubAcq = $state<() => void>(() => {});
 
-  let collapsed = $state(new Set<string>(['__paid', '__stats']));
+  let collapsed = $state(new Set<string>(['__paid']));
   let loaded = $state({ exp: false, wish: false, mis: false, acq: false });
 
   function toggleCat(id: string) {
@@ -106,15 +105,6 @@
       {/if}
     {/each}
   {/if}
-  <div class="group-header" class:collapsed={collapsed.has('__stats')} style="color:var(--accent)" onclick={() => toggleCat('__stats')} onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleCat('__stats'); } }} role="button" tabindex="0">
-    <span>Riepilogo Spese</span>
-    <svg class="chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
-  </div>
-  {#if !collapsed.has('__stats')}
-    <div class="budget-section">
-      <Stats />
-    </div>
-  {/if}
 </div>
 
 <!-- DA ACQUISTARE -->
@@ -183,5 +173,4 @@
     padding: 8px 14px; border-radius: 9px; cursor: pointer;
     background: var(--accent); color: var(--color-white); letter-spacing: .3px;
   }
-  .budget-section { background: var(--bg-card); border-radius: 16px; padding: 12px 14px; margin-bottom: 10px; border: 1.5px solid var(--border-light); }
 </style>

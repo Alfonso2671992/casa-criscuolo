@@ -3,7 +3,7 @@ import { apiHandler, ApiError } from '$lib/server/api-utils';
 import { updateWish, deleteWish } from '$lib/server/firebase-admin';
 import { cap } from '$lib/utils';
 
-const VALID_WISH_FIELDS = ['n', 'c', 'd', 'l', 'bgt', 'p', 'b'];
+const VALID_WISH_FIELDS = ['n', 'c', 'd', 'l', 'bgt', 'p'];
 
 export async function PATCH({ params, request }) {
   return apiHandler(request, async () => {
@@ -19,7 +19,6 @@ export async function PATCH({ params, request }) {
         else if (k === 'l') update.l = (body.l || '').toString().slice(0, 2000);
         else if (k === 'bgt') update.bgt = body.bgt != null ? parseFloat(body.bgt) : null;
         else if (k === 'p') update.p = body.p || null;
-        else if (k === 'b') update.b = !!body.b;
       }
     }
     await updateWish(id, update);

@@ -9,10 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
+- **Riepilogo Spese**: sezione rimossa dal tab Spese; `Stats.svelte` eliminato
+- **"Segna comprato" in WishCard**: pulsante e logica rimossi — gli oggetti si eliminano direttamente quando acquistati; campo `b` rimosso da `WishItem`, API e tipo
 - **`BudgetBar.svelte`**: componente rimasto orfano dopo la sostituzione con `Stats` — eliminato insieme a `budget`, `saveBudget`, `budgetMonth`, `monthlyStats` da stores.ts e relativi test
 
 ### Fixed
 
+- **AcquistoCard: bottone elimina allineato agli altri** — aggiunto `bg-secondary` e `color-brown` come ExpenseCard e MisuraCard
 - **Condominio usa "Scadenza" invece di "Data"**: aggiunto `condominio` a `BOLLETTE_IDS`; categoria spostata subito dopo Gas nella griglia categorie spese
 
 - **Campo `b` rimosso da `AcquistoItem`**: eliminato campo booleano "comprato" da tipo, API di creazione, API di modifica e server — era rimasto come codice morto dopo la rimozione del checkbox

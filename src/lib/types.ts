@@ -20,7 +20,6 @@ export interface WishItem {
   l: string;
   bgt: number | null;
   p: string | null;
-  b: boolean;
   ts: number;
 }
 

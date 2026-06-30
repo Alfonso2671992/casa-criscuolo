@@ -50,8 +50,8 @@
     white-space: nowrap; flex-shrink: 0;
   }
   .remove {
-    all: unset; width: 44px; height: 44px; border-radius: 10px; cursor: pointer;
+    all: unset; width: 36px; height: 36px; border-radius: 9px; cursor: pointer;
     display: flex; align-items: center; justify-content: center;
-    color: var(--text-muted); flex-shrink: 0;
+    background: var(--bg-secondary); color: var(--color-brown); flex-shrink: 0;
   }
 </style>
