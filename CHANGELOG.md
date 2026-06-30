@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **Dark mode: palette più chiara** — sfondo, card e bordi alzati di luminosità; testo secondario e muted più brillanti per migliorare la leggibilità generale
 - **MisuraCard: icona placeholder cambiata** — da documento generico a righello con tacche, più pertinente al contesto misure
 
 ### Fixed
