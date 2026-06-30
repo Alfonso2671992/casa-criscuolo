@@ -27,7 +27,7 @@
     <img src={photoUrl} class="photo" alt={misura.n} />
   {:else}
     <div class="ph">
-      <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="1.5"><path d="M3 6h18M3 12h12M3 18h8"/><rect x="2" y="4" width="20" height="16" rx="2"/></svg>
+      <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="10" rx="1.5"/><path d="M6 7v3M9 7v2M12 7v3M15 7v2M18 7v3"/></svg>
     </div>
   {/if}
   <div class="body">
