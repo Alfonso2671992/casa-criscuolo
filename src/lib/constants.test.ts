@@ -46,11 +46,12 @@ describe('DAYS', () => {
 });
 
 describe('BOLLETTE_IDS', () => {
-  it('has 3 ids', () => expect(BOLLETTE_IDS).toHaveLength(3));
-  it('includes luce, acqua, gas', () => {
+  it('has 4 ids', () => expect(BOLLETTE_IDS).toHaveLength(4));
+  it('includes luce, acqua, gas, condominio', () => {
     expect(BOLLETTE_IDS).toContain('luce');
     expect(BOLLETTE_IDS).toContain('acqua');
     expect(BOLLETTE_IDS).toContain('gas');
+    expect(BOLLETTE_IDS).toContain('condominio');
   });
 });
 
