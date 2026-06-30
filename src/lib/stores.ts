@@ -44,11 +44,6 @@ export function showToast(msg: string, duration = 3000, action?: { label: string
   if (duration > 0) _toastTimer = setTimeout(() => toast.set(null), duration);
 }
 
-function saveNames(n: Names) {
-  names.set(n);
-  try { localStorage.setItem('cc_n', JSON.stringify(n)); } catch {}
-}
-
 export function cacheExpenses(data: Expense[]) {
   expenses.set(data);
   try { localStorage.setItem('cc_e', JSON.stringify(data)); } catch {}

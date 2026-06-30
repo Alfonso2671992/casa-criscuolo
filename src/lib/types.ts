@@ -40,7 +40,6 @@ export interface AcquistoItem {
   _k?: string;
   n: string;
   c: string;
-  b: boolean;
   qta: string;
   ts: number;
 }

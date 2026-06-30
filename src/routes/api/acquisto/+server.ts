@@ -14,7 +14,7 @@ export async function POST({ request }) {
     await addAcquisto({
       n, c: body.c || 'Spesa',
       qta: (body.qta || '').toString().slice(0, 50),
-      b: false, ts: Date.now(),
+      ts: Date.now(),
     });
     return json({ ok: true });
   });

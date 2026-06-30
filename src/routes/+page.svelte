@@ -96,7 +96,7 @@
     <svg class="chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
   </div>
   {#if !collapsed.has('__paid')}
-    {#each $expenses.filter(e => e.s === 'ok') as exp (exp._k)}
+    {#each $expenses.filter(e => e.s === 'ok').sort((a, b) => (b.paidAt ?? b.dt ?? '').localeCompare(a.paidAt ?? a.dt ?? '')) as exp (exp._k)}
       <ExpenseCard expense={exp} isDa={false} />
     {:else}
       {#if loaded.exp}

@@ -15,7 +15,6 @@ export async function PATCH({ params, request }) {
       if (k in body) {
         if (k === 'n') update.n = cap((body.n || '').toString().slice(0, 200));
         else if (k === 'c') update.c = body.c;
-        else if (k === 'b') update.b = !!body.b;
         else if (k === 'qta') update.qta = (body.qta || '').toString().slice(0, 50);
       }
     }

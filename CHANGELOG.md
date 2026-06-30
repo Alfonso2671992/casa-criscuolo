@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- **Campo `b` rimosso da `AcquistoItem`**: eliminato campo booleano "comprato" da tipo, API di creazione, API di modifica e server — era rimasto come codice morto dopo la rimozione del checkbox
+- **`saveNames` rimossa da stores.ts**: funzione non esportata e mai chiamata, dead code
+- **Overlay dark mode in `ExpenseEditModal` e `WishEditModal`**: sostituito `rgba(0,0,0,.35)` hardcoded con `var(--overlay-bg)` per coerenza con dark mode
+- **Input dimensioni in `MisuraEditModal`**: allineati a `MisuraForm` con `type="number"` e spinner nascosti (prima usavano `type="text"`)
+- **Spese pagate ordinate per data decrescente**: le più recenti appaiono in cima (ordinamento per `paidAt`, fallback su `dt`)
+
 ### Removed
 
 - **Checkbox "segna comprato" nel tab Da acquistare**: rimossa la funzionalità di spunta degli articoli (con strikethrough e opacità ridotta) — gli articoli si eliminano direttamente quando acquistati
