@@ -13,6 +13,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **"Segna comprato" in WishCard**: pulsante e logica rimossi — gli oggetti si eliminano direttamente quando acquistati; campo `b` rimosso da `WishItem`, API e tipo
 - **`BudgetBar.svelte`**: componente rimasto orfano dopo la sostituzione con `Stats` — eliminato insieme a `budget`, `saveBudget`, `budgetMonth`, `monthlyStats` da stores.ts e relativi test
 
+### Fixed
+
+- **Double-escaping testo nelle card**: rimosso `esc()` dalle interpolazioni Svelte in WishCard, ExpenseCard e MisuraCard — Svelte gestisce già l'escaping nei template `{}`
+- **Formato numeri italiano**: importi e misure ora usano la virgola decimale (`€10,00`, `L 77,88 cm`) — aggiunta `fmtEuro()` in utils.ts, aggiornata `fmtDim()`
+
 ### Changed
 
 - **Dark mode: palette più chiara** — sfondo, card e bordi alzati di luminosità; testo secondario e muted più brillanti per migliorare la leggibilità generale

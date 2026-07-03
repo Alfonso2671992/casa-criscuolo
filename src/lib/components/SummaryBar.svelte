@@ -1,15 +1,16 @@
 <script lang="ts">
   import { totalUnpaid, totalPaid } from '$lib/stores';
+  import { fmtEuro } from '$lib/utils';
 </script>
 
 <div class="grid">
   <div class="card da">
     <div class="label">Da pagare</div>
-    <div class="val">€ {$totalUnpaid.toFixed(2)}</div>
+    <div class="val">€ {fmtEuro($totalUnpaid)}</div>
   </div>
   <div class="card ok">
     <div class="label">Pagate</div>
-    <div class="val">€ {$totalPaid.toFixed(2)}</div>
+    <div class="val">€ {fmtEuro($totalPaid)}</div>
   </div>
 </div>
 

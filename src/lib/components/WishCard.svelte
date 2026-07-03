@@ -1,6 +1,6 @@
 <script lang="ts">
   import { CASA_CATS, FALLBACK_CASA } from '$lib/constants';
-  import { esc, safeUrl } from '$lib/utils';
+  import { safeUrl, fmtEuro } from '$lib/utils';
   import { showToast, currentModal } from '$lib/stores';
   import { authFetch, getPhoto, isPhotoRef, isDataUrl } from '$lib/firebase-client';
   import type { WishItem } from '$lib/types';
@@ -30,11 +30,11 @@
   {/if}
   <div class="body">
     <div class="top">
-      <span class="name">{esc(wish.n)}</span>
-      <span class="cat-badge" style="background:{cat.bg};color:{cat.color};border-color:{cat.color}">{esc(wish.c)}</span>
+      <span class="name">{wish.n}</span>
+      <span class="cat-badge" style="background:{cat.bg};color:{cat.color};border-color:{cat.color}">{wish.c}</span>
     </div>
-    {#if wish.d}<div class="detail">{esc(wish.d)}</div>{/if}
-    {#if wish.bgt}<div class="budget">Budget: €{wish.bgt}</div>{/if}
+    {#if wish.d}<div class="detail">{wish.d}</div>{/if}
+    {#if wish.bgt}<div class="budget">Budget: €{fmtEuro(wish.bgt)}</div>{/if}
     {#if wish.l && safeUrl(wish.l)}
       <a href={safeUrl(wish.l)} target="_blank" class="link">Apri link →</a>
     {/if}

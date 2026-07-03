@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { esc, fmtDim } from '$lib/utils';
+  import { fmtDim } from '$lib/utils';
   import { showToast, currentModal } from '$lib/stores';
   import { authFetch, getPhoto, isPhotoRef, isDataUrl } from '$lib/firebase-client';
   import type { Misura } from '$lib/types';
@@ -32,7 +32,7 @@
   {/if}
   <div class="body">
     <div class="top">
-      <span class="name">{esc(misura.n)}</span>
+      <span class="name">{misura.n}</span>
       <div class="top-actions">
         <button class="btn-edit" onclick={() => currentModal.set({ type: 'misura-edit', misura })} aria-label="Modifica">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
@@ -45,10 +45,10 @@
     {#if dimDisplay}
       <div class="badge">
         <svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.5"><path d="M4 20h16M4 4v16"/><path d="M8 16V8M12 16v-4M16 16V6"/></svg>
-        <span>{esc(dimDisplay)}</span>
+        <span>{dimDisplay}</span>
       </div>
     {/if}
-    {#if misura.note}<div class="note">{esc(misura.note)}</div>{/if}
+    {#if misura.note}<div class="note">{misura.note}</div>{/if}
   </div>
 </div>
 

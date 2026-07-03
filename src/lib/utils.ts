@@ -54,11 +54,16 @@ export function sortDaPagare(a: { sc: string | null; dt: string | null }, b: { s
 }
 
 export function fmtDim(l: number | null, w: number | null, h: number | null): string {
+  const fmt = (n: number) => String(n).replace('.', ',');
   const parts: string[] = [];
-  if (l != null) parts.push('L ' + l + ' cm');
-  if (w != null) parts.push('P ' + w + ' cm');
-  if (h != null) parts.push('A ' + h + ' cm');
+  if (l != null) parts.push('L ' + fmt(l) + ' cm');
+  if (w != null) parts.push('P ' + fmt(w) + ' cm');
+  if (h != null) parts.push('A ' + fmt(h) + ' cm');
   return parts.join(' × ');
+}
+
+export function fmtEuro(n: number): string {
+  return n.toFixed(2).replace('.', ',');
 }
 
 export function compressImg(file: File, maxDim = 800, quality = 0.7): Promise<string> {
