@@ -51,7 +51,7 @@
   .photo-ph { width: 100%; height: 56px; display: flex; align-items: center; justify-content: center; }
   .body { padding: 10px 13px 12px; }
 .top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; margin-bottom: 4px; }
-  .name { font-size: 14px; font-weight: 700; font-family: 'New York', 'Iowan Old Style', Georgia, serif; }
+  .name { font-size: 14px; font-weight: 700; font-family: var(--font-serif); }
   .cat-badge { font-size: 10px; padding: 3px 9px; border-radius: 20px; flex-shrink: 0; font-weight: 700; border-width: 1px; border-style: solid; }
   .detail { font-size: 12px; color: var(--text-muted); font-weight: 600; margin-bottom: 4px; }
   .budget { font-size: 12px; color: var(--budget-color); font-weight: 700; margin-bottom: 4px; }

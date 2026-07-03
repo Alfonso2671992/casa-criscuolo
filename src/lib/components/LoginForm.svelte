@@ -100,8 +100,8 @@
     width: 48px; height: 48px; border-radius: 14px;
     background: var(--accent); display: flex; align-items: center; justify-content: center; flex-shrink: 0;
   }
-  .title { font-size: 20px; font-weight: 700; color: var(--text-primary); font-family: 'New York', 'Iowan Old Style', Georgia, serif; line-height: 1.2; text-align: left; }
-  .accent { font-size: 13px; font-weight: 600; color: var(--accent); font-family: 'New York', 'Iowan Old Style', Georgia, serif; font-style: italic; text-align: left; }
+  .title { font-size: 20px; font-weight: 700; color: var(--text-primary); font-family: var(--font-serif); line-height: 1.2; text-align: left; }
+  .accent { font-size: 13px; font-weight: 600; color: var(--accent); font-family: var(--font-serif); font-style: italic; text-align: left; }
   .subtitle { font-size: 14px; color: var(--text-secondary); font-weight: 500; margin: 16px 0 20px; }
   .inp {
     all: unset; display: block; width: 100%; padding: 10px 12px; border-radius: 10px;

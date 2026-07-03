@@ -1,8 +1,10 @@
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+button,input,select,textarea{font-family:inherit}
 :focus-visible{outline:2.5px solid var(--accent);outline-offset:2px;border-radius:4px}
 button:focus-visible{outline:2.5px solid var(--accent);outline-offset:2px;border-radius:8px}
 
 :root{
+  --font-serif:'Baskerville','New York','Iowan Old Style',Georgia,serif;
   --bg-app:#FAF3E8;--bg-card:#FDF6EC;--bg-html:#EDD5B0;--bg-secondary:#EDD9C0;
   --text-primary:#3D2010;--text-secondary:#8B6040;--text-muted:#A07850;
   --accent:#C4622D;--border:#D4A574;--border-light:#EDD9C0;
@@ -30,7 +32,7 @@ html[data-theme="dark"]{
   --photo-ph-bg:#48341E;--primary-border:#6A4E38;--bought-card-bg:#243C14;--bought-border:#6A9A3A;
   --budget-color:#CE93D8;--divider-line-bg:#6A4E38;--overlay-bg:rgba(0,0,0,.55);
 }
-html,body{height:100%;overflow:hidden;background:var(--bg-html);font-family:'New York','Iowan Old Style',Georgia,serif}
+html,body{height:100%;overflow:hidden;background:var(--bg-html);font-family:var(--font-serif)}
 input[type=number]::-webkit-inner-spin-button,
 input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
 input[type=number]{-moz-appearance:textfield}

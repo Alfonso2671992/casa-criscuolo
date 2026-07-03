@@ -58,7 +58,7 @@
   .ph { width: 100%; height: 52px; background: var(--photo-ph-bg); display: flex; align-items: center; justify-content: center; }
   .body { padding: 10px 13px 12px; }
   .top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; margin-bottom: 5px; }
-  .name { font-size: 14px; font-weight: 700; color: var(--text-primary); font-family: 'New York', 'Iowan Old Style', Georgia, serif; }
+  .name { font-size: 14px; font-weight: 700; color: var(--text-primary); font-family: var(--font-serif); }
   .top-actions { display: flex; gap: 8px; align-items: center; }
   .btn-edit, .btn-del { all: unset; width: 36px; height: 36px; border-radius: 9px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
   .btn-edit { background: var(--accent); color: var(--color-white); }

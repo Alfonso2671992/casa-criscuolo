@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **Font serif aggiornato**: sostituito `Georgia` con `'New York', 'Iowan Old Style', Georgia, serif` — su iOS usa il serif nativo Apple (New York) per un look più raffinato; Georgia rimane fallback su Android/desktop
 - **Font serif esteso a tutta l'app**: tab, categorie, label e bottoni usano ora lo stesso serif del body invece del sans-serif di sistema
+- **CSS variable `--font-serif`**: il font serif è ora configurabile da una sola riga in `app.css`; font attivo: Baskerville (con fallback New York → Iowan Old Style → Georgia)
 
 ### Added
 
