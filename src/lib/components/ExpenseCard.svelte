@@ -13,13 +13,13 @@
   const urgClass = $derived(isDa && days !== null ? (days < 0 ? 'scaduta' : days <= 5 ? 'urgente' : '') : '');
   const badge = $derived.by(() => {
     if (days === null) return null;
-    let text: string, color: string, bg: string;
-    if (days < 0) { text = `Scaduta da ${Math.abs(days)}g`; color = '#C4622D'; bg = '#FFE0D0'; }
-    else if (days === 0) { text = 'Scade oggi!'; color = '#C4622D'; bg = '#FFE0D0'; }
-    else if (days <= 5) { text = `Scade tra ${days}g`; color = '#C4622D'; bg = '#FFE0D0'; }
-    else if (days <= 10) { text = `Scade tra ${days}g`; color = '#A05010'; bg = '#FFF3CD'; }
-    else { text = `Scade il ${strToDisplay(expense.sc)}`; color = '#6B7280'; bg = '#F3F4F6'; }
-    return { text, color, bg };
+    let text: string, type: 'urgent' | 'warning' | 'neutral';
+    if (days < 0) { text = `Scaduta da ${Math.abs(days)}g`; type = 'urgent'; }
+    else if (days === 0) { text = 'Scade oggi!'; type = 'urgent'; }
+    else if (days <= 5) { text = `Scade tra ${days}g`; type = 'urgent'; }
+    else if (days <= 10) { text = `Scade tra ${days}g`; type = 'warning'; }
+    else { text = `Scade il ${strToDisplay(expense.sc)}`; type = 'neutral'; }
+    return { text, type };
   });
 
   async function toggle() {
@@ -52,9 +52,9 @@
   </div>
 
   {#if isDa && badge}
-    <div class="badge" style="background:{badge.bg}">
-      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke={badge.color} stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-      <span style="color:{badge.color}">{badge.text}</span>
+    <div class="badge badge-{badge.type}">
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      <span>{badge.text}</span>
     </div>
   {:else if !isDa && expense.sc}
     <div class="meta">Scadenza: {strToDisplay(expense.sc)}</div>
@@ -83,6 +83,9 @@
   .card > .meta { margin-top: 8px; }
   .amt { font-size: 16px; font-weight: 800; color: var(--text-primary); font-family: Georgia, serif; flex-shrink: 0; }
   .badge { display: inline-flex; align-items: center; gap: 5px; margin-top: 8px; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; }
+  .badge-urgent { background: var(--badge-urgent-bg); color: var(--badge-urgent-color); }
+  .badge-warning { background: var(--badge-warning-bg); color: var(--badge-warning-color); }
+  .badge-neutral { background: var(--badge-neutral-bg); color: var(--badge-neutral-color); }
   .actions { display: flex; gap: 8px; margin-top: 10px; }
   .btn-primary-sm, .btn-secondary-sm { all: unset; flex: 1; height: 36px; border-radius: 9px; font-size: 13px; font-weight: 800; text-align: center; cursor: pointer; display: flex; align-items: center; justify-content: center; }
   .btn-primary-sm { background: var(--accent); color: var(--color-white); }
