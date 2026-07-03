@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **Dark mode automatico da sistema**: al primo avvio (senza preferenza salvata) l'app segue `prefers-color-scheme` del dispositivo invece di partire sempre in light mode
+- **Badge urgenza sul tab Spese**: pallino rosso con contatore sul tab Spese quando ci sono bollette scadute o in scadenza entro 5 giorni
+
 ### Fixed
 
 - **Dead field `b` rimosso dalla POST wish**: la route `/api/wish` non scriveva più `b: false` su Firebase dopo la rimozione del campo da `WishItem`

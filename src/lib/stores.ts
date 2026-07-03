@@ -66,7 +66,9 @@ export function cacheAcquisti(data: AcquistoItem[]) {
 
 function lsDark(): boolean {
   try {
-    return localStorage.getItem('cc_dark') === 'true';
+    const stored = localStorage.getItem('cc_dark');
+    if (stored !== null) return stored === 'true';
+    return window.matchMedia?.('(prefers-color-scheme: dark)').matches ?? false;
   } catch { return false; }
 }
 
@@ -77,6 +79,15 @@ export function initDark() {
   darkMode.set(d);
   document.documentElement.setAttribute('data-theme', d ? 'dark' : 'light');
 }
+
+export const urgentCount = derived(expenses, ($e) => {
+  const todayMs = new Date(new Date().toISOString().slice(0, 10) + 'T00:00:00').getTime();
+  return $e.filter(e => {
+    if (e.s !== 'da' || !e.sc) return false;
+    const days = Math.round((new Date(e.sc + 'T00:00:00').getTime() - todayMs) / 86400000);
+    return days <= 5;
+  }).length;
+});
 
 export const currentModal = writable<ModalState>(null);
 

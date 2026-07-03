@@ -21,6 +21,7 @@ const {
   totalUnpaid,
   totalPaid,
   darkMode,
+  urgentCount,
 } = await import('./stores');
 
 describe('showToast', () => {
@@ -101,6 +102,7 @@ describe('totalUnpaid / totalPaid', () => {
 describe('initDark', () => {
   beforeEach(() => {
     document.documentElement.removeAttribute('data-theme');
+    Object.defineProperty(window, 'matchMedia', { writable: true, configurable: true, value: undefined });
   });
 
   it('sets data-theme to dark when cc_dark is true', () => {
@@ -117,9 +119,41 @@ describe('initDark', () => {
     expect(get(darkMode)).toBe(false);
   });
 
-  it('defaults to light when cc_dark is not set', () => {
+  it('follows system dark preference when cc_dark is not set', () => {
+    Object.defineProperty(window, 'matchMedia', {
+      writable: true, configurable: true,
+      value: (q: string) => ({ matches: q.includes('dark'), media: q, addListener: () => {}, removeListener: () => {} }),
+    });
+    initDark();
+    expect(document.documentElement.getAttribute('data-theme')).toBe('dark');
+    expect(get(darkMode)).toBe(true);
+  });
+
+  it('defaults to light when cc_dark is not set and matchMedia unavailable', () => {
     initDark();
     expect(document.documentElement.getAttribute('data-theme')).toBe('light');
     expect(get(darkMode)).toBe(false);
+  });
+});
+
+describe('urgentCount', () => {
+  it('counts da-pagare with sc within 5 days', () => {
+    const d = (offset: number) => {
+      const dt = new Date();
+      dt.setDate(dt.getDate() + offset);
+      return dt.toISOString().slice(0, 10);
+    };
+    cacheExpenses([
+      { _k: 'e1', n: 'a', a: 10, c: 'luce', dt: null, sc: d(-1), payer: 'A', half: null, s: 'da' as const, ts: 1 },  // scaduta
+      { _k: 'e2', n: 'b', a: 10, c: 'gas', dt: null, sc: d(3),  payer: 'A', half: null, s: 'da' as const, ts: 2 },  // tra 3 giorni
+      { _k: 'e3', n: 'c', a: 10, c: 'acqua', dt: null, sc: d(30), payer: 'A', half: null, s: 'da' as const, ts: 3 }, // tra 30 giorni
+      { _k: 'e4', n: 'd', a: 10, c: 'luce', dt: null, sc: d(-1), payer: 'A', half: null, s: 'ok' as const, ts: 4 }, // pagata
+    ]);
+    expect(get(urgentCount)).toBe(2);
+  });
+
+  it('returns 0 when no urgent expenses', () => {
+    cacheExpenses([]);
+    expect(get(urgentCount)).toBe(0);
   });
 });
