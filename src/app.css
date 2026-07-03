@@ -30,7 +30,7 @@ html[data-theme="dark"]{
   --photo-ph-bg:#48341E;--primary-border:#6A4E38;--bought-card-bg:#243C14;--bought-border:#6A9A3A;
   --budget-color:#CE93D8;--divider-line-bg:#6A4E38;--overlay-bg:rgba(0,0,0,.55);
 }
-html,body{height:100%;overflow:hidden;background:var(--bg-html);font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Segoe UI',sans-serif}
+html,body{height:100%;overflow:hidden;background:var(--bg-html);font-family:'New York','Iowan Old Style',Georgia,serif}
 input[type=number]::-webkit-inner-spin-button,
 input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
 input[type=number]{-moz-appearance:textfield}
