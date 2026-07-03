@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Modifica spesa condominio non perde la data**: in `ExpenseEditModal`, se la spesa ha `dt` ma non `sc` (vecchie spese prima dell'aggiunta di condominio a BOLLETTE_IDS), il campo Scadenza viene inizializzato con `dt` anziché essere vuoto
 - **Double-escaping testo nelle card**: rimosso `esc()` dalle interpolazioni Svelte in WishCard, ExpenseCard e MisuraCard — Svelte gestisce già l'escaping nei template `{}`
 - **Formato numeri italiano**: importi e misure ora usano la virgola decimale (`€10,00`, `L 77,88 cm`) — aggiunta `fmtEuro()` in utils.ts, aggiornata `fmtDim()`
 

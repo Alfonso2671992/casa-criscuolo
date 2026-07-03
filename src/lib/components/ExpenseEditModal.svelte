@@ -16,7 +16,7 @@
   let cat = $state(c0);
   let payer = $state(p0);
   let selectedDate = $state(dt0 ?? today());
-  let selectedScad = $state<string | null>(sc0);
+  let selectedScad = $state<string | null>(sc0 ?? (BOLLETTE_IDS.includes(c0) ? dt0 : null));
   let showScad = $derived(BOLLETTE_IDS.includes(cat));
   let submitting = $state(false);
 
