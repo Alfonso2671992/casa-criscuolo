@@ -85,7 +85,7 @@
 
 <style>
   .overlay {
-    position: fixed; inset: 0; background: rgba(0,0,0,.35); z-index: 100;
+    position: fixed; inset: 0; background: var(--overlay-bg); z-index: 100;
     display: flex; align-items: center; justify-content: center;
     padding: calc(env(safe-area-inset-top) + 110px) 0 50px;
   }

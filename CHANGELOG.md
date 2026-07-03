@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - **Badge scadenza in dark mode**: rimossi colori hardcoded (`#FFE0D0`, `#FFF3CD`, `#F3F4F6`) dai badge di `ExpenseCard`; sostituiti con CSS variables tematizzate (`--badge-urgent-*`, `--badge-warning-*`, `--badge-neutral-*`) che si adattano correttamente al dark mode
+- **Overlay `MisuraEditModal`**: sostituito `rgba(0,0,0,.35)` hardcoded con `var(--overlay-bg)` — coerente con gli altri modal
 
 ### Removed
 
