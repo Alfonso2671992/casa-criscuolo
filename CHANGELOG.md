@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- **Font serif aggiornato**: sostituito `Georgia` con `'New York', 'Iowan Old Style', Georgia, serif` — su iOS usa il serif nativo Apple (New York) per un look più raffinato; Georgia rimane fallback su Android/desktop
+
 ### Added
 
 - **Dark mode automatico da sistema**: al primo avvio (senza preferenza salvata) l'app segue `prefers-color-scheme` del dispositivo invece di partire sempre in light mode

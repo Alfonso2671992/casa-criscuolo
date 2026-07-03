@@ -22,7 +22,7 @@
   .label { font-size: 10px; font-weight: 800; margin-bottom: 2px; text-transform: uppercase; letter-spacing: .5px; }
   .da .label { color: var(--color-brown); }
   .ok .label { color: var(--color-green-dark); }
-  .val { font-size: 24px; font-weight: 800; font-family: Georgia, serif; }
+  .val { font-size: 24px; font-weight: 800; font-family: 'New York', 'Iowan Old Style', Georgia, serif; }
   .da .val { color: var(--color-brown); }
   .ok .val { color: var(--color-green-dark); }
 </style>
