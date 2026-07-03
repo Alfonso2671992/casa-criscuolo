@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Dead field `b` rimosso dalla POST wish**: la route `/api/wish` non scriveva più `b: false` su Firebase dopo la rimozione del campo da `WishItem`
+- **Validazione `bgt` in `/api/wish` e `/api/wish/[id]`**: budget negativo o NaN ora viene salvato come `null` invece di essere scritto su Firebase
+- **Colore icone `CategoryGrid` in dark mode**: rimosso `#C4A070` hardcoded, sostituito con `var(--text-muted)` per coerenza col tema
 - **Badge scadenza in dark mode**: rimossi colori hardcoded (`#FFE0D0`, `#FFF3CD`, `#F3F4F6`) dai badge di `ExpenseCard`; sostituiti con CSS variables tematizzate (`--badge-urgent-*`, `--badge-warning-*`, `--badge-neutral-*`) che si adattano correttamente al dark mode
 - **Overlay `MisuraEditModal`**: sostituito `rgba(0,0,0,.35)` hardcoded con `var(--overlay-bg)` — coerente con gli altri modal
 

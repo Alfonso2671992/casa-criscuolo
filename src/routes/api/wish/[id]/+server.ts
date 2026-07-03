@@ -17,7 +17,7 @@ export async function PATCH({ params, request }) {
         else if (k === 'c') update.c = body.c;
         else if (k === 'd') update.d = (body.d || '').toString().slice(0, 200);
         else if (k === 'l') update.l = (body.l || '').toString().slice(0, 2000);
-        else if (k === 'bgt') update.bgt = body.bgt != null ? parseFloat(body.bgt) : null;
+        else if (k === 'bgt') { const b = body.bgt != null ? parseFloat(body.bgt) : null; update.bgt = b !== null && !isNaN(b) && b >= 0 ? +b.toFixed(2) : null; }
         else if (k === 'p') update.p = body.p || null;
       }
     }
