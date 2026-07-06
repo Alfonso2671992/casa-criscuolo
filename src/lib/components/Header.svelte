@@ -25,7 +25,7 @@
   }
   .title-wrap { display: flex; align-items: center; gap: 8px; }
   .key-icon { color: var(--accent); flex-shrink: 0; }
-  .title { font-size: 17px; font-weight: 500; color: var(--text-primary); font-family: var(--font-serif); line-height: 1.2; }
+  .title { font-size: 17px; font-weight: 600; color: var(--text-primary); font-family: var(--font-serif); line-height: 1.2; }
   .sub { font-size: 12px; font-weight: 600; color: var(--accent); font-family: var(--font-serif); font-style: italic; line-height: 1.2; }
   .gear-btn { all: unset; cursor: pointer; padding: 8px; border-radius: 10px; color: var(--text-muted); flex-shrink: 0; }
 </style>
