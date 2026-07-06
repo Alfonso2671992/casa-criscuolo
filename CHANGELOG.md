@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - **Font serif aggiornato**: sostituito `Georgia` con `'New York', 'Iowan Old Style', Georgia, serif` — su iOS usa il serif nativo Apple (New York) per un look più raffinato; Georgia rimane fallback su Android/desktop
+- **SF Pro per nomi/importi/titoli con peso ridotto**: nomi card a `font-weight: 500`, importi a `600` — gerarchia visiva basata sul peso invece che sul cambio di typeface; `--font-serif` ora punta al font di sistema sans-serif
 - **Font serif esteso a tutta l'app**: tab, categorie, label e bottoni usano ora lo stesso serif del body invece del sans-serif di sistema
 - **CSS variable `--font-serif`**: il font serif è ora configurabile da una sola riga in `app.css`; font attivo: Baskerville (con fallback New York → Iowan Old Style → Georgia)
 
