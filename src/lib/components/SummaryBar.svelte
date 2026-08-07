@@ -15,7 +15,7 @@
   const current = $derived($reminderQueue[0] ?? null);
 </script>
 
-<div class="wrap">
+<div class="wrap" class:is-reminder={current !== null}>
   {#if current}
     {#key current._k}
       <div class="reminder" in:fly={{ y: -6, duration: 250 }} out:fade={{ duration: 150 }}>
@@ -39,7 +39,8 @@
 </div>
 
 <style>
-  .wrap { position: relative; min-height: 70px; margin-bottom: 14px; }
+  .wrap { position: relative; min-height: 70px; margin-bottom: 14px; transition: min-height 0.2s ease; }
+  .wrap.is-reminder { min-height: 84px; }
   .grid { position: absolute; inset: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
   .card { border-radius: 14px; padding: 12px 14px; }
   .da { background: var(--warning-bg); border: 1.5px solid var(--warning-border); }
@@ -53,7 +54,7 @@
 
   .reminder {
     position: absolute; inset: 0;
-    border-radius: 14px; padding: 12px 16px;
+    border-radius: 14px; padding: 12px 16px 16px;
     background: var(--badge-urgent-bg); border: 1.5px solid var(--accent);
     display: flex; flex-direction: column; gap: 2px;
   }

@@ -19,6 +19,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Ritardo 5 secondi per i promemoria**: al login l'app attende 5 secondi prima di mostrare i promemoria, così l'utente vede prima lo stato normale
 - **Pulizia chiavi `cc_rec_*` in localStorage**: all'avvio vengono rimosse automaticamente le chiavi di promemoria dei giorni precedenti, mantenendo solo quella odierna
 
+### Fixed
+
+- **Altezza SummaryBar con promemoria**: il wrapper cresce a 84px solo quando il reminder è visibile (con transizione fluida); in stato normale rimane a 70px per non distorcere le card "Da pagare/Pagate"; padding inferiore del reminder portato a 16px per dare respiro al testo
+
 ### Changed
 
 - **Font serif aggiornato**: sostituito `Georgia` con `'New York', 'Iowan Old Style', Georgia, serif` — su iOS usa il serif nativo Apple (New York) per un look più raffinato; Georgia rimane fallback su Android/desktop
