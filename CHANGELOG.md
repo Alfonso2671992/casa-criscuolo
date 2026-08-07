@@ -21,7 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- **Modal spese fisse semplificata**: rimossi edit inline e conferma eliminazione — il cestino elimina direttamente, nessun passaggio intermedio
+- **Modal spese fisse semplificata**: rimossi edit inline e conferma eliminazione — il cestino diventa rosso al primo click (armed per 2.5s), il secondo click conferma l'eliminazione
 
 ### Fixed
 

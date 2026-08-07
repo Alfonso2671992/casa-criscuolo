@@ -10,6 +10,18 @@
   let recFrom = $state('');
   let recTo = $state('');
   let saving = $state(false);
+  let armedId = $state<string | null>(null);
+  let armedTimer: ReturnType<typeof setTimeout> | null = null;
+
+  function armDel(k: string) {
+    if (armedId === k) {
+      del(k);
+      return;
+    }
+    if (armedTimer) clearTimeout(armedTimer);
+    armedId = k;
+    armedTimer = setTimeout(() => { armedId = null; armedTimer = null; }, 2500);
+  }
 
   function validate() {
     const n = cap(recName.trim().slice(0, 200));
@@ -64,7 +76,7 @@
               <span class="item-name">{r.n}</span>
               <span class="item-meta">€{fmtEuro(r.a)} · dal {r.from} al {r.to} del mese</span>
             </div>
-            <button class="btn-del" onclick={() => del(r._k!)} aria-label="Elimina">
+            <button class="btn-del" class:armed={armedId === r._k} onclick={() => armDel(r._k!)} aria-label="Elimina">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg>
             </button>
           </li>
@@ -114,7 +126,8 @@
   .item-info { flex: 1; min-width: 0; }
   .item-name { font-size: 14px; font-weight: 600; color: var(--text-primary); display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .item-meta { font-size: 12px; color: var(--text-muted); font-weight: 500; }
-  .btn-del { all: unset; width: 32px; height: 32px; border-radius: 9px; cursor: pointer; display: flex; align-items: center; justify-content: center; background: var(--bg-secondary); color: var(--color-brown); flex-shrink: 0; }
+  .btn-del { all: unset; width: 32px; height: 32px; border-radius: 9px; cursor: pointer; display: flex; align-items: center; justify-content: center; background: var(--bg-secondary); color: var(--color-brown); flex-shrink: 0; transition: background 0.2s, color 0.2s; }
+  .btn-del.armed { background: #c0392b; color: #fff; }
   .empty { font-size: 13px; color: var(--text-muted); margin: 0 0 4px; }
   .form { display: flex; flex-direction: column; gap: 8px; margin-top: 16px; }
   .form-title { font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: .4px; }
