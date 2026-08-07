@@ -22,6 +22,7 @@ export const wishes = writable<WishItem[]>(lsCache<WishItem[]>('cc_w', []));
 export const misure = writable<Misura[]>(lsCache<Misura[]>('cc_m', []));
 export const acquisti = writable<AcquistoItem[]>(lsCache<AcquistoItem[]>('cc_a', []));
 export const recurringExpenses = writable<RecurringExpense[]>([]);
+export const reminderQueue = writable<RecurringExpense[]>([]);
 export const user = writable<User | null>(null);
 export const currentTab = writable<TabId>('spese');
 export const names = writable<Names>(lsNames());

@@ -10,9 +10,8 @@
   import ConfirmDialog from '$lib/components/ConfirmDialog.svelte';
   import SettingsModal from '$lib/components/SettingsModal.svelte';
   import RecurringModal from '$lib/components/RecurringModal.svelte';
-  import { user, initDark, currentModal, recurringExpenses, showToast } from '$lib/stores';
+  import { user, initDark, currentModal, recurringExpenses, reminderQueue } from '$lib/stores';
   import { onAuth, listenRecurring } from '$lib/firebase-client';
-  import { fmtEuro } from '$lib/utils';
   import { onMount } from 'svelte';
 
   let { children }: { children: import('svelte').Snippet } = $props();
@@ -27,14 +26,15 @@
       recurringUnsub = listenRecurring((data) => {
         recurringExpenses.set(data);
         const todayKey = 'cc_rec_' + new Date().toISOString().slice(0, 10);
+        Object.keys(localStorage)
+          .filter(k => k.startsWith('cc_rec_') && k !== todayKey)
+          .forEach(k => localStorage.removeItem(k));
         if (!localStorage.getItem(todayKey)) {
           const today = new Date().getDate();
           const due = data.filter(r => r.from <= today && today <= r.to);
           if (due.length > 0) {
-            due.forEach((r, i) => {
-              setTimeout(() => showToast(`Promemoria: ${r.n} · €${fmtEuro(r.a)}`, 4500), i * 5000);
-            });
             localStorage.setItem(todayKey, '1');
+            setTimeout(() => reminderQueue.set(due), 5000);
           }
         }
       });

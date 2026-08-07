@@ -1,6 +1,5 @@
 <script lang="ts">
   import { fly } from 'svelte/transition';
-  import { cubicOut } from 'svelte/easing';
   import { toast } from '$lib/stores';
 
   function dismiss() { toast.set(null); }
@@ -14,7 +13,7 @@
     aria-live="polite"
     onclick={dismiss}
     onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); dismiss(); } }}
-    transition:fly={{ y: -24, duration: 380, easing: cubicOut }}
+    transition:fly={{ y: 20, duration: 300 }}
   >
     <span class="toast-msg">{$toast.msg}</span>
     {#if $toast.action}
@@ -26,7 +25,7 @@
 <style>
   .toast {
     position: fixed;
-    top: calc(env(safe-area-inset-top, 0px) + 16px); left: 50%; transform: translateX(-50%);
+    bottom: 20px; left: 50%; transform: translateX(-50%);
     background: var(--toast-bg);
     backdrop-filter: blur(16px) saturate(180%);
     -webkit-backdrop-filter: blur(16px) saturate(180%);

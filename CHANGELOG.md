@@ -9,9 +9,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- **Spese fisse con reminder toast**: nuova funzionalità per definire spese ricorrenti mensili (nome, importo, range di giorni); all'apertura dell'app nei giorni del range compare un toast di promemoria (una volta al giorno); gestione template in modal dedicata accessibile dall'header; supporto edit e delete inline con conferma
-- **Toast frosted glass**: animazione slide-down dall'alto, effetto vetro smerigliato con backdrop-filter, colori adattivi light/dark mode
+- **Spese fisse con promemoria**: nuova funzionalità per definire spese ricorrenti mensili (nome, importo, range di giorni); all'apertura dell'app nei giorni del range compare un promemoria in SummaryBar (una volta al giorno); gestione in modal dedicata accessibile dall'header; supporto edit e delete inline con conferma
+- **Promemoria in SummaryBar**: i promemoria rimpiazzano temporaneamente le card "Da pagare" / "Pagate" con un'animazione `fly`; più spese vengono ciclate ogni 4 secondi; al termine torna la visualizzazione normale con `fade`
 - **Icona spese fisse nell'header**: puntino arancione sull'icona solo nei giorni in cui ci sono spese fisse in scadenza
+- **Toast frosted glass**: effetto vetro smerigliato con `backdrop-filter`, colori adattivi light/dark mode; posizionato in basso al centro per messaggi di sistema
+
+### Changed
+
+- **Ritardo 5 secondi per i promemoria**: al login l'app attende 5 secondi prima di mostrare i promemoria, così l'utente vede prima lo stato normale
+- **Pulizia chiavi `cc_rec_*` in localStorage**: all'avvio vengono rimosse automaticamente le chiavi di promemoria dei giorni precedenti, mantenendo solo quella odierna
 
 ### Changed
 
