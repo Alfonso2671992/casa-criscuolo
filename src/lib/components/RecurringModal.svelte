@@ -131,7 +131,7 @@
   .empty { font-size: 13px; color: var(--text-muted); margin: 0 0 4px; }
   .form { display: flex; flex-direction: column; gap: 8px; margin-top: 16px; }
   .form-title { font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: .4px; }
-  .inp { all: unset; display: block; width: 100%; padding: 10px 12px; border-radius: 10px; background: var(--bg-secondary); border: 1.5px solid var(--border); font-size: 14px; color: var(--text-primary); box-sizing: border-box; }
+  .inp { all: unset; display: block; width: 100%; padding: 10px 12px; border-radius: 10px; background: var(--bg-secondary); border: 1.5px solid var(--border); font-size: 16px; color: var(--text-primary); box-sizing: border-box; }
   .row { display: flex; gap: 10px; }
   .field { flex: 1; display: flex; flex-direction: column; gap: 4px; }
   .lbl { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: .4px; }

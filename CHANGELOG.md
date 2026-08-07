@@ -25,6 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Zoom iOS su input modal spese fisse**: font-size portato a 16px per evitare lo zoom automatico di Safari Mobile al focus sugli input
 - **Altezza SummaryBar con promemoria**: il wrapper cresce a 84px solo quando il reminder è visibile (con transizione fluida); in stato normale rimane a 70px per non distorcere le card "Da pagare/Pagate"; padding inferiore del reminder portato a 16px per dare respiro al testo
 
 ### Changed
