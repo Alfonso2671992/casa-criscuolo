@@ -59,6 +59,15 @@ export type ModalState =
   | { type: 'svuota'; cat: string; onConfirm: () => void; onCancel: () => void }
   | null;
 
+export interface RecurringExpense {
+  _k?: string;
+  n: string;
+  a: number;
+  from: number;
+  to: number;
+  ts: number;
+}
+
 export interface Category {
   id: string;
   label: string;

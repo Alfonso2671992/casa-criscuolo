@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **Spese fisse con reminder toast**: nuova funzionalità per definire spese ricorrenti mensili (nome, importo, range di giorni); all'apertura dell'app nei giorni del range compare un toast di promemoria (una volta per sessione); gestione template nella sezione "Spese fisse" delle Impostazioni
+
 ### Changed
 
 - **Font serif aggiornato**: sostituito `Georgia` con `'New York', 'Iowan Old Style', Georgia, serif` — su iOS usa il serif nativo Apple (New York) per un look più raffinato; Georgia rimane fallback su Android/desktop

@@ -9,15 +9,40 @@
   import WishEditModal from '$lib/components/WishEditModal.svelte';
   import ConfirmDialog from '$lib/components/ConfirmDialog.svelte';
   import SettingsModal from '$lib/components/SettingsModal.svelte';
-  import { user, initDark, currentModal } from '$lib/stores';
-  import { onAuth } from '$lib/firebase-client';
+  import { user, initDark, currentModal, recurringExpenses, showToast } from '$lib/stores';
+  import { onAuth, listenRecurring } from '$lib/firebase-client';
+  import { fmtEuro } from '$lib/utils';
   import { onMount } from 'svelte';
 
   let { children }: { children: import('svelte').Snippet } = $props();
 
   let authed = $state(false);
+  let recurringUnsub: (() => void) | null = null;
 
   function closeModal() { currentModal.set(null); }
+
+  $effect(() => {
+    if ($user) {
+      recurringUnsub = listenRecurring((data) => {
+        recurringExpenses.set(data);
+        if (!sessionStorage.getItem('cc_rec_shown')) {
+          sessionStorage.setItem('cc_rec_shown', '1');
+          const today = new Date().getDate();
+          const due = data.filter(r => r.from <= today && today <= r.to);
+          if (due.length > 0) {
+            const msg = due.length === 1
+              ? `Promemoria: ${due[0].n} · €${fmtEuro(due[0].a)}`
+              : `Promemoria: ${due.map(r => r.n).join(', ')}`;
+            showToast(msg, 5000);
+          }
+        }
+      });
+    } else {
+      recurringUnsub?.();
+      recurringUnsub = null;
+    }
+    return () => { recurringUnsub?.(); recurringUnsub = null; };
+  });
 
   onMount(() => {
     initDark();

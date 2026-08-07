@@ -1,6 +1,6 @@
 import { env } from '$env/dynamic/private';
 import { ROOT } from '../constants';
-import type { Expense, WishItem, Misura, AcquistoItem } from '../types';
+import type { Expense, WishItem, Misura, AcquistoItem, RecurringExpense } from '../types';
 
 const DB_URL = 'https://casa-criscuolo-default-rtdb.europe-west1.firebasedatabase.app';
 
@@ -235,6 +235,9 @@ export async function deleteAcquistiByCat(cat: string): Promise<Record<string, u
   if (keys.length > 0) await db('PATCH', 'acquisti', updates);
   return deleted;
 }
+
+export async function addRecurring(d: RecurringExpense) { d.ts = Date.now(); await db('POST', 'recurring', d); }
+export async function deleteRecurring(k: string) { await db('DELETE', 'recurring/' + k); }
 
 export async function getPhoto(key: string): Promise<string | null> {
   const d: any = await db('GET', 'photos/' + key);
