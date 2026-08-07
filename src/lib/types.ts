@@ -56,6 +56,7 @@ export type ModalState =
   | { type: 'wish-edit'; wish: WishItem }
   | { type: 'confirm'; message: string; onConfirm: () => void; onCancel: () => void }
   | { type: 'settings' }
+  | { type: 'recurring' }
   | { type: 'svuota'; cat: string; onConfirm: () => void; onCancel: () => void }
   | null;
 

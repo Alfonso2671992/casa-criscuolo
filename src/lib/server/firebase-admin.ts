@@ -237,6 +237,7 @@ export async function deleteAcquistiByCat(cat: string): Promise<Record<string, u
 }
 
 export async function addRecurring(d: RecurringExpense) { d.ts = Date.now(); await db('POST', 'recurring', d); }
+export async function updateRecurring(k: string, d: Partial<RecurringExpense>) { await db('PATCH', 'recurring/' + k, d); }
 export async function deleteRecurring(k: string) { await db('DELETE', 'recurring/' + k); }
 
 export async function getPhoto(key: string): Promise<string | null> {

@@ -17,6 +17,7 @@ button:focus-visible{outline:2.5px solid var(--accent);outline-offset:2px;border
   --badge-neutral-bg:#F3F4F6;--badge-neutral-color:#6B7280;
   --photo-ph-bg:#EDD9C0;--primary-border:#BCAAA4;--bought-card-bg:#EEF4E4;--bought-border:#A0C060;
   --budget-color:#7B1FA2;--divider-line-bg:#D4A574;--overlay-bg:rgba(0,0,0,.35);
+  --toast-bg:rgba(253,246,236,0.88);--toast-border:rgba(212,165,116,0.4);--toast-shadow:rgba(61,32,16,0.12);
 }
 html[data-theme="dark"]{
   --bg-app:#2A1E14;--bg-card:#3A2A1C;--bg-html:#1A1008;--bg-secondary:#48341E;
@@ -31,6 +32,7 @@ html[data-theme="dark"]{
   --badge-neutral-bg:rgba(255,255,255,0.07);--badge-neutral-color:#B89E88;
   --photo-ph-bg:#48341E;--primary-border:#6A4E38;--bought-card-bg:#243C14;--bought-border:#6A9A3A;
   --budget-color:#CE93D8;--divider-line-bg:#6A4E38;--overlay-bg:rgba(0,0,0,.55);
+  --toast-bg:rgba(42,30,20,0.88);--toast-border:rgba(106,78,56,0.5);--toast-shadow:rgba(0,0,0,0.3);
 }
 html,body{height:100%;overflow:hidden;background:var(--bg-html);font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Segoe UI',sans-serif}
 input[type=number]::-webkit-inner-spin-button,

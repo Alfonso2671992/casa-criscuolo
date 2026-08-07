@@ -9,7 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- **Spese fisse con reminder toast**: nuova funzionalità per definire spese ricorrenti mensili (nome, importo, range di giorni); all'apertura dell'app nei giorni del range compare un toast di promemoria (una volta per sessione); gestione template nella sezione "Spese fisse" delle Impostazioni
+- **Spese fisse con reminder toast**: nuova funzionalità per definire spese ricorrenti mensili (nome, importo, range di giorni); all'apertura dell'app nei giorni del range compare un toast di promemoria (una volta al giorno); gestione template in modal dedicata accessibile dall'header; supporto edit e delete inline con conferma
+- **Toast frosted glass**: animazione slide-down dall'alto, effetto vetro smerigliato con backdrop-filter, colori adattivi light/dark mode
+- **Icona spese fisse nell'header**: puntino arancione sull'icona solo nei giorni in cui ci sono spese fisse in scadenza
 
 ### Changed
 

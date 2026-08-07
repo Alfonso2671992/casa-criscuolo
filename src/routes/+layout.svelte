@@ -9,6 +9,7 @@
   import WishEditModal from '$lib/components/WishEditModal.svelte';
   import ConfirmDialog from '$lib/components/ConfirmDialog.svelte';
   import SettingsModal from '$lib/components/SettingsModal.svelte';
+  import RecurringModal from '$lib/components/RecurringModal.svelte';
   import { user, initDark, currentModal, recurringExpenses, showToast } from '$lib/stores';
   import { onAuth, listenRecurring } from '$lib/firebase-client';
   import { fmtEuro } from '$lib/utils';
@@ -25,15 +26,15 @@
     if ($user) {
       recurringUnsub = listenRecurring((data) => {
         recurringExpenses.set(data);
-        if (!sessionStorage.getItem('cc_rec_shown')) {
-          sessionStorage.setItem('cc_rec_shown', '1');
+        const todayKey = 'cc_rec_' + new Date().toISOString().slice(0, 10);
+        if (!localStorage.getItem(todayKey)) {
           const today = new Date().getDate();
           const due = data.filter(r => r.from <= today && today <= r.to);
           if (due.length > 0) {
-            const msg = due.length === 1
-              ? `Promemoria: ${due[0].n} · €${fmtEuro(due[0].a)}`
-              : `Promemoria: ${due.map(r => r.n).join(', ')}`;
-            showToast(msg, 5000);
+            due.forEach((r, i) => {
+              setTimeout(() => showToast(`Promemoria: ${r.n} · €${fmtEuro(r.a)}`, 4500), i * 5000);
+            });
+            localStorage.setItem(todayKey, '1');
           }
         }
       });
@@ -78,6 +79,8 @@
   <ConfirmDialog message={$currentModal.message} onConfirm={$currentModal.onConfirm} onCancel={$currentModal.onCancel} />
 {:else if $currentModal?.type === 'settings'}
   <SettingsModal onClose={closeModal} />
+{:else if $currentModal?.type === 'recurring'}
+  <RecurringModal onClose={closeModal} />
 {:else if $currentModal?.type === 'svuota'}
   <ConfirmDialog message={'Svuotare tutta la categoria?'} onConfirm={$currentModal.onConfirm} onCancel={$currentModal.onCancel} />
 {/if}
