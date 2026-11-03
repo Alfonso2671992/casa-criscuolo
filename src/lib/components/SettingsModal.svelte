@@ -75,15 +75,6 @@
     </button>
     <div class="avatar" style="background:{bg};color:{text}">{initial}</div>
     <div class="email">{email}</div>
-    <button class="btn-dark" onclick={toggleDark}>
-      {#if $darkMode}
-        <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
-        <span>Modalità chiara</span>
-      {:else}
-        <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
-        <span>Modalità scura</span>
-      {/if}
-    </button>
     <div class="push-row">
       <span>Notifiche</span>
       <button class="switch" class:on={pushOn} role="switch" aria-checked={pushOn} aria-label="Notifiche" disabled={busy || support !== 'ok'} onclick={togglePush}><span class="knob"></span></button>
@@ -96,8 +87,17 @@
       <div class="push-note">Attiva le notifiche per Casa nelle Impostazioni dell'iPhone</div>
     {/if}
     {#if pushOn && support === 'ok'}
-      <button class="btn-dark" onclick={testPush} disabled={testing}>Invia notifica di prova</button>
+      <button class="link-test" onclick={testPush} disabled={testing}>Invia notifica di prova</button>
     {/if}
+    <button class="btn-dark" onclick={toggleDark}>
+      {#if $darkMode}
+        <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+        <span>Modalità chiara</span>
+      {:else}
+        <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+        <span>Modalità scura</span>
+      {/if}
+    </button>
     <button class="btn-logout" onclick={handleLogout}>Disconnetti</button>
   </div>
 </div>
@@ -129,22 +129,26 @@
   .btn-dark:disabled { opacity: .5; cursor: default; }
   .push-row {
     display: flex; align-items: center; justify-content: space-between;
-    width: 100%; padding: 8px 11px 8px 14px; border-radius: 12px; margin-bottom: 10px;
-    font-size: 13px; font-weight: 600; box-sizing: border-box;
-    background: var(--bg-secondary); color: var(--text-primary); border: 1.5px solid var(--border);
+    width: 100%; padding: 0 4px 0 12px; margin-bottom: 22px;
+    font-size: 13px; font-weight: 600; box-sizing: border-box; color: var(--text-primary);
   }
   .switch {
-    all: unset; position: relative; width: 44px; height: 26px; border-radius: 13px;
+    all: unset; position: relative; width: 36px; height: 21px; border-radius: 11px;
     background: var(--border); cursor: pointer; transition: background .2s; flex-shrink: 0;
   }
   .switch.on { background: var(--accent); }
   .switch:disabled { opacity: .5; cursor: default; }
   .knob {
-    position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; border-radius: 50%;
+    position: absolute; top: 3px; left: 3px; width: 15px; height: 15px; border-radius: 50%;
     background: var(--color-white); transition: transform .2s;
   }
-  .switch.on .knob { transform: translateX(18px); }
-  .push-note { width: 100%; font-size: 13px; color: var(--text-secondary); margin: -2px 0 10px; text-align: center; }
+  .switch.on .knob { transform: translateX(15px); }
+  .push-note { width: 100%; font-size: 13px; color: var(--text-secondary); margin: -14px 0 22px; text-align: center; }
+  .link-test {
+    all: unset; align-self: flex-start; margin: -16px 0 22px; padding: 2px 12px;
+    font-size: 13px; font-weight: 600; color: var(--accent); cursor: pointer;
+  }
+  .link-test:disabled { opacity: .5; cursor: default; }
   /* Same close button as the other modals */
   .btn-x {
     all: unset; position: absolute; top: 18px; right: 20px; cursor: pointer;
