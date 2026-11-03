@@ -10,8 +10,9 @@
   import ConfirmDialog from '$lib/components/ConfirmDialog.svelte';
   import SettingsModal from '$lib/components/SettingsModal.svelte';
   import RecurringModal from '$lib/components/RecurringModal.svelte';
-  import { user, initDark, currentModal, recurringExpenses, reminderQueue, cacheRecurring } from '$lib/stores';
+  import { user, initDark, currentTab, currentModal, recurringExpenses, reminderQueue, cacheRecurring } from '$lib/stores';
   import { onAuth, listenRecurring } from '$lib/firebase-client';
+  import { tabFromUrl, refreshPush, listenForeground } from '$lib/push';
   import { onMount } from 'svelte';
   import { get } from 'svelte/store';
   import type { RecurringExpense } from '$lib/types';
@@ -26,6 +27,7 @@
   // Resuming from background after this long counts as a new opening
   const RESUME_REMINDER_MS = 30 * 60 * 1000;
   let hiddenAt: number | null = null;
+  let pushStarted = false;
 
   function showDueReminders(list: RecurringExpense[]) {
     const due = dueReminders(list, new Date());
@@ -73,6 +75,11 @@
 
   onMount(() => {
     initDark();
+    const t = tabFromUrl(location.search);
+    if (t) {
+      currentTab.set(t);
+      history.replaceState(null, '', '/');
+    }
     document.addEventListener('visibilitychange', onVisibilityChange);
     const unsubAuth = onAuth((u) => {
       // Show the reminders from the cache before the page renders, so the summary cards don't flash first
@@ -83,6 +90,11 @@
       }
       user.set(u);
       authed = true;
+      if (u && !pushStarted) {
+        pushStarted = true;
+        refreshPush();
+        listenForeground();
+      }
     });
     return () => {
       document.removeEventListener('visibilitychange', onVisibilityChange);
