@@ -53,12 +53,19 @@
       c: cat,
       qta,
     };
-    const res = await authFetch('/api/acquisto', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body),
-    });
-    submitting = false;
+    let res: Response;
+    try {
+      res = await authFetch('/api/acquisto', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+    } catch {
+      showToast('Errore di rete, riprova');
+      return;
+    } finally {
+      submitting = false;
+    }
     if (!res.ok) { showToast('Errore salvataggio'); return; }
     name = ''; cat = 'Spesa'; qta = '';
     showToast('Aggiunto alla lista');

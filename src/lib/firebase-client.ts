@@ -85,6 +85,7 @@ export async function authFetch(url: string, init?: RequestInit): Promise<Respon
   if (!u) throw new Error('Non autenticato');
   const token = await u.getIdToken();
   return fetch(url, {
+    signal: AbortSignal.timeout(15000),
     ...init,
     headers: { ...init?.headers, Authorization: 'Bearer ' + token },
   });

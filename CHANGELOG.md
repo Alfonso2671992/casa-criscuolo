@@ -25,6 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Caricamento infinito nei form**: in tutti i form di inserimento e modifica (Da acquistare, Spese, Casa, Misure, spese fisse), se la richiesta di salvataggio fallisce per errore di rete o di token, il pulsante non resta più bloccato su "Salvataggio..." e compare un toast di errore; `authFetch` ora ha un timeout di 15 secondi
 - **Maiuscola nei prodotti Da acquistare**: il nome del prodotto viene mostrato sempre con l'iniziale maiuscola, anche per gli elementi già salvati in minuscolo o ripristinati con "Annulla"
 - **Zoom iOS su tutti gli input**: aggiunto `@supports (-webkit-touch-callout: none)` in `app.css` che forza `font-size: 16px` su tutti gli input solo su iOS Safari, prevenendo lo zoom automatico al focus
 - **Altezza SummaryBar con promemoria**: il wrapper cresce a 84px solo quando il reminder è visibile (con transizione fluida); in stato normale rimane a 70px per non distorcere le card "Da pagare/Pagate"; padding inferiore del reminder portato a 16px per dare respiro al testo

@@ -67,6 +67,7 @@ describe('authFetch', () => {
     expect(res.status).toBe(200);
     expect(mockGetIdToken).toHaveBeenCalledOnce();
     expect(mockFetch).toHaveBeenCalledWith('/api/test', {
+      signal: expect.any(AbortSignal),
       method: 'POST', body: '{}',
       headers: { Authorization: 'Bearer token123' },
     });
@@ -80,6 +81,7 @@ describe('authFetch', () => {
 
     await authFetch('/api/test', { headers: { 'Content-Type': 'application/json' } });
     expect(mockFetch).toHaveBeenCalledWith('/api/test', {
+      signal: expect.any(AbortSignal),
       headers: { 'Content-Type': 'application/json', Authorization: 'Bearer tok' },
     });
   });

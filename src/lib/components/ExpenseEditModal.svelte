@@ -54,12 +54,19 @@
       sc: selectedScad,
       payer,
     };
-    const res = await authFetch(`/api/exp/${_k}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body),
-    });
-    submitting = false;
+    let res: Response;
+    try {
+      res = await authFetch(`/api/exp/${_k}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+    } catch {
+      showToast('Errore di rete, riprova');
+      return;
+    } finally {
+      submitting = false;
+    }
     if (!res.ok) { showToast('Errore salvataggio'); return; }
     showToast('Spesa modificata');
     onClose();

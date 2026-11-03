@@ -39,12 +39,19 @@
     const data = validate();
     if (!data) return;
     saving = true;
-    const res = await authFetch('/api/recurring', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
-    });
-    saving = false;
+    let res: Response;
+    try {
+      res = await authFetch('/api/recurring', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+    } catch {
+      showToast('Errore di rete, riprova');
+      return;
+    } finally {
+      saving = false;
+    }
     if (!res.ok) { showToast('Errore salvataggio'); return; }
     recName = ''; recAmount = ''; recFrom = ''; recTo = '';
   }

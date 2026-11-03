@@ -28,12 +28,19 @@
     if (submitting) return;
     if (!name.trim()) { showToast('Inserisci un nome'); return; }
     submitting = true;
-    const res = await authFetch('/api/mis', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ n: name, l: pn(l), w: pn(w), h: pn(h), note, p: previewUrl }),
-    });
-    submitting = false;
+    let res: Response;
+    try {
+      res = await authFetch('/api/mis', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ n: name, l: pn(l), w: pn(w), h: pn(h), note, p: previewUrl }),
+      });
+    } catch {
+      showToast('Errore di rete, riprova');
+      return;
+    } finally {
+      submitting = false;
+    }
     if (!res.ok) { showToast('Errore salvataggio'); return; }
     name = ''; l = 0; w = 0; h = 0; note = ''; previewUrl = null;
     showToast('Misura salvata');
