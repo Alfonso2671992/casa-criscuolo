@@ -54,7 +54,15 @@ async function token(): Promise<string> {
   return _token!;
 }
 
+// Firebase push keys and uids only: blocks "../" and other path tricks coming from URL params or request bodies
+const SAFE_PATH = /^[A-Za-z0-9_-]+(\/[A-Za-z0-9_-]+)*$/;
+
+export function isSafePath(path: string): boolean {
+  return typeof path === 'string' && SAFE_PATH.test(path);
+}
+
 async function db(method: string, path: string, data?: any) {
+  if (!isSafePath(path)) throw Object.assign(new Error('Richiesta non valida'), { status: 400 });
   const t = await token();
   const url = `${DB_URL}/${ROOT}/${path}.json?access_token=${t}`;
   const r = await fetch(url, { method, headers: data ? { 'Content-Type': 'application/json' } : undefined, body: data ? JSON.stringify(data) : undefined });
@@ -144,6 +152,7 @@ async function verifyToken(idToken: string): Promise<{ sub: string; email?: stri
   if (!payload.sub || !payload.exp) return null;
   if (Date.now() > payload.exp * 1000) return null;
   if (payload.iss !== 'https://securetoken.google.com/casa-criscuolo') return null;
+  if (payload.aud !== 'casa-criscuolo') return null;
   const kid = header.kid;
   if (!kid) return null;
   const key = await getPublicKey(kid);
@@ -157,11 +166,15 @@ async function verifyToken(idToken: string): Promise<{ sub: string; email?: stri
 
 export interface AuthUser { uid: string; email?: string }
 
+// The only two accounts allowed to use the API (Alfonso, Alina). Firebase uids are identifiers, not secrets.
+export const ALLOWED_UIDS = new Set(['AkEB3JA4tQcqBPDajn4UyOJ7gr42', 'j7X1HG6PLDSrQqcRGXa1kKBG7pi2']);
+
 export async function requireAuth(request: Request): Promise<AuthUser> {
   const ah = request.headers.get('authorization');
   if (!ah || !ah.startsWith('Bearer ')) throw new Error('Autenticazione richiesta');
   const user = await verifyToken(ah.slice(7));
   if (!user) throw new Error('Token non valido o scaduto');
+  if (!ALLOWED_UIDS.has(user.sub)) throw Object.assign(new Error('Utente non autorizzato'), { status: 403 });
   return { uid: user.sub, email: user.email };
 }
 
@@ -220,8 +233,12 @@ export async function addAcquisto(d: AcquistoItem) { d.ts = Date.now(); await db
 export async function updateAcquisto(k: string, d: Partial<AcquistoItem>) { await db('PATCH', 'acquisti/' + k, d); }
 export async function deleteAcquisto(k: string) { await db('DELETE', 'acquisti/' + k); }
 export async function restoreAcquisti(items: Record<string, AcquistoItem>) {
-  for (const [k, v] of Object.entries(items)) {
-    await db('PUT', 'acquisti/' + k, v);
+  for (const [k, v] of Object.entries(items ?? {})) {
+    if (!v || typeof v !== 'object' || typeof v.n !== 'string' || typeof v.c !== 'string') continue;
+    // Rebuild the item: only known fields are written back
+    const item: AcquistoItem = { n: v.n.slice(0, 200), c: v.c.slice(0, 50), ts: typeof v.ts === 'number' ? v.ts : Date.now() };
+    if (v.u === true) item.u = true;
+    await db('PUT', 'acquisti/' + k, item);
   }
 }
 

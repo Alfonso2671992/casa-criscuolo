@@ -117,8 +117,8 @@ describe('verifyToken', () => {
   });
 });
 
-import { requireAuth as ra } from './firebase-admin';
-async function requireAuth(headers: Record<string, string>): Promise<string> {
+import { requireAuth as ra, isSafePath } from './firebase-admin';
+async function requireAuth(headers: Record<string, string>) {
   return ra(new Request('http://localhost', { headers }));
 }
 
@@ -159,35 +159,66 @@ describe('requireAuth', () => {
     await expect(requireAuth({ authorization: 'Bearer ' + token })).rejects.toThrow('Token non valido o scaduto');
   });
 
-  it('returns uid and email for valid token', async () => {
+  async function signedToken(claims: Record<string, unknown>) {
     const kp = await crypto.subtle.generateKey(
       { name: 'RSASSA-PKCS1-v1_5', hash: 'SHA-256', modulusLength: 2048, publicExponent: new Uint8Array([1, 0, 1]) },
       true, ['sign', 'verify']
     );
-    const spki = await crypto.subtle.exportKey('spki', kp.publicKey);
-    const pem = wrapSPKIasPEM(spki);
-    const keysJson = JSON.stringify({ 'test-key-1': pem });
-
+    const pem = wrapSPKIasPEM(await crypto.subtle.exportKey('spki', kp.publicKey));
+    const kid = 'k-' + Math.random().toString(36).slice(2);
     globalThis.fetch = async (url: RequestInfo | URL) => {
       if (String(url).includes('googleapis.com')) {
-        return new Response(keysJson, { headers: { 'cache-control': 'public, max-age=3600' } });
+        return new Response(JSON.stringify({ [kid]: pem }), { headers: { 'cache-control': 'public, max-age=0' } });
       }
       return origFetch(url);
     };
-
-    const farFuture = Math.floor(Date.now() / 1000) + 3600;
-    const header = { alg: 'RS256', typ: 'JWT', kid: 'test-key-1' };
-    const payload = { sub: 'user42', email: 'a@b.com', exp: farFuture, iss: 'https://securetoken.google.com/casa-criscuolo' };
-    const hB64 = b64url(JSON.stringify(header));
+    const payload = {
+      exp: Math.floor(Date.now() / 1000) + 3600,
+      iss: 'https://securetoken.google.com/casa-criscuolo',
+      aud: 'casa-criscuolo',
+      ...claims,
+    };
+    const hB64 = b64url(JSON.stringify({ alg: 'RS256', typ: 'JWT', kid }));
     const pB64 = b64url(JSON.stringify(payload));
-    const sigData = new TextEncoder().encode(hB64 + '.' + pB64);
-    const sigBytes = await crypto.subtle.sign({ name: 'RSASSA-PKCS1-v1_5' }, kp.privateKey, sigData);
-    const sigB64 = b64urlFromBuf(sigBytes);
-    const token = hB64 + '.' + pB64 + '.' + sigB64;
+    const sig = await crypto.subtle.sign({ name: 'RSASSA-PKCS1-v1_5' }, kp.privateKey, new TextEncoder().encode(hB64 + '.' + pB64));
+    return hB64 + '.' + pB64 + '.' + b64urlFromBuf(sig);
+  }
 
-    const uid = await requireAuth({ authorization: 'Bearer ' + token });
-    expect(uid).toEqual({ uid: 'user42', email: 'a@b.com' });
+  const ALLOWED = 'AkEB3JA4tQcqBPDajn4UyOJ7gr42';
 
+  it('returns uid and email for an allowed user', async () => {
+    const token = await signedToken({ sub: ALLOWED, email: 'a@b.com' });
+    const user = await requireAuth({ authorization: 'Bearer ' + token });
+    expect(user).toEqual({ uid: ALLOWED, email: 'a@b.com' });
     globalThis.fetch = origFetch;
+  });
+
+  it('rejects a valid token of a user not in the allowlist', async () => {
+    const token = await signedToken({ sub: 'stranger', email: 'x@y.com' });
+    await expect(requireAuth({ authorization: 'Bearer ' + token })).rejects.toMatchObject({ status: 403 });
+    globalThis.fetch = origFetch;
+  });
+
+  it('rejects a token issued for another project (aud)', async () => {
+    const token = await signedToken({ sub: ALLOWED, aud: 'other-project' });
+    await expect(requireAuth({ authorization: 'Bearer ' + token })).rejects.toThrow('Token non valido o scaduto');
+    globalThis.fetch = origFetch;
+  });
+});
+
+describe('isSafePath', () => {
+  it('accepts Firebase keys and nested paths', () => {
+    expect(isSafePath('exp')).toBe(true);
+    expect(isSafePath('exp/-NxYz_12AbC')).toBe(true);
+    expect(isSafePath('push/AkEB3JA4tQcqBPDajn4UyOJ7gr42/0123abcd')).toBe(true);
+  });
+  it('rejects traversal and odd characters', () => {
+    expect(isSafePath('exp/../..')).toBe(false);
+    expect(isSafePath('exp/../../')).toBe(false);
+    expect(isSafePath('acquisti/../push/u/x')).toBe(false);
+    expect(isSafePath('exp/a.b')).toBe(false);
+    expect(isSafePath('exp/a?x=1')).toBe(false);
+    expect(isSafePath('exp/')).toBe(false);
+    expect(isSafePath('')).toBe(false);
   });
 });

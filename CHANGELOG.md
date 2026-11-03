@@ -30,6 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Sicurezza API**: il server accetta solo i due account di casa (uid in allowlist) e verifica anche l'`aud` del token; i percorsi verso il database accettano solo chiavi Firebase (niente `../`); il ripristino di "Svuota categoria" riscrive solo i campi noti dei prodotti
 - **Campi della modale spese fisse**: testo a 14px con peso 500 come nei form dei tab (prima 16px, più grande su computer)
 - **Spazio vuoto in fondo alla pagina**: il margine inferiore fisso di 80px è sceso a 24px più lo spazio dell'indicatore home dell'iPhone (`env(safe-area-inset-bottom)`), quindi niente fascia vuota su computer e telefoni senza barretta
 - **Card che lampeggiano prima del promemoria**: all'apertura dell'app le card "Da pagare" / "Pagate" comparivano per circa un secondo prima del promemoria, in attesa dei dati da Firebase; ora le spese fisse sono in cache in localStorage (`cc_r`) e il promemoria viene calcolato prima di mostrare la pagina; se i dati freschi differiscono, il riquadro aperto si aggiorna
