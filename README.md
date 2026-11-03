@@ -29,7 +29,13 @@ Copia `.dev.vars.example` in `.dev.vars` e inserisci il service account Firebase
 FIREBASE_SERVICE_ACCOUNT={"type":"service_account","project_id":"casa-criscuolo",...}
 ```
 
-Necessaria solo per lo sviluppo locale. Su Cloudflare Pages va impostata come secret.
+Per le notifiche push serve anche `NOTIFY_USERS` (mappa email → nome dei due utenti, su una riga):
+
+```
+NOTIFY_USERS={"email1@example.com":"Alfonso","email2@example.com":"Alina"}
+```
+
+Su Cloudflare Pages vanno impostate come secret (Production e Preview).
 
 ## Struttura
 
@@ -53,4 +59,4 @@ static/            → Manifest, icone, favicon
 ## Deploy
 
 Il deploy è automatico su Cloudflare Pages tramite push su `main`.
-L'unico secret richiesto: `FIREBASE_SERVICE_ACCOUNT`.
+Secret richiesti: `FIREBASE_SERVICE_ACCOUNT` e `NOTIFY_USERS`. Sul progetto Google Cloud deve essere abilitata la Firebase Cloud Messaging API (V1).

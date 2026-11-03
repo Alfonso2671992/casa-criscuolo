@@ -1,3 +1,5 @@
 # Scarica il service account da Firebase Console > Impostazioni progetto > Account di servizio
 # e incolla qui il JSON completo come singola riga
 FIREBASE_SERVICE_ACCOUNT={"type":"service_account","project_id":"casa-criscuolo",...}
+# Mappa email -> nome dei due utenti che ricevono le notifiche push, su una sola riga
+NOTIFY_USERS={"email1@example.com":"Alfonso","email2@example.com":"Alina"}

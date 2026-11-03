@@ -56,6 +56,8 @@ Token is cached in-memory with 60s expiry buffer.
 | `src/lib/stores.ts` | Svelte stores + localStorage cache helpers (`cc_` prefix), derived stats |
 | `src/lib/utils.ts` | `esc()`, `safeUrl()`, `snap2arr()`, date helpers, `trapFocus`, `scrollLock`, `compressImg` |
 | `src/lib/group-acquisti.ts` | `groupAcquisti()` — pure function grouping shopping items by category with active count |
+| `src/lib/push.ts` | Client push: FCM token registration, permission, `cc_push` flag, service worker setup |
+| `src/lib/server/push.ts` | Server push: FCM HTTP v1 send to the other user, `NOTIFY_USERS` mapping, stale token cleanup |
 | `src/lib/server/firebase-admin.ts` | Firebase REST API writes (edge-compatible) |
 | `src/lib/server/api-utils.ts` | `apiHandler()` wrapper + `ApiError` for all API routes |
 
@@ -68,11 +70,14 @@ All routes are POST-only, authenticated via `Authorization: Bearer <firebase-id-
 - `POST /api/mis` — add misura; `POST /api/mis/[id]` — DELETE
 - `POST /api/acquisto` — add acquisto item; `POST /api/acquisto/[id]` — PATCH or DELETE
 - `POST /api/photo/[id]` — save photo for an item
+- `POST /api/push` — push tokens: `action` = `register` / `unregister` / `test`
+
+Push notifications (FCM HTTP v1) go to the OTHER user when an expense is added (`POST /api/exp`) or a shopping item becomes urgent (`PATCH /api/acquisto/[id]` with `u:true`, only if not already urgent). Service worker: `static/firebase-messaging-sw.js`. Works on iOS only from the home-screen app (iOS 16.4+).
 
 ### Firebase database
 
 - **Project**: `casa-criscuolo`
-- **Root path**: `casa_criscuolo/` → sub-paths `exp`, `wish`, `mis`, `acquisti`, `photos`
+- **Root path**: `casa_criscuolo/` → sub-paths `exp`, `wish`, `mis`, `acquisti`, `photos`, `push` (tokens at `push/<uid>/<tokenId>`)
 - **Client config**: hardcoded in `firebase-client.ts` (public Firebase keys, by design)
 - **Auth**: Email/Password via Firebase Auth
 
@@ -83,7 +88,7 @@ All routes are POST-only, authenticated via `Authorization: Bearer <firebase-id-
 ## Conventions
 
 - **UI labels**: Italian (`Spese`, `Da acquistare`, `Casa`, `Misure`)
-- **localStorage keys**: prefixed `cc_` (`cc_e`, `cc_w`, `cc_m`, `cc_a`, `cc_r`, `cc_n`, `cc_budget`, `cc_dark`)
+- **localStorage keys**: prefixed `cc_` (`cc_e`, `cc_w`, `cc_m`, `cc_a`, `cc_r`, `cc_n`, `cc_budget`, `cc_dark`, `cc_push`)
 - **Changelog**: update `CHANGELOG.md` (Keep a Changelog format) before every commit — sections: `### Added`, `### Changed`, `### Fixed`, `### Removed`, `### Docs`
 - **Commits**: short, English
 - **Branches**: `develop` for work in progress, `main` for production (auto-deploys to Cloudflare Pages)
@@ -91,6 +96,6 @@ All routes are POST-only, authenticated via `Authorization: Bearer <firebase-id-
 
 ## Deployment
 
-Cloudflare Pages via `@sveltejs/adapter-cloudflare`. Required secret: `FIREBASE_SERVICE_ACCOUNT` (service account JSON on one line). Build output: `.svelte-kit/cloudflare`.
+Cloudflare Pages via `@sveltejs/adapter-cloudflare`. Required secrets: `FIREBASE_SERVICE_ACCOUNT` (service account JSON on one line) and `NOTIFY_USERS` (JSON map email → name on one line, e.g. `{"a@example.com":"Alfonso","b@example.com":"Alina"}`), both set for Production and Preview. The Firebase Cloud Messaging API (V1) must be enabled on the Google Cloud project. Build output: `.svelte-kit/cloudflare`.
 
 Local dev uses `.dev.vars` (same format as Cloudflare secrets) — copy from `.dev.vars.example`.
