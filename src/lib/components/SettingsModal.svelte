@@ -2,7 +2,7 @@
   import { trapFocus, scrollLock } from '$lib/utils';
   import { logout, auth } from '$lib/firebase-client';
   import { showToast, darkMode } from '$lib/stores';
-  import { pushSupport, pushEnabled, enablePush, disablePush, sendTestPush, type PushSupport } from '$lib/push';
+  import { pushSupport, pushEnabled, permissionGranted, enablePush, disablePush, sendTestPush, unregisterOnLogout, type PushSupport } from '$lib/push';
 
   let { onClose }: { onClose: () => void } = $props();
 
@@ -20,8 +20,9 @@
   const { bg, text } = $derived(colors[colorIdx]);
 
   let support = $state<PushSupport | null>(null);
-  let pushOn = $state(pushEnabled());
+  let pushOn = $state(pushEnabled() && permissionGranted());
   let busy = $state(false);
+  let testing = $state(false);
   let denied = $state(false);
 
   $effect(() => { pushSupport().then(v => { support = v; }); });
@@ -43,10 +44,17 @@
   }
 
   async function testPush() {
-    showToast((await sendTestPush()) ? 'Notifica inviata' : 'Invio non riuscito');
+    if (testing) return;
+    testing = true;
+    try {
+      showToast((await sendTestPush()) ? 'Notifica inviata' : 'Invio non riuscito');
+    } finally {
+      testing = false;
+    }
   }
 
   async function handleLogout() {
+    await unregisterOnLogout();
     await logout();
     showToast('Disconnesso');
     onClose();
@@ -87,8 +95,8 @@
     {:else if denied}
       <div class="push-note">Attiva le notifiche per Casa nelle Impostazioni dell'iPhone</div>
     {/if}
-    {#if pushOn}
-      <button class="btn-dark" onclick={testPush}>Invia notifica di prova</button>
+    {#if pushOn && support === 'ok'}
+      <button class="btn-dark" onclick={testPush} disabled={testing}>Invia notifica di prova</button>
     {/if}
     <button class="btn-logout" onclick={handleLogout}>Disconnetti</button>
   </div>
@@ -118,6 +126,7 @@
     box-sizing: border-box; background: var(--bg-secondary); color: var(--text-primary);
     border: 1.5px solid var(--border);
   }
+  .btn-dark:disabled { opacity: .5; cursor: default; }
   .push-row {
     display: flex; align-items: center; justify-content: space-between;
     width: 100%; padding: 8px 11px 8px 14px; border-radius: 12px; margin-bottom: 10px;

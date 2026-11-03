@@ -12,7 +12,7 @@
   import RecurringModal from '$lib/components/RecurringModal.svelte';
   import { user, initDark, currentTab, currentModal, recurringExpenses, reminderQueue, cacheRecurring } from '$lib/stores';
   import { onAuth, listenRecurring } from '$lib/firebase-client';
-  import { tabFromUrl, refreshPush, listenForeground } from '$lib/push';
+  import { tabFromUrl, tabFromSwMessage, refreshPush } from '$lib/push';
   import { onMount } from 'svelte';
   import { get } from 'svelte/store';
   import type { RecurringExpense } from '$lib/types';
@@ -54,6 +54,12 @@
 
   function closeModal() { currentModal.set(null); }
 
+  // Notification tapped while the app was already open: the service worker tells us which tab to show
+  function onSwMessage(e: MessageEvent) {
+    const t = tabFromSwMessage(e.data);
+    if (t) currentTab.set(t);
+  }
+
   $effect(() => {
     if ($user) {
       recurringUnsub = listenRecurring((data) => {
@@ -81,6 +87,7 @@
       history.replaceState(null, '', '/');
     }
     document.addEventListener('visibilitychange', onVisibilityChange);
+    navigator.serviceWorker?.addEventListener('message', onSwMessage);
     const unsubAuth = onAuth((u) => {
       // Show the reminders from the cache before the page renders, so the summary cards don't flash first
       const cached = get(recurringExpenses);
@@ -93,11 +100,11 @@
       if (u && !pushStarted) {
         pushStarted = true;
         refreshPush();
-        listenForeground();
       }
     });
     return () => {
       document.removeEventListener('visibilitychange', onVisibilityChange);
+      navigator.serviceWorker?.removeEventListener('message', onSwMessage);
       unsubAuth();
     };
   });

@@ -7,9 +7,12 @@ const push = vi.hoisted(() => ({
   enablePush: vi.fn(),
   disablePush: vi.fn(),
   sendTestPush: vi.fn(),
+  unregisterOnLogout: vi.fn(),
+  permissionGranted: () => typeof Notification !== 'undefined' && Notification.permission === 'granted',
 }));
 vi.mock('$lib/push', () => push);
-vi.mock('$lib/firebase-client', () => ({ auth: { currentUser: { email: 'a@b.it' } }, logout: vi.fn() }));
+const fb = vi.hoisted(() => ({ auth: { currentUser: { email: 'a@b.it' } }, logout: vi.fn() }));
+vi.mock('$lib/firebase-client', () => fb);
 
 const { default: SettingsModal } = await import('./SettingsModal.svelte');
 
@@ -20,6 +23,10 @@ const tick = async () => { for (let i = 0; i < 5; i++) await Promise.resolve(); 
 const sw = () => target.querySelector('[role="switch"]') as HTMLButtonElement;
 const testBtn = () => [...target.querySelectorAll('button')].find(b => b.textContent?.includes('Invia notifica di prova'));
 
+function setPermission(p: string) {
+  (globalThis as any).Notification = { permission: p };
+}
+
 async function open(support: string, enabled = false) {
   push.pushSupport.mockResolvedValue(support);
   push.pushEnabled.mockReturnValue(enabled);
@@ -29,6 +36,7 @@ async function open(support: string, enabled = false) {
 
 beforeEach(() => {
   vi.clearAllMocks();
+  setPermission('granted');
   target = document.createElement('div');
   document.body.appendChild(target);
 });
@@ -75,5 +83,53 @@ describe('SettingsModal notifications', () => {
     await tick();
     expect(sw().getAttribute('aria-checked')).toBe('false');
     expect(testBtn()).toBeFalsy();
+  });
+
+  it('starts off when the flag is set but permission was revoked', async () => {
+    setPermission('denied');
+    await open('ok', true);
+    expect(sw().getAttribute('aria-checked')).toBe('false');
+    expect(testBtn()).toBeFalsy();
+  });
+
+  it('starts off when Notification is missing', async () => {
+    delete (globalThis as any).Notification;
+    await open('ok', true);
+    expect(sw().getAttribute('aria-checked')).toBe('false');
+  });
+
+  it('hides the test button when support is not ok', async () => {
+    await open('unsupported', true);
+    expect(testBtn()).toBeFalsy();
+  });
+
+  it('sends only one test while a send is in flight', async () => {
+    let resolve!: (v: boolean) => void;
+    push.sendTestPush.mockReturnValue(new Promise<boolean>(r => { resolve = r; }));
+    await open('ok', true);
+    testBtn()!.click();
+    await tick();
+    expect(testBtn()!.disabled).toBe(true);
+    testBtn()!.click();
+    testBtn()!.click();
+    expect(push.sendTestPush).toHaveBeenCalledTimes(1);
+    resolve(true);
+    await tick();
+    expect(testBtn()!.disabled).toBe(false);
+    push.sendTestPush.mockResolvedValue(true);
+    testBtn()!.click();
+    expect(push.sendTestPush).toHaveBeenCalledTimes(2);
+  });
+
+  it('unregisters the device before signing out', async () => {
+    push.unregisterOnLogout.mockResolvedValue(undefined);
+    fb.logout.mockResolvedValue(undefined);
+    await open('ok', true);
+    const out = [...target.querySelectorAll('button')].find(b => b.textContent?.includes('Disconnetti'))!;
+    out.click();
+    await tick();
+    expect(push.unregisterOnLogout).toHaveBeenCalledOnce();
+    expect(fb.logout).toHaveBeenCalledOnce();
+    expect(push.unregisterOnLogout.mock.invocationCallOrder[0]).toBeLessThan(fb.logout.mock.invocationCallOrder[0]);
   });
 });
