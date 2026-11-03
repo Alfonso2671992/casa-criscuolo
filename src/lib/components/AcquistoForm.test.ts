@@ -76,4 +76,5 @@ describe('AcquistoForm submit', () => {
     expect((target.querySelector('input.inp') as HTMLInputElement).value).toBe('');
     expect(JSON.parse(mockAuthFetch.mock.calls[0][1].body).n).toBe('yogurt');
   });
+
 });

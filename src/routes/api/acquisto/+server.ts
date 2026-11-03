@@ -13,7 +13,6 @@ export async function POST({ request }) {
     const n = cap((body.n || '').toString().slice(0, 200) || 'Oggetto');
     await addAcquisto({
       n, c: body.c || 'Spesa',
-      qta: (body.qta || '').toString().slice(0, 50),
       ts: Date.now(),
     });
     return json({ ok: true });

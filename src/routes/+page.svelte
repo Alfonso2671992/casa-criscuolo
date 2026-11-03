@@ -114,6 +114,9 @@
     <div class="group-header" class:collapsed={collapsed.has(group.cat.id)} style="color:{group.cat.color}" onclick={() => toggleCat(group.cat.id)} onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleCat(group.cat.id); } }} role="button" tabindex="0">
       <span class="group-icon">{@html group.cat.svg.replace('width="18" height="18"', 'width="14" height="14"')}</span>
       <span>{group.cat.label} ({group.activeCount})</span>
+      {#if group.urgentCount > 0}
+        <span class="urgent-count">· {group.urgentCount} {group.urgentCount === 1 ? 'urgente' : 'urgenti'}</span>
+      {/if}
       <svg class="chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
       <button class="svuota-btn" onclick={(e) => { e.stopPropagation(); currentModal.set({ type: 'svuota', cat: group.cat.id, onConfirm: () => { const c = group.cat.id; svuotaCat(c); }, onCancel: () => currentModal.set(null) }); }} aria-label="Svuota categoria">Svuota</button>
     </div>
@@ -168,6 +171,7 @@
   .group-icon { display: flex; align-items: center; }
   .chevron { transition: transform .2s; flex-shrink: 0; }
   .collapsed .chevron { transform: rotate(-90deg); }
+  .urgent-count { color: var(--badge-urgent-color); }
   .svuota-btn {
     all: unset; margin-left: auto; font-size: 12px; font-weight: 700;
     padding: 8px 14px; border-radius: 9px; cursor: pointer;

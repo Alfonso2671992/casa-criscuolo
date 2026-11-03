@@ -6,7 +6,6 @@
   import { DEFAULT_SUGGESTIONS } from '$lib/acquisto-suggestions';
   let name = $state('');
   let cat = $state('Spesa');
-  let qta = $state('');
   let showSuggestions = $state(false);
   let submitting = $state(false);
 
@@ -51,7 +50,6 @@
     const body: Record<string, unknown> = {
       n: name.trim(),
       c: cat,
-      qta,
     };
     let res: Response;
     try {
@@ -67,7 +65,7 @@
       submitting = false;
     }
     if (!res.ok) { showToast('Errore salvataggio'); return; }
-    name = ''; cat = 'Spesa'; qta = '';
+    name = ''; cat = 'Spesa';
     showToast('Aggiunto alla lista');
   }
 </script>
@@ -88,7 +86,6 @@
   </div>
   <div class="label">Categoria</div>
   <CategoryGrid categories={ACQUISTO_CATS} bind:selected={cat} columns={3} />
-  <input class="inp" placeholder="Quantità (es. 1 kg, 2 confezioni)" aria-label="Quantità" bind:value={qta} />
   <button class="btn-primary" disabled={submitting} onclick={submit}>{submitting ? 'Salvataggio...' : '+ Aggiungi alla lista'}</button>
 </div>
 
@@ -102,7 +99,6 @@
     border: 1.5px solid var(--border); background: var(--bg-app); color: var(--text-primary);
     font-size: 14px; font-weight: 500; box-sizing: border-box;
   }
-  .card .inp:last-of-type { margin-bottom: 12px; }
   .suggestions {
     position: absolute; top: 100%; left: 0; right: 0; z-index: 50;
     background: var(--bg-card); border: 1.5px solid var(--border);

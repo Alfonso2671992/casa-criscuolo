@@ -39,7 +39,8 @@ export interface AcquistoItem {
   _k?: string;
   n: string;
   c: string;
-  qta: string;
+  /** Urgent: shown first in its category and highlighted */
+  u?: boolean;
   ts: number;
 }
 

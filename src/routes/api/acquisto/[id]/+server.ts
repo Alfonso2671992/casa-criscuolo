@@ -3,7 +3,7 @@ import { apiHandler, ApiError } from '$lib/server/api-utils';
 import { updateAcquisto, deleteAcquisto } from '$lib/server/firebase-admin';
 import { cap } from '$lib/utils';
 
-const VALID_ACQ_FIELDS = ['n', 'c', 'qta'];
+const VALID_ACQ_FIELDS = ['n', 'c', 'u'];
 
 export async function PATCH({ params, request }) {
   return apiHandler(request, async () => {
@@ -15,7 +15,8 @@ export async function PATCH({ params, request }) {
       if (k in body) {
         if (k === 'n') update.n = cap((body.n || '').toString().slice(0, 200));
         else if (k === 'c') update.c = body.c;
-        else if (k === 'qta') update.qta = (body.qta || '').toString().slice(0, 50);
+        // null removes the field in a Firebase PATCH
+        else if (k === 'u') update.u = body.u === true ? true : null;
       }
     }
     await updateAcquisto(id, update);

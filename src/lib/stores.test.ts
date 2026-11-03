@@ -76,7 +76,7 @@ describe('cacheMisure', () => {
 
 describe('cacheAcquisti', () => {
   it('updates acquisti store and localStorage', () => {
-    const data = [{ _k: 'a1', n: 'latte', c: 'Spesa', b: false, qta: '1', ts: 100 }];
+    const data = [{ _k: 'a1', n: 'latte', c: 'Spesa', ts: 100 }];
     cacheAcquisti(data);
     expect(get(acquisti)).toEqual(data);
     expect(JSON.parse(localStorage.getItem('cc_a')!)).toEqual(data);

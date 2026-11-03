@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Prodotti urgenti in Da acquistare**: toccando la riga di un prodotto (icona o nome) compare una conferma "Rendere … urgente?" o "Togliere l'urgenza a …?"; i prodotti urgenti stanno in cima alla loro categoria, con card evidenziata e "· Urgente" accanto al nome, e l'intestazione della categoria mostra quanti sono (es. "· 1 urgente") anche quando è chiusa; sulla card resta solo il cestino; campo `u` su `acquisti`, gestito da `PATCH /api/acquisto/[id]`
 - **Spese fisse con promemoria**: nuova funzionalità per definire spese ricorrenti mensili (nome, importo, giorno di scadenza); compare un promemoria in SummaryBar dagli ultimi 2 giorni del mese precedente fino alla scadenza; gestione in modal dedicata accessibile dall'header; supporto edit e delete inline con conferma
 - **Promemoria in SummaryBar**: i promemoria rimpiazzano temporaneamente le card "Da pagare" / "Pagate" con un'animazione `fly`; tutte le spese in scadenza sono elencate nello stesso riquadro, una riga ciascuna (nome a sinistra, importo e data di scadenza a destra, es. "entro il 3 dicembre"); il riquadro resta 8 secondi oppure si chiude con un tocco, poi torna la visualizzazione normale con `fade`
 - **Icona spese fisse nell'header**: puntino arancione sull'icona solo nei giorni in cui ci sono spese fisse in scadenza
@@ -35,6 +36,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
+- **Campo Quantità in Da acquistare**: rimosso dal form, dalle card e dalle API (`qta`), perché non veniva mai usato; i prodotti già salvati con il campo vuoto restano invariati
 - **Codice di registrazione inutilizzato**: rimossi da `LoginForm` lo stato `isRegister`, `toggleMode` e i testi di registrazione, e da `firebase-client` la funzione `register`; la registrazione era già irraggiungibile dalla schermata di login
 
 ### Changed

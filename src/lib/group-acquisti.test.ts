@@ -4,7 +4,7 @@ import { ACQUISTO_CATS } from './constants';
 import type { AcquistoItem } from './types';
 
 function item(overrides: Partial<AcquistoItem> & { _k: string }): AcquistoItem & { _k: string } {
-  return { n: 'test', c: 'Spesa', b: false, qta: '1', ts: 100, ...overrides };
+  return { n: 'test', c: 'Spesa', ts: 100, ...overrides };
 }
 
 describe('groupAcquisti', () => {
@@ -80,5 +80,19 @@ describe('groupAcquisti', () => {
     expect(igiene.activeCount).toBe(1);
     const pulizia = groups.find(g => g.cat.id === 'Pulizia')!;
     expect(pulizia.activeCount).toBe(1);
+  });
+
+  it('puts urgent items first in their category and counts them', () => {
+    const items = [
+      item({ _k: 'a', c: 'Spesa', n: 'Acqua naturale', ts: 1 }),
+      item({ _k: 'b', c: 'Spesa', n: 'Limoni', ts: 2, u: true }),
+      item({ _k: 'c', c: 'Spesa', n: 'Pane', ts: 3 }),
+      item({ _k: 'd', c: 'Spesa', n: 'Uova', ts: 4, u: true }),
+      item({ _k: 'e', c: 'Igiene', n: 'Bagnoschiuma', ts: 5 }),
+    ];
+    const groups = groupAcquisti(items, ACQUISTO_CATS);
+    expect(groups[0].items.map(i => i.n)).toEqual(['Limoni', 'Uova', 'Acqua naturale', 'Pane']);
+    expect(groups[0].urgentCount).toBe(2);
+    expect(groups[1].urgentCount).toBe(0);
   });
 });
