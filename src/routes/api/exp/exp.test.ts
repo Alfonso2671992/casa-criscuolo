@@ -9,13 +9,19 @@ vi.mock('../../../lib/server/firebase-admin', () => ({
   deleteExpense: mockDeleteExpense,
 }));
 
+const mockSendToOthers = vi.fn();
+vi.mock('../../../lib/server/push', async () => {
+  const actual = await vi.importActual<typeof import('../../../lib/server/push')>('../../../lib/server/push');
+  return { ...actual, sendToOthers: mockSendToOthers };
+});
+
 vi.mock('../../../lib/server/api-utils', () => {
   class ApiError extends Error {
     constructor(public status: number, message: string) { super(message); }
   }
   return {
-    apiHandler: vi.fn(async (_req: Request, handler: () => Promise<Response>) => {
-      try { return await handler(); }
+    apiHandler: vi.fn(async (_req: Request, handler: (u: unknown) => Promise<Response>) => {
+      try { return await handler({ uid: 'u1', email: 'a@x.it' }); }
       catch (e: any) {
         const msg = e instanceof Error ? e.message : 'Errore sconosciuto';
         const status = e?.status || 500;
@@ -30,6 +36,8 @@ beforeEach(() => {
   mockAddExpense.mockClear();
   mockUpdateExpense.mockClear();
   mockDeleteExpense.mockClear();
+  mockSendToOthers.mockReset();
+  mockSendToOthers.mockResolvedValue(undefined);
 });
 
 const { POST } = await import('./+server');
@@ -42,7 +50,7 @@ describe('POST /api/exp', () => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ a: '25.50', payer: 'Alfonso', n: 'Cena', c: 'uscite' }),
     });
-    const res = await POST({ request: req });
+    const res = await POST({ request: req, url: new URL('http://localhost') } as never);
     expect(res.status).toBe(200);
     const body = await res.json();
     expect(body.ok).toBe(true);
@@ -62,7 +70,7 @@ describe('POST /api/exp', () => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ a: 'abc', payer: 'Alfonso' }),
     });
-    const res = await POST({ request: req });
+    const res = await POST({ request: req, url: new URL('http://localhost') } as never);
     expect(res.status).toBe(400);
     const body = await res.json();
     expect(body.error).toContain('Importo');
@@ -74,7 +82,7 @@ describe('POST /api/exp', () => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ a: '10', payer: '' }),
     });
-    const res = await POST({ request: req });
+    const res = await POST({ request: req, url: new URL('http://localhost') } as never);
     expect(res.status).toBe(400);
     const body = await res.json();
     expect(body.error).toContain('paga');
@@ -87,7 +95,7 @@ describe('POST /api/exp', () => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ a: '10', payer: 'Alina', n: longName, c: 'spesa' }),
     });
-    await POST({ request: req });
+    await POST({ request: req, url: new URL('http://localhost') } as never);
     const args = mockAddExpense.mock.lastCall[0];
     expect(args.n.length).toBe(200);
   });
@@ -98,7 +106,7 @@ describe('POST /api/exp', () => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ a: '10', payer: 'Alfonso' }),
     });
-    await POST({ request: req });
+    await POST({ request: req, url: new URL('http://localhost') } as never);
     const args = mockAddExpense.mock.lastCall[0];
     expect(args.c).toBe('altro');
   });
@@ -109,10 +117,33 @@ describe('POST /api/exp', () => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ a: '25', payer: 'A metà' }),
     });
-    await POST({ request: req });
+    await POST({ request: req, url: new URL('http://localhost') } as never);
     const args = mockAddExpense.mock.lastCall[0];
     expect(args.payer).toBe('A metà');
     expect(args.half).toBe(12.5);
+  });
+});
+
+describe('POST /api/exp push', () => {
+  const mk = (b: unknown) => new Request('http://localhost', {
+    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(b),
+  });
+
+  it('saves and returns ok even if push fails', async () => {
+    mockSendToOthers.mockRejectedValue(new Error('fcm down'));
+    const spy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const res = await POST({ request: mk({ a: '10', payer: 'Alfonso', n: 'luce' }), url: new URL('http://localhost') } as never);
+    expect(await res.json()).toEqual({ ok: true });
+    expect(mockAddExpense).toHaveBeenCalledOnce();
+    spy.mockRestore();
+  });
+
+  it('notifies others with author name', async () => {
+    await POST({ request: mk({ a: '10', payer: 'Alfonso', n: 'luce' }), url: new URL('http://localhost') } as never);
+    expect(mockSendToOthers).toHaveBeenCalledOnce();
+    const [uid, msg] = mockSendToOthers.mock.lastCall;
+    expect(uid).toBe('u1');
+    expect(msg.body).toContain('ha aggiunto Luce');
   });
 });
 

@@ -1,12 +1,13 @@
 import { json } from '@sveltejs/kit';
 import { apiHandler, ApiError } from '$lib/server/api-utils';
-import { updateAcquisto, deleteAcquisto } from '$lib/server/firebase-admin';
+import { updateAcquisto, deleteAcquisto, getAcquisto } from '$lib/server/firebase-admin';
 import { cap } from '$lib/utils';
+import { background, sendToOthers, urgentMsg, authorName } from '$lib/server/push';
 
 const VALID_ACQ_FIELDS = ['n', 'c', 'u'];
 
-export async function PATCH({ params, request }) {
-  return apiHandler(request, async () => {
+export async function PATCH({ params, request, platform, url }) {
+  return apiHandler(request, async (user) => {
     const { id } = params;
     if (!id) throw new ApiError(400, 'ID mancante');
     const body = await request.json();
@@ -19,7 +20,11 @@ export async function PATCH({ params, request }) {
         else if (k === 'u') update.u = body.u === true ? true : null;
       }
     }
+    const prev = body.u === true ? await getAcquisto(id) : null;
     await updateAcquisto(id, update);
+    if (prev && prev.u !== true) {
+      await background(platform, sendToOthers(user.uid, urgentMsg(authorName(user.email), prev.n), url.origin));
+    }
     return json({ ok: true });
   });
 }

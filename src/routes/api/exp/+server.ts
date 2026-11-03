@@ -2,9 +2,10 @@ import { json } from '@sveltejs/kit';
 import { apiHandler, ApiError } from '$lib/server/api-utils';
 import { addExpense } from '$lib/server/firebase-admin';
 import { cap } from '$lib/utils';
+import { background, sendToOthers, expenseMsg, authorName } from '$lib/server/push';
 
-export async function POST({ request }) {
-  return apiHandler(request, async () => {
+export async function POST({ request, platform, url }) {
+  return apiHandler(request, async (user) => {
     const body = await request.json();
     const a = parseFloat(body.a);
     if (isNaN(a) || a <= 0) throw new ApiError(400, 'Importo non valido');
@@ -15,6 +16,7 @@ export async function POST({ request }) {
     await addExpense({
       n, a, c: cat, dt: body.dt || null, sc: body.sc || null, payer: body.payer, half, s: 'da', ts: Date.now(),
     });
+    await background(platform, sendToOthers(user.uid, expenseMsg(authorName(user.email), n, a), url.origin));
     return json({ ok: true });
   });
 }

@@ -60,3 +60,12 @@ export async function sendToOthers(authorUid: string, msg: PushMsg, origin: stri
 export async function sendToToken(uid: string, t: string, msg: PushMsg, origin: string): Promise<void> {
   await sendOne(uid, await tokenId(t), t, msg, origin);
 }
+
+type WaitUntilPlatform = { context?: { waitUntil?(p: Promise<unknown>): void } };
+
+export function background(platform: WaitUntilPlatform | undefined, p: Promise<unknown>): Promise<unknown> | void {
+  const safe = p.catch(e => console.error('push', e));
+  const ctx = platform?.context;
+  if (ctx?.waitUntil) { ctx.waitUntil(safe); return; }
+  return safe;
+}
