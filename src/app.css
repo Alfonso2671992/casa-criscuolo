@@ -57,7 +57,7 @@ input[type=number]{-moz-appearance:textfield}
   flex:1;
   overflow-y:auto;
   -webkit-overflow-scrolling:touch;
-  padding:14px 14px 80px;
+  padding:14px 14px calc(24px + env(safe-area-inset-bottom));
 }
 
 .section{display:none}
