@@ -90,4 +90,23 @@ describe('PATCH /api/acquisto/[id]', () => {
     expect(mockGetAcquisto).not.toHaveBeenCalled();
     expect(mockSendToOthers).not.toHaveBeenCalled();
   });
+
+  it('still saves when getAcquisto rejects', async () => {
+    const spy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    mockGetAcquisto.mockRejectedValue(new Error('db down'));
+    const res = await call({ u: true });
+    expect(await res.json()).toEqual({ ok: true });
+    expect(mockUpdateAcquisto).toHaveBeenCalledWith('k1', { u: true });
+    expect(mockSendToOthers).not.toHaveBeenCalled();
+    spy.mockRestore();
+  });
+
+  it('still returns ok when message building throws', async () => {
+    const spy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    mockGetAcquisto.mockResolvedValue({ n: 123 });
+    const res = await call({ u: true });
+    expect(await res.json()).toEqual({ ok: true });
+    expect(mockUpdateAcquisto).toHaveBeenCalled();
+    spy.mockRestore();
+  });
 });

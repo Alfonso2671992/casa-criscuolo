@@ -20,10 +20,13 @@ export async function PATCH({ params, request, platform, url }) {
         else if (k === 'u') update.u = body.u === true ? true : null;
       }
     }
-    const prev = body.u === true ? await getAcquisto(id) : null;
+    let prev: Awaited<ReturnType<typeof getAcquisto>> = null;
+    if (body.u === true) {
+      try { prev = await getAcquisto(id); } catch (e) { console.error('push', e); }
+    }
     await updateAcquisto(id, update);
     if (prev && prev.u !== true) {
-      await background(platform, sendToOthers(user.uid, urgentMsg(authorName(user.email), prev.n), url.origin));
+      await background(platform, (async () => sendToOthers(user.uid, urgentMsg(authorName(user.email), prev.n), url.origin))());
     }
     return json({ ok: true });
   });

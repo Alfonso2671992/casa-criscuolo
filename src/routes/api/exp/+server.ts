@@ -16,7 +16,7 @@ export async function POST({ request, platform, url }) {
     await addExpense({
       n, a, c: cat, dt: body.dt || null, sc: body.sc || null, payer: body.payer, half, s: 'da', ts: Date.now(),
     });
-    await background(platform, sendToOthers(user.uid, expenseMsg(authorName(user.email), n, a), url.origin));
+    await background(platform, (async () => sendToOthers(user.uid, expenseMsg(authorName(user.email), n, a), url.origin))());
     return json({ ok: true });
   });
 }
