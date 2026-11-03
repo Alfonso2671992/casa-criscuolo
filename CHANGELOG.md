@@ -19,7 +19,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- **Nuove icone in Da acquistare**: Pulizia ora ha un flacone con erogatore, Fai da te & Casa un rullo da pittura, Tempo libero un joypad
+- **Etichette più corte in Da acquistare**: "Salute & Farmacia" diventa "Farmacia" e "Fai da te & Casa" diventa "Fai da te"; gli id delle categorie restano invariati, quindi i prodotti già salvati non cambiano
+- **Nuove icone in Da acquistare**: Pulizia ora ha un flacone con erogatore, Fai da te un rullo da pittura, Tempo libero un joypad
 - **Simbolo dell'euro dopo l'importo**: in tutta l'app gli importi sono scritti all'italiana ("662,49 €") con uno spazio non separabile: card "Da pagare" / "Pagate", card delle spese (anche la quota "a testa"), budget degli oggetti Casa, promemoria e modale delle spese fisse; nei campi importo dei form spesa il simbolo è passato a destra
 - **Scadenza al posto dell'intervallo**: ogni spesa fissa ha un solo campo "Entro il giorno" al posto di "Dal giorno" / "Al giorno"; il promemoria compare dagli ultimi 2 giorni del mese precedente (calcolati sulla lunghezza reale del mese) fino al giorno di scadenza e mostra la data con il mese giusto; le spese sono ordinate dalla scadenza più vicina; l'articolo segue l'italiano ("entro l'1", "entro l'8", "entro l'11", "entro il 3") sia nel promemoria sia nella modale; l'importo è scritto all'italiana con il simbolo dopo ("35,00 €"); una scadenza oltre la fine del mese vale come ultimo giorno del mese; le spese già salvate usano il vecchio "al giorno" come scadenza; logica in `src/lib/recurring.ts` con test
 - **Promemoria a ogni apertura**: il carosello delle spese fisse in scadenza compare subito, ogni volta che si apre l'app (e dopo ogni login), senza attesa di 5 secondi e senza il limite di una volta al giorno; ricompare anche quando l'app torna in primo piano dopo almeno 30 minuti in background
