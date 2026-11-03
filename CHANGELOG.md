@@ -31,6 +31,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Maiuscola nei prodotti Da acquistare**: il nome del prodotto viene mostrato sempre con l'iniziale maiuscola, anche per gli elementi già salvati in minuscolo o ripristinati con "Annulla"
 - **Zoom iOS su tutti gli input**: aggiunto `@supports (-webkit-touch-callout: none)` in `app.css` che forza `font-size: 16px` su tutti gli input solo su iOS Safari, prevenendo lo zoom automatico al focus
 - **Altezza SummaryBar con promemoria**: il wrapper cresce a 84px solo quando il reminder è visibile (con transizione fluida); in stato normale rimane a 70px per non distorcere le card "Da pagare/Pagate"; padding inferiore del reminder portato a 16px per dare respiro al testo
+- **Test e2e del login**: il test cercava il link "Registrati", rimosso a giugno; ora verifica che ci sia "Password dimenticata?" e che la registrazione non compaia
+
+### Removed
+
+- **Codice di registrazione inutilizzato**: rimossi da `LoginForm` lo stato `isRegister`, `toggleMode` e i testi di registrazione, e da `firebase-client` la funzione `register`; la registrazione era già irraggiungibile dalla schermata di login
 
 ### Changed
 

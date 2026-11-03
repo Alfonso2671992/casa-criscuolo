@@ -9,7 +9,6 @@ import {
 import {
   getAuth,
   signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
   sendPasswordResetEmail,
   signOut,
   onAuthStateChanged,
@@ -41,10 +40,6 @@ export function onAuth(cb: AuthCallback) {
 
 export async function login(email: string, password: string) {
   return signInWithEmailAndPassword(auth, email, password);
-}
-
-export async function register(email: string, password: string) {
-  return createUserWithEmailAndPassword(auth, email, password);
 }
 
 export async function logout() {

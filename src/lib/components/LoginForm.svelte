@@ -1,10 +1,9 @@
 <script lang="ts">
-  import { login, register, resetPassword } from '$lib/firebase-client';
+  import { login, resetPassword } from '$lib/firebase-client';
   import { showToast } from '$lib/stores';
 
   let email = $state('');
   let password = $state('');
-  let isRegister = $state(false);
   let loading = $state(false);
   let showPassword = $state(false);
   let showReset = $state(false);
@@ -16,22 +15,14 @@
     if (password.length < 6) { showToast('Password: almeno 6 caratteri'); return; }
     loading = true;
     try {
-      if (isRegister) await register(email, password);
-      else await login(email, password);
+      await login(email, password);
     } catch (e: unknown) {
       const msg = e instanceof Error ? e.message : '';
       if (msg.includes('user-not-found') || msg.includes('wrong-password') || msg.includes('invalid-credential'))
         showToast('Email o password errati');
-      else if (msg.includes('email-already-in-use'))
-        showToast('Email già registrata');
       else
         showToast('Errore di accesso');
     } finally { loading = false; }
-  }
-
-  function toggleMode() {
-    isRegister = !isRegister;
-    showReset = false;
   }
 
   async function handleReset(e?: Event) {
@@ -71,7 +62,7 @@
       </form>
       <button class="btn-link" onclick={() => showReset = false}>Torna al login</button>
     {:else}
-      <div class="subtitle">{isRegister ? 'Crea un account' : 'Accedi per continuare'}</div>
+      <div class="subtitle">Accedi per continuare</div>
       <form onsubmit={submit}>
         <input class="inp" type="email" placeholder="Email" aria-label="Email" bind:value={email} />
         <div class="pw-wrap">
@@ -85,15 +76,10 @@
           </button>
         </div>
         <button class="btn-primary" type="submit" disabled={loading}>
-          {loading ? '...' : (isRegister ? 'Registrati' : 'Accedi')}
+          {loading ? '...' : 'Accedi'}
         </button>
       </form>
-      {#if !isRegister}
-        <button class="btn-link" onclick={() => { showReset = true; resetEmail = email; }}>Password dimenticata?</button>
-      {/if}
-      {#if isRegister}
-        <button class="btn-link" onclick={toggleMode}>Hai gi\u00E0 un account? Accedi</button>
-      {/if}
+      <button class="btn-link" onclick={() => { showReset = true; resetEmail = email; }}>Password dimenticata?</button>
     {/if}
   </div>
 </div>

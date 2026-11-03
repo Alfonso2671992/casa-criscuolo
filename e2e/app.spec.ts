@@ -22,10 +22,10 @@ test.describe('App', () => {
     await expect(page.getByRole('button', { name: 'Accedi' })).toBeVisible();
   });
 
-  test('login form has register and reset password links', async ({ page }) => {
+  test('login form has reset password link and no registration', async ({ page }) => {
     await page.goto('/');
-    await expect(page.locator('text=Registrati')).toBeVisible();
     await expect(page.locator('text=Password dimenticata?')).toBeVisible();
+    await expect(page.locator('text=Registrati')).toHaveCount(0);
   });
 
 });

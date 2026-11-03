@@ -10,7 +10,6 @@ vi.mock('firebase/database', () => ({ getDatabase: () => ({}), ref: () => ({}), 
 vi.mock('firebase/auth', () => ({
   getAuth: () => mockAuth,
   signInWithEmailAndPassword: vi.fn(),
-  createUserWithEmailAndPassword: vi.fn(),
   sendPasswordResetEmail: vi.fn(),
   signOut: vi.fn(),
   onAuthStateChanged: vi.fn(),
