@@ -2,13 +2,13 @@
   import { trapFocus, scrollLock, fmtEuro, cap } from '$lib/utils';
   import { authFetch } from '$lib/firebase-client';
   import { showToast, recurringExpenses } from '$lib/stores';
+  import { dayWithArticle } from '$lib/recurring';
 
   let { onClose }: { onClose: () => void } = $props();
 
   let recName = $state('');
   let recAmount = $state('');
-  let recFrom = $state('');
-  let recTo = $state('');
+  let recDue = $state('');
   let saving = $state(false);
   let armedId = $state<string | null>(null);
   let armedTimer: ReturnType<typeof setTimeout> | null = null;
@@ -26,13 +26,12 @@
   function validate() {
     const n = cap(recName.trim().slice(0, 200));
     const a = parseFloat(recAmount);
-    const from = parseInt(recFrom);
-    const to = parseInt(recTo);
-    if (!n || isNaN(a) || a < 0 || isNaN(from) || from < 1 || from > 31 || isNaN(to) || to < from || to > 31) {
+    const to = parseInt(recDue);
+    if (!n || isNaN(a) || a < 0 || isNaN(to) || to < 1 || to > 31) {
       showToast('Dati non validi');
       return null;
     }
-    return { n, a: +a.toFixed(2), from, to };
+    return { n, a: +a.toFixed(2), to };
   }
 
   async function save() {
@@ -53,7 +52,7 @@
       saving = false;
     }
     if (!res.ok) { showToast('Errore salvataggio'); return; }
-    recName = ''; recAmount = ''; recFrom = ''; recTo = '';
+    recName = ''; recAmount = ''; recDue = '';
   }
 
   async function del(k: string) {
@@ -81,7 +80,7 @@
           <li class="item">
             <div class="item-info">
               <span class="item-name">{r.n}</span>
-              <span class="item-meta">€{fmtEuro(r.a)} · dal {r.from} al {r.to} del mese</span>
+              <span class="item-meta">{fmtEuro(r.a)}&nbsp;€ · entro {dayWithArticle(r.to)} di ogni mese</span>
             </div>
             <button class="btn-del" class:armed={armedId === r._k} onclick={() => armDel(r._k!)} aria-label="Elimina">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg>
@@ -97,15 +96,9 @@
       <div class="form-title">Nuova spesa fissa</div>
       <input class="inp" type="text" placeholder="Nome (es. Parcheggio)" bind:value={recName} maxlength="200" />
       <input class="inp" type="number" placeholder="Importo (€)" min="0" step="0.01" bind:value={recAmount} />
-      <div class="row">
-        <div class="field">
-          <label class="lbl" for="rec-from">Dal giorno</label>
-          <input id="rec-from" class="inp" type="number" placeholder="1" min="1" max="31" bind:value={recFrom} />
-        </div>
-        <div class="field">
-          <label class="lbl" for="rec-to">Al giorno</label>
-          <input id="rec-to" class="inp" type="number" placeholder="31" min="1" max="31" bind:value={recTo} />
-        </div>
+      <div class="field">
+        <label class="lbl" for="rec-due">Entro il giorno</label>
+        <input id="rec-due" class="inp" type="number" placeholder="5" min="1" max="31" bind:value={recDue} />
       </div>
       <button class="btn-add" onclick={save} disabled={saving}>
         {saving ? '…' : '+ Aggiungi'}
@@ -132,14 +125,13 @@
   .item { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--border-light); }
   .item-info { flex: 1; min-width: 0; }
   .item-name { font-size: 14px; font-weight: 600; color: var(--text-primary); display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .item-meta { font-size: 12px; color: var(--text-muted); font-weight: 500; }
+  .item-meta { font-size: 12px; color: var(--badge-urgent-color); font-weight: 600; }
   .btn-del { all: unset; width: 32px; height: 32px; border-radius: 9px; cursor: pointer; display: flex; align-items: center; justify-content: center; background: var(--bg-secondary); color: var(--color-brown); flex-shrink: 0; transition: background 0.2s, color 0.2s; }
   .btn-del.armed { background: #c0392b; color: #fff; }
   .empty { font-size: 13px; color: var(--text-muted); margin: 0 0 4px; }
   .form { display: flex; flex-direction: column; gap: 8px; margin-top: 16px; }
   .form-title { font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: .4px; }
   .inp { all: unset; display: block; width: 100%; padding: 10px 12px; border-radius: 10px; background: var(--bg-secondary); border: 1.5px solid var(--border); font-size: 16px; color: var(--text-primary); box-sizing: border-box; }
-  .row { display: flex; gap: 10px; }
   .field { flex: 1; display: flex; flex-direction: column; gap: 4px; }
   .lbl { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: .4px; }
   .btn-add { all: unset; width: 100%; padding: 12px; border-radius: 12px; font-size: 14px; font-weight: 700; text-align: center; cursor: pointer; box-sizing: border-box; background: var(--accent); color: var(--color-white); margin-top: 4px; }

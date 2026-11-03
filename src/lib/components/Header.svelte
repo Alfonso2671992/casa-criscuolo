@@ -1,8 +1,8 @@
 <script lang="ts">
   import { currentModal, recurringExpenses } from '$lib/stores';
+  import { dueReminders } from '$lib/recurring';
 
-  const today = new Date().getDate();
-  const hasDueToday = $derived($recurringExpenses.some(r => r.from <= today && today <= r.to));
+  const hasDueToday = $derived(dueReminders($recurringExpenses, new Date()).length > 0);
 </script>
 
 <div class="header">

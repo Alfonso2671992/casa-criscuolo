@@ -8,7 +8,7 @@
   let { expense, isDa = false }: { expense: Expense; isDa?: boolean } = $props();
 
   const cat = $derived(CATS.find(c => c.id === expense.c) || FALLBACK_CAT);
-  const payerText = $derived(expense.payer === 'A metà' ? `A metà · €${fmtEuro(expense.half ?? 0)} a testa` : expense.payer);
+  const payerText = $derived(expense.payer === 'A metà' ? `A metà · ${fmtEuro(expense.half ?? 0)}\u00a0€ a testa` : expense.payer);
   const days = $derived(expense.sc ? daysUntil(expense.sc) : null);
   const urgClass = $derived(isDa && days !== null ? (days < 0 ? 'scaduta' : days <= 5 ? 'urgente' : '') : '');
   const badge = $derived.by(() => {
@@ -48,7 +48,7 @@
       <div class="name">{expense.n}</div>
       <div class="meta">{payerText}{expense.dt ? ' · ' + strToDisplay(expense.dt) : ''}</div>
     </div>
-    <div class="amt">€{fmtEuro(expense.a)}</div>
+    <div class="amt">{fmtEuro(expense.a)}&nbsp;€</div>
   </div>
 
   {#if isDa && badge}

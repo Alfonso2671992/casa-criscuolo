@@ -76,8 +76,7 @@ const cases: Case[] = [
     fill: t => {
       type(t.querySelector('input[placeholder^="Nome"]'), 'Parcheggio');
       type(t.querySelector('input[placeholder^="Importo"]'), '40');
-      type(t.querySelector('#rec-from'), '1');
-      type(t.querySelector('#rec-to'), '5');
+      type(t.querySelector('#rec-due'), '5');
     },
     button: 'button.btn-add',
   },

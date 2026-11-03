@@ -15,14 +15,9 @@ export async function PATCH({ params, request }) {
       if (isNaN(a) || a < 0) throw new ApiError(400, 'Importo non valido');
       update.a = +a.toFixed(2);
     }
-    if (body.from !== undefined) {
-      const from = parseInt(body.from);
-      if (isNaN(from) || from < 1 || from > 31) throw new ApiError(400, 'Giorno inizio non valido');
-      update.from = from;
-    }
     if (body.to !== undefined) {
       const to = parseInt(body.to);
-      if (isNaN(to) || to < 1 || to > 31) throw new ApiError(400, 'Giorno fine non valido');
+      if (isNaN(to) || to < 1 || to > 31) throw new ApiError(400, 'Giorno di scadenza non valido');
       update.to = to;
     }
     await updateRecurring(id, update);

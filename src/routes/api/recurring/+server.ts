@@ -10,11 +10,9 @@ export async function POST({ request }) {
     if (!n) throw new ApiError(400, 'Nome mancante');
     const a = parseFloat(body.a);
     if (isNaN(a) || a < 0) throw new ApiError(400, 'Importo non valido');
-    const from = parseInt(body.from);
     const to = parseInt(body.to);
-    if (isNaN(from) || from < 1 || from > 31) throw new ApiError(400, 'Giorno inizio non valido');
-    if (isNaN(to) || to < from || to > 31) throw new ApiError(400, 'Giorno fine non valido');
-    await addRecurring({ n, a: +a.toFixed(2), from, to, ts: Date.now() });
+    if (isNaN(to) || to < 1 || to > 31) throw new ApiError(400, 'Giorno di scadenza non valido');
+    await addRecurring({ n, a: +a.toFixed(2), to, ts: Date.now() });
     return json({ ok: true });
   });
 }

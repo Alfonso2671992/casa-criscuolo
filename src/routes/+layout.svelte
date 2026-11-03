@@ -13,11 +13,35 @@
   import { user, initDark, currentModal, recurringExpenses, reminderQueue } from '$lib/stores';
   import { onAuth, listenRecurring } from '$lib/firebase-client';
   import { onMount } from 'svelte';
+  import { get } from 'svelte/store';
+  import type { RecurringExpense } from '$lib/types';
+  import { dueReminders } from '$lib/recurring';
 
   let { children }: { children: import('svelte').Snippet } = $props();
 
   let authed = $state(false);
   let recurringUnsub: (() => void) | null = null;
+  // The listener fires on every change: show the reminders only on the first load after opening the app
+  let remindersShown = false;
+  // Resuming from background after this long counts as a new opening
+  const RESUME_REMINDER_MS = 30 * 60 * 1000;
+  let hiddenAt: number | null = null;
+
+  function showDueReminders(list: RecurringExpense[]) {
+    const due = dueReminders(list, new Date());
+    if (due.length > 0) reminderQueue.set(due);
+  }
+
+  function onVisibilityChange() {
+    if (document.visibilityState === 'hidden') {
+      hiddenAt = Date.now();
+      return;
+    }
+    if (hiddenAt !== null && Date.now() - hiddenAt >= RESUME_REMINDER_MS && get(user)) {
+      showDueReminders(get(recurringExpenses));
+    }
+    hiddenAt = null;
+  }
 
   function closeModal() { currentModal.set(null); }
 
@@ -25,32 +49,30 @@
     if ($user) {
       recurringUnsub = listenRecurring((data) => {
         recurringExpenses.set(data);
-        const todayKey = 'cc_rec_' + new Date().toISOString().slice(0, 10);
-        Object.keys(localStorage)
-          .filter(k => k.startsWith('cc_rec_') && k !== todayKey)
-          .forEach(k => localStorage.removeItem(k));
-        if (!localStorage.getItem(todayKey)) {
-          const today = new Date().getDate();
-          const due = data.filter(r => r.from <= today && today <= r.to);
-          if (due.length > 0) {
-            localStorage.setItem(todayKey, '1');
-            setTimeout(() => reminderQueue.set(due), 5000);
-          }
+        if (!remindersShown) {
+          remindersShown = true;
+          showDueReminders(data);
         }
       });
     } else {
       recurringUnsub?.();
       recurringUnsub = null;
+      remindersShown = false;
     }
     return () => { recurringUnsub?.(); recurringUnsub = null; };
   });
 
   onMount(() => {
     initDark();
-    return onAuth((u) => {
+    document.addEventListener('visibilitychange', onVisibilityChange);
+    const unsubAuth = onAuth((u) => {
       user.set(u);
       authed = true;
     });
+    return () => {
+      document.removeEventListener('visibilitychange', onVisibilityChange);
+      unsubAuth();
+    };
   });
 </script>
 

@@ -133,8 +133,8 @@
     font-size: 14px; font-weight: 500; margin-bottom: 10px; box-sizing: border-box;
   }
   .amt-wrap { position: relative; margin-bottom: 8px; }
-  .amt { padding-left: 28px; margin-bottom: 0; }
-  .euro { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-size: 15px; font-weight: 800; color: var(--accent); pointer-events: none; z-index: 1; }
+  .amt { padding-right: 28px; margin-bottom: 0; }
+  .euro { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-size: 15px; font-weight: 800; color: var(--accent); pointer-events: none; z-index: 1; }
   .adj-row { display: flex; gap: 6px; margin-bottom: 12px; }
   .adj { all: unset; flex: 1; height: 36px; border-radius: 9px; font-size: 13px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; }
   .adj-minus { background: var(--bg-secondary); color: var(--color-brown); border: 1.5px solid var(--border); }

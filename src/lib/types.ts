@@ -64,9 +64,15 @@ export interface RecurringExpense {
   _k?: string;
   n: string;
   a: number;
-  from: number;
+  /** Legacy start day, no longer used */
+  from?: number;
+  /** Due day of the month */
   to: number;
   ts: number;
+}
+
+export interface DueReminder extends RecurringExpense {
+  dueLabel: string;
 }
 
 export interface Category {

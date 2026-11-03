@@ -9,20 +9,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- **Spese fisse con promemoria**: nuova funzionalità per definire spese ricorrenti mensili (nome, importo, range di giorni); all'apertura dell'app nei giorni del range compare un promemoria in SummaryBar (una volta al giorno); gestione in modal dedicata accessibile dall'header; supporto edit e delete inline con conferma
-- **Promemoria in SummaryBar**: i promemoria rimpiazzano temporaneamente le card "Da pagare" / "Pagate" con un'animazione `fly`; più spese vengono ciclate ogni 4 secondi; al termine torna la visualizzazione normale con `fade`
+- **Spese fisse con promemoria**: nuova funzionalità per definire spese ricorrenti mensili (nome, importo, giorno di scadenza); compare un promemoria in SummaryBar dagli ultimi 2 giorni del mese precedente fino alla scadenza; gestione in modal dedicata accessibile dall'header; supporto edit e delete inline con conferma
+- **Promemoria in SummaryBar**: i promemoria rimpiazzano temporaneamente le card "Da pagare" / "Pagate" con un'animazione `fly`; tutte le spese in scadenza sono elencate nello stesso riquadro, una riga ciascuna (nome a sinistra, importo e data di scadenza a destra, es. "entro il 3 dicembre"); il riquadro resta 8 secondi oppure si chiude con un tocco, poi torna la visualizzazione normale con `fade`
 - **Icona spese fisse nell'header**: puntino arancione sull'icona solo nei giorni in cui ci sono spese fisse in scadenza
 - **Mostra/nascondi password nel login**: icona a occhio nel campo password per visualizzarla in chiaro mentre la si digita
-- **Test dei componenti**: nuovi test Vitest che montano i form in jsdom e verificano che il pulsante di salvataggio si sblocchi in caso di errore di rete o del server; la config di Vitest è divisa nei progetti `unit` e `components`
+- **Test dei componenti**: nuovi test Vitest che montano i form in jsdom e verificano che il pulsante di salvataggio si sblocchi in caso di errore di rete o del server, e test della SummaryBar per l'elenco dei promemoria, la chiusura al tocco e quella automatica; la config di Vitest è divisa nei progetti `unit` e `components`
 - **Toast frosted glass**: effetto vetro smerigliato con `backdrop-filter`, colori adattivi light/dark mode; posizionato in basso al centro per messaggi di sistema
 
 ### Changed
 
-- **Ritardo 5 secondi per i promemoria**: al login l'app attende 5 secondi prima di mostrare i promemoria, così l'utente vede prima lo stato normale
-- **Pulizia chiavi `cc_rec_*` in localStorage**: all'avvio vengono rimosse automaticamente le chiavi di promemoria dei giorni precedenti, mantenendo solo quella odierna
-
-### Changed
-
+- **Simbolo dell'euro dopo l'importo**: in tutta l'app gli importi sono scritti all'italiana ("662,49 €") con uno spazio non separabile: card "Da pagare" / "Pagate", card delle spese (anche la quota "a testa"), budget degli oggetti Casa, promemoria e modale delle spese fisse; nei campi importo dei form spesa il simbolo è passato a destra
+- **Scadenza al posto dell'intervallo**: ogni spesa fissa ha un solo campo "Entro il giorno" al posto di "Dal giorno" / "Al giorno"; il promemoria compare dagli ultimi 2 giorni del mese precedente (calcolati sulla lunghezza reale del mese) fino al giorno di scadenza e mostra la data con il mese giusto; le spese sono ordinate dalla scadenza più vicina; l'articolo segue l'italiano ("entro l'1", "entro l'8", "entro l'11", "entro il 3") sia nel promemoria sia nella modale; l'importo è scritto all'italiana con il simbolo dopo ("35,00 €"); una scadenza oltre la fine del mese vale come ultimo giorno del mese; le spese già salvate usano il vecchio "al giorno" come scadenza; logica in `src/lib/recurring.ts` con test
+- **Promemoria a ogni apertura**: il carosello delle spese fisse in scadenza compare subito, ogni volta che si apre l'app (e dopo ogni login), senza attesa di 5 secondi e senza il limite di una volta al giorno; ricompare anche quando l'app torna in primo piano dopo almeno 30 minuti in background
 - **Modal spese fisse semplificata**: rimossi edit inline e conferma eliminazione — il cestino diventa rosso al primo click (armed per 2.5s), il secondo click conferma l'eliminazione
 
 ### Fixed
@@ -30,7 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Caricamento infinito nei form**: in tutti i form di inserimento e modifica (Da acquistare, Spese, Casa, Misure, spese fisse), se la richiesta di salvataggio fallisce per errore di rete o di token, il pulsante non resta più bloccato su "Salvataggio..." e compare un toast di errore; `authFetch` ora ha un timeout di 15 secondi
 - **Maiuscola nei prodotti Da acquistare**: il nome del prodotto viene mostrato sempre con l'iniziale maiuscola, anche per gli elementi già salvati in minuscolo o ripristinati con "Annulla"
 - **Zoom iOS su tutti gli input**: aggiunto `@supports (-webkit-touch-callout: none)` in `app.css` che forza `font-size: 16px` su tutti gli input solo su iOS Safari, prevenendo lo zoom automatico al focus
-- **Altezza SummaryBar con promemoria**: il wrapper cresce a 84px solo quando il reminder è visibile (con transizione fluida); in stato normale rimane a 70px per non distorcere le card "Da pagare/Pagate"; padding inferiore del reminder portato a 16px per dare respiro al testo
+- **Altezza SummaryBar con promemoria**: il riquadro dei promemoria cresce in base al numero di spese elencate; in stato normale la barra rimane a 70px per non distorcere le card "Da pagare/Pagate"
 - **Test e2e del login**: il test cercava il link "Registrati", rimosso a giugno; ora verifica che ci sia "Password dimenticata?" e che la registrazione non compaia
 
 ### Removed
