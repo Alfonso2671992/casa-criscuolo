@@ -34,6 +34,9 @@
 
 <div class="overlay" onclick={onClose} role="presentation" use:trapFocus use:scrollLock>
   <div class="box" onclick={(e) => e.stopPropagation()} onkeydown={(e) => { if (e.key === 'Escape') onClose(); }} role="dialog" tabindex="-1">
+    <button class="btn-x" onclick={onClose} aria-label="Chiudi">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
     <div class="avatar" style="background:{bg};color:{text}">{initial}</div>
     <div class="email">{email}</div>
     <button class="btn-dark" onclick={toggleDark}>
@@ -46,7 +49,6 @@
       {/if}
     </button>
     <button class="btn-logout" onclick={handleLogout}>Disconnetti</button>
-    <button class="btn-close" onclick={onClose}>Chiudi</button>
   </div>
 </div>
 
@@ -57,6 +59,7 @@
     padding: calc(env(safe-area-inset-top) + 110px) 0 50px;
   }
   .box {
+    position: relative;
     background: var(--bg-card); border-radius: 18px; padding: 28px;
     width: 280px; max-width: 92vw; display: flex; flex-direction: column; align-items: center;
   }
@@ -73,11 +76,15 @@
     box-sizing: border-box; background: var(--bg-secondary); color: var(--text-primary);
     border: 1.5px solid var(--border);
   }
-  .btn-logout, .btn-close {
+  /* Same close button as the other modals */
+  .btn-x {
+    all: unset; position: absolute; top: 18px; right: 20px; cursor: pointer;
+    color: var(--text-muted); display: flex; align-items: center; padding: 4px;
+  }
+  .btn-logout {
     all: unset; display: block; width: 100%; padding: 11px; border-radius: 12px;
     font-size: 14px; font-weight: 700; text-align: center; cursor: pointer;
     box-sizing: border-box;
   }
   .btn-logout { background: var(--accent); color: var(--color-white); }
-  .btn-close { background: transparent; color: var(--text-muted); margin-top: 8px; }
 </style>

@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **Chiusura della modale impostazioni**: tolto il pulsante "Chiudi" in basso, al suo posto la X in alto a destra come nella modale delle spese fisse
 - **Etichette più corte in Da acquistare**: "Salute & Farmacia" diventa "Farmacia" e "Fai da te & Casa" diventa "Fai da te"; gli id delle categorie restano invariati, quindi i prodotti già salvati non cambiano
 - **Nuove icone in Da acquistare**: Pulizia ora ha un flacone con erogatore, Fai da te un rullo da pittura, Tempo libero un joypad
 - **Simbolo dell'euro dopo l'importo**: in tutta l'app gli importi sono scritti all'italiana ("662,49 €") con uno spazio non separabile: card "Da pagare" / "Pagate", card delle spese (anche la quota "a testa"), budget degli oggetti Casa, promemoria e modale delle spese fisse; nei campi importo dei form spesa il simbolo è passato a destra
