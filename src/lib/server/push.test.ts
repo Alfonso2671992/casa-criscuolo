@@ -29,8 +29,8 @@ describe('messages', () => {
   it('urgentMsg', () => {
     expect(urgentMsg('Alina', 'limoni')).toEqual({ title: 'Urgente da acquistare', body: 'Alina ha segnato Limoni come urgente', path: '/?tab=acquisto' });
   });
-  it('testMsg path is /', () => {
-    expect(testMsg().path).toBe('/');
+  it('testMsg', () => {
+    expect(testMsg()).toEqual({ title: 'Notifiche attive', body: 'Le notifiche di Casa funzionano su questo dispositivo', path: '/' });
   });
 });
 
@@ -75,6 +75,15 @@ describe('sendToOthers', () => {
     expect(mockDeletePushToken).toHaveBeenCalledWith('u2', 'd2');
     expect(mockDeletePushToken).toHaveBeenCalledTimes(1);
     expect(mockFcmSend).toHaveBeenCalledTimes(2);
+  });
+  it('logs non-ok, non-unregistered failures with status and body', async () => {
+    const spy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    mockGetPushTokens.mockResolvedValue({ u2: { d2: { t: 'T2', ts: 1 } } });
+    mockFcmSend.mockResolvedValue({ ok: false, status: 403, unregistered: false, error: 'SERVICE_DISABLED' });
+    await sendToOthers('u1', msg, 'https://casa.test');
+    expect(spy).toHaveBeenCalledWith('FCM send failed', 403, 'SERVICE_DISABLED');
+    expect(mockDeletePushToken).not.toHaveBeenCalled();
+    spy.mockRestore();
   });
   it('does nothing when there are no tokens', async () => {
     mockGetPushTokens.mockResolvedValue(null);

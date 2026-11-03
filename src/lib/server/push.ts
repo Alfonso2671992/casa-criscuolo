@@ -25,7 +25,7 @@ export function urgentMsg(author: string, n: string): PushMsg {
 }
 
 export function testMsg(): PushMsg {
-  return { title: 'Casa Criscuolo', body: 'Notifiche attive su questo dispositivo', path: '/' };
+  return { title: 'Notifiche attive', body: 'Le notifiche di Casa funzionano su questo dispositivo', path: '/' };
 }
 
 export async function tokenId(t: string): Promise<string> {
@@ -43,6 +43,7 @@ function build(t: string, msg: PushMsg, origin: string) {
 async function sendOne(uid: string, id: string, t: string, msg: PushMsg, origin: string) {
   const r = await fcmSend(build(t, msg, origin));
   if (r.unregistered) await deletePushToken(uid, id);
+  else if (!r.ok) console.error('FCM send failed', r.status, r.error ?? '');
 }
 
 export async function sendToOthers(authorUid: string, msg: PushMsg, origin: string): Promise<void> {

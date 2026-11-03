@@ -263,7 +263,7 @@ export async function getAcquisto(k: string): Promise<AcquistoItem | null> {
   return (await db('GET', 'acquisti/' + k)) as AcquistoItem | null;
 }
 
-export async function fcmSend(message: object): Promise<{ ok: boolean; status: number; unregistered: boolean }> {
+export async function fcmSend(message: object): Promise<{ ok: boolean; status: number; unregistered: boolean; error?: string }> {
   const t = await token();
   const r = await fetch('https://fcm.googleapis.com/v1/projects/casa-criscuolo/messages:send', {
     method: 'POST',
@@ -271,5 +271,5 @@ export async function fcmSend(message: object): Promise<{ ok: boolean; status: n
     body: JSON.stringify({ message }),
   });
   const txt = await r.text();
-  return { ok: r.ok, status: r.status, unregistered: r.status === 404 || txt.includes('UNREGISTERED') };
+  return { ok: r.ok, status: r.status, unregistered: r.status === 404 || txt.includes('UNREGISTERED'), error: r.ok ? undefined : txt };
 }
