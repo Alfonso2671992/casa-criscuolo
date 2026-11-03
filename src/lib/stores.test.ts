@@ -11,6 +11,8 @@ const {
   cacheWishes,
   cacheMisure,
   cacheAcquisti,
+  cacheRecurring,
+  recurringExpenses,
   initDark,
   toast,
   names,
@@ -78,6 +80,15 @@ describe('cacheAcquisti', () => {
     cacheAcquisti(data);
     expect(get(acquisti)).toEqual(data);
     expect(JSON.parse(localStorage.getItem('cc_a')!)).toEqual(data);
+  });
+});
+
+describe('cacheRecurring', () => {
+  it('updates recurringExpenses store and localStorage', () => {
+    const data = [{ _k: 'r1', n: 'Garage', a: 35, to: 3, ts: 100 }];
+    cacheRecurring(data);
+    expect(get(recurringExpenses)).toEqual(data);
+    expect(JSON.parse(localStorage.getItem('cc_r')!)).toEqual(data);
   });
 });
 

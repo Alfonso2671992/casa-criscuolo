@@ -10,7 +10,7 @@
   import ConfirmDialog from '$lib/components/ConfirmDialog.svelte';
   import SettingsModal from '$lib/components/SettingsModal.svelte';
   import RecurringModal from '$lib/components/RecurringModal.svelte';
-  import { user, initDark, currentModal, recurringExpenses, reminderQueue } from '$lib/stores';
+  import { user, initDark, currentModal, recurringExpenses, reminderQueue, cacheRecurring } from '$lib/stores';
   import { onAuth, listenRecurring } from '$lib/firebase-client';
   import { onMount } from 'svelte';
   import { get } from 'svelte/store';
@@ -32,6 +32,13 @@
     if (due.length > 0) reminderQueue.set(due);
   }
 
+  // Fresh data while the box is open (e.g. an expense deleted from the other phone): fix its content
+  function refreshVisibleReminders(list: RecurringExpense[]) {
+    const fresh = dueReminders(list, new Date());
+    const sig = (q: typeof fresh) => JSON.stringify(q.map(r => [r._k, r.n, r.a, r.dueLabel]));
+    if (sig(fresh) !== sig(get(reminderQueue))) reminderQueue.set(fresh);
+  }
+
   function onVisibilityChange() {
     if (document.visibilityState === 'hidden') {
       hiddenAt = Date.now();
@@ -48,10 +55,12 @@
   $effect(() => {
     if ($user) {
       recurringUnsub = listenRecurring((data) => {
-        recurringExpenses.set(data);
+        cacheRecurring(data);
         if (!remindersShown) {
           remindersShown = true;
           showDueReminders(data);
+        } else if (get(reminderQueue).length > 0) {
+          refreshVisibleReminders(data);
         }
       });
     } else {
@@ -66,6 +75,12 @@
     initDark();
     document.addEventListener('visibilitychange', onVisibilityChange);
     const unsubAuth = onAuth((u) => {
+      // Show the reminders from the cache before the page renders, so the summary cards don't flash first
+      const cached = get(recurringExpenses);
+      if (u && !remindersShown && cached.length > 0) {
+        remindersShown = true;
+        showDueReminders(cached);
+      }
       user.set(u);
       authed = true;
     });

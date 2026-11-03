@@ -21,7 +21,7 @@ export const expenses = writable<Expense[]>(lsCache<Expense[]>('cc_e', []));
 export const wishes = writable<WishItem[]>(lsCache<WishItem[]>('cc_w', []));
 export const misure = writable<Misura[]>(lsCache<Misura[]>('cc_m', []));
 export const acquisti = writable<AcquistoItem[]>(lsCache<AcquistoItem[]>('cc_a', []));
-export const recurringExpenses = writable<RecurringExpense[]>([]);
+export const recurringExpenses = writable<RecurringExpense[]>(lsCache<RecurringExpense[]>('cc_r', []));
 export const reminderQueue = writable<DueReminder[]>([]);
 export const user = writable<User | null>(null);
 export const currentTab = writable<TabId>('spese');
@@ -64,6 +64,11 @@ export function cacheMisure(data: Misura[]) {
 export function cacheAcquisti(data: AcquistoItem[]) {
   acquisti.set(data);
   try { localStorage.setItem('cc_a', JSON.stringify(data)); } catch {}
+}
+
+export function cacheRecurring(data: RecurringExpense[]) {
+  recurringExpenses.set(data);
+  try { localStorage.setItem('cc_r', JSON.stringify(data)); } catch {}
 }
 
 function lsDark(): boolean {

@@ -83,7 +83,7 @@ All routes are POST-only, authenticated via `Authorization: Bearer <firebase-id-
 ## Conventions
 
 - **UI labels**: Italian (`Spese`, `Da acquistare`, `Casa`, `Misure`)
-- **localStorage keys**: prefixed `cc_` (`cc_e`, `cc_w`, `cc_m`, `cc_a`, `cc_n`, `cc_budget`, `cc_dark`)
+- **localStorage keys**: prefixed `cc_` (`cc_e`, `cc_w`, `cc_m`, `cc_a`, `cc_r`, `cc_n`, `cc_budget`, `cc_dark`)
 - **Changelog**: update `CHANGELOG.md` (Keep a Changelog format) before every commit — sections: `### Added`, `### Changed`, `### Fixed`, `### Removed`, `### Docs`
 - **Commits**: short, English
 - **Branches**: `develop` for work in progress, `main` for production (auto-deploys to Cloudflare Pages)
