@@ -3,6 +3,7 @@
   import { showToast, currentModal } from '$lib/stores';
   import { authFetch } from '$lib/firebase-client';
   import type { AcquistoItem } from '$lib/types';
+  import { cap } from '$lib/utils';
 
   let { item }: { item: AcquistoItem } = $props();
 
@@ -20,7 +21,7 @@
     <div class="cat-icon" style="background:{cat.bg};color:{cat.color}">{@html cat.svg.replace('width="18" height="18"', 'width="20" height="20"')}</div>
   </div>
   <div class="center">
-    <div class="name">{item.n}</div>
+    <div class="name">{cap(item.n)}</div>
   </div>
   {#if item.qta}
     <div class="qta-badge">{item.qta}</div>
