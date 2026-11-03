@@ -49,7 +49,7 @@ function setFlag(on: boolean) {
   } catch { /* storage unavailable */ }
 }
 
-function post(action: 'register' | 'unregister' | 'test', token: string) {
+function post(action: 'register' | 'unregister', token: string) {
   return authFetch('/api/push', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -105,15 +105,4 @@ export async function refreshPush(): Promise<void> {
     const token = await currentToken();
     if (token) await post('register', token);
   } catch { /* ignore */ }
-}
-
-export async function sendTestPush(): Promise<boolean> {
-  try {
-    const token = await currentToken();
-    if (!token) return false;
-    const res = await post('test', token);
-    return !(res && res.ok === false);
-  } catch {
-    return false;
-  }
 }

@@ -2,18 +2,12 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 const mockSave = vi.fn();
 const mockDelete = vi.fn();
-const mockSendToToken = vi.fn();
 const mockGetTokens = vi.fn();
 vi.mock('../../../lib/server/firebase-admin', () => ({
   savePushToken: mockSave,
   deletePushToken: mockDelete,
   getPushTokens: mockGetTokens,
 }));
-
-vi.mock('../../../lib/server/push', async () => {
-  const actual = await vi.importActual<typeof import('../../../lib/server/push')>('../../../lib/server/push');
-  return { ...actual, sendToToken: mockSendToToken };
-});
 
 vi.mock('../../../lib/server/api-utils', () => {
   class ApiError extends Error {
@@ -33,7 +27,6 @@ vi.mock('../../../lib/server/api-utils', () => {
 beforeEach(() => {
   mockSave.mockReset();
   mockDelete.mockReset();
-  mockSendToToken.mockReset();
   mockGetTokens.mockReset();
   mockGetTokens.mockResolvedValue(null);
 });
@@ -74,32 +67,11 @@ describe('POST /api/push', () => {
     expect(mockDelete).toHaveBeenCalledWith('u1', expect.stringMatching(/^[0-9a-f]{32}$/));
   });
 
-  it('sends a test notification', async () => {
-    mockGetTokens.mockResolvedValue({ u1: { [await tokenId('tok')]: { t: 'tok', ts: 1 } } });
-    await call({ action: 'test', token: 'tok' });
-    expect(mockSendToToken).toHaveBeenCalledOnce();
-    expect(mockSendToToken.mock.lastCall.slice(0, 2)).toEqual(['u1', 'tok']);
-  });
-
-  it('refuses a test for a token not registered under the caller', async () => {
-    mockGetTokens.mockResolvedValue({ u2: { [await tokenId('tok')]: { t: 'tok', ts: 1 } } });
+  it('rejects unknown action, test included', async () => {
+    expect((await call({ action: 'x', token: 'tok' })).status).toBe(400);
     const res = await call({ action: 'test', token: 'tok' });
     expect(res.status).toBe(400);
     expect(await res.json()).toMatchObject({ error: 'Richiesta non valida' });
-    mockGetTokens.mockResolvedValue(null);
-    expect((await call({ action: 'test', token: 'tok' })).status).toBe(400);
-    expect(mockSendToToken).not.toHaveBeenCalled();
-  });
-
-  it('returns send errors on test', async () => {
-    mockGetTokens.mockResolvedValue({ u1: { [await tokenId('tok')]: { t: 'tok', ts: 1 } } });
-    mockSendToToken.mockRejectedValue(new Error('boom'));
-    const res = await call({ action: 'test', token: 'tok' });
-    expect(res.status).toBe(500);
-  });
-
-  it('rejects unknown action', async () => {
-    expect((await call({ action: 'x', token: 'tok' })).status).toBe(400);
   });
 
   it('rejects missing or oversized token', async () => {

@@ -1,9 +1,9 @@
 import { json } from '@sveltejs/kit';
 import { apiHandler, ApiError } from '$lib/server/api-utils';
 import { savePushToken, deletePushToken, getPushTokens } from '$lib/server/firebase-admin';
-import { tokenId, sendToToken, testMsg } from '$lib/server/push';
+import { tokenId } from '$lib/server/push';
 
-export async function POST({ request, url }) {
+export async function POST({ request }) {
   return apiHandler(request, async (user) => {
     const body = await request.json().catch(() => null);
     const token = body?.token;
@@ -18,10 +18,6 @@ export async function POST({ request, url }) {
       await savePushToken(user.uid, id, token);
     } else if (body.action === 'unregister') {
       await deletePushToken(user.uid, id);
-    } else if (body.action === 'test') {
-      const all = await getPushTokens();
-      if (!all?.[user.uid]?.[id]) throw new ApiError(400, 'Richiesta non valida');
-      await sendToToken(user.uid, token, testMsg(), url.origin);
     } else {
       throw new ApiError(400, 'Richiesta non valida');
     }

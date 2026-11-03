@@ -24,10 +24,6 @@ export function urgentMsg(author: string, n: string): PushMsg {
   return { title: 'Urgente da acquistare', body: `${author} ha segnato ${cap(n)} come urgente`, path: '/?tab=acquisto' };
 }
 
-export function testMsg(): PushMsg {
-  return { title: 'Notifiche attive', body: 'Le notifiche di Casa funzionano su questo dispositivo', path: '/' };
-}
-
 export async function tokenId(t: string): Promise<string> {
   const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(t));
   const hex = Array.from(new Uint8Array(buf), b => b.toString(16).padStart(2, '0')).join('');
@@ -58,10 +54,6 @@ export async function sendToOthers(authorUid: string, msg: PushMsg, origin: stri
     for (const [id, d] of Object.entries(devs)) jobs.push(sendOne(uid, id, d.t, msg, origin));
   }
   await Promise.allSettled(jobs);
-}
-
-export async function sendToToken(uid: string, t: string, msg: PushMsg, origin: string): Promise<void> {
-  await sendOne(uid, await tokenId(t), t, msg, origin);
 }
 
 type WaitUntilPlatform = { context?: { waitUntil?(p: Promise<unknown>): void } };

@@ -2,7 +2,7 @@
   import { trapFocus, scrollLock } from '$lib/utils';
   import { logout, auth } from '$lib/firebase-client';
   import { showToast, darkMode } from '$lib/stores';
-  import { pushSupport, pushEnabled, permissionGranted, enablePush, disablePush, sendTestPush, unregisterOnLogout, type PushSupport } from '$lib/push';
+  import { pushSupport, pushEnabled, permissionGranted, enablePush, disablePush, unregisterOnLogout, type PushSupport } from '$lib/push';
 
   let { onClose }: { onClose: () => void } = $props();
 
@@ -22,7 +22,6 @@
   let support = $state<PushSupport | null>(null);
   let pushOn = $state(pushEnabled() && permissionGranted());
   let busy = $state(false);
-  let testing = $state(false);
   let denied = $state(false);
 
   $effect(() => { pushSupport().then(v => { support = v; }); });
@@ -41,16 +40,6 @@
       else if (r === 'denied') denied = true;
       else showToast('Attivazione non riuscita, riprova');
     }).finally(() => { busy = false; });
-  }
-
-  async function testPush() {
-    if (testing) return;
-    testing = true;
-    try {
-      showToast((await sendTestPush()) ? 'Notifica inviata' : 'Invio non riuscito');
-    } finally {
-      testing = false;
-    }
   }
 
   async function handleLogout() {
@@ -85,9 +74,6 @@
       <div class="push-note">Questo browser non supporta le notifiche</div>
     {:else if denied}
       <div class="push-note">Attiva le notifiche per Casa nelle Impostazioni dell'iPhone</div>
-    {/if}
-    {#if pushOn && support === 'ok'}
-      <button class="link-test" onclick={testPush} disabled={testing}>Invia notifica di prova</button>
     {/if}
     <button class="btn-dark" onclick={toggleDark}>
       {#if $darkMode}
@@ -144,11 +130,6 @@
   }
   .switch.on .knob { transform: translateX(15px); }
   .push-note { width: 100%; font-size: 13px; color: var(--text-secondary); margin: -14px 0 22px; text-align: center; }
-  .link-test {
-    all: unset; align-self: flex-start; margin: -16px 0 22px; padding: 2px 12px;
-    font-size: 13px; font-weight: 600; color: var(--accent); cursor: pointer;
-  }
-  .link-test:disabled { opacity: .5; cursor: default; }
   /* Same close button as the other modals */
   .btn-x {
     all: unset; position: absolute; top: 18px; right: 20px; cursor: pointer;

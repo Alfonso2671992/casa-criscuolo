@@ -70,7 +70,7 @@ All routes are POST-only, authenticated via `Authorization: Bearer <firebase-id-
 - `POST /api/mis` — add misura; `POST /api/mis/[id]` — DELETE
 - `POST /api/acquisto` — add acquisto item; `POST /api/acquisto/[id]` — PATCH or DELETE
 - `POST /api/photo/[id]` — save photo for an item
-- `POST /api/push` — push tokens: `action` = `register` / `unregister` / `test`
+- `POST /api/push` — push tokens: `action` = `register` / `unregister`
 
 Push notifications (FCM HTTP v1) go to the OTHER user when an expense is added (`POST /api/exp`) or a shopping item becomes urgent (`PATCH /api/acquisto/[id]` with `u:true`, only if not already urgent). Messages are data-only (`data: { title, body, link }`); `static/firebase-messaging-sw.js` is a hand-written SW (no Firebase SDK) that always shows the notification and, on tap, focuses the open app and posts `{type:'open-tab', link}` (handled in `+layout.svelte`) or opens the link. Logout unregisters the device token first (`unregisterOnLogout`). Works on iOS only from the home-screen app (iOS 16.4+).
 

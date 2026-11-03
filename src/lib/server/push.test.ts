@@ -10,7 +10,7 @@ vi.mock('./firebase-admin', () => ({
 }));
 
 const { env } = await import('$env/dynamic/private');
-const { expenseMsg, urgentMsg, testMsg, authorName, tokenId, sendToOthers, sendToToken } = await import('./push');
+const { expenseMsg, urgentMsg, authorName, tokenId, sendToOthers } = await import('./push');
 
 beforeEach(() => {
   mockGetPushTokens.mockReset();
@@ -28,9 +28,6 @@ describe('messages', () => {
   });
   it('urgentMsg', () => {
     expect(urgentMsg('Alina', 'limoni')).toEqual({ title: 'Urgente da acquistare', body: 'Alina ha segnato Limoni come urgente', path: '/?tab=acquisto' });
-  });
-  it('testMsg', () => {
-    expect(testMsg()).toEqual({ title: 'Notifiche attive', body: 'Le notifiche di Casa funzionano su questo dispositivo', path: '/' });
   });
 });
 
@@ -92,18 +89,5 @@ describe('sendToOthers', () => {
     mockGetPushTokens.mockResolvedValue(null);
     await expect(sendToOthers('u1', msg, 'https://casa.test')).resolves.toBeUndefined();
     expect(mockFcmSend).not.toHaveBeenCalled();
-  });
-});
-
-describe('sendToToken', () => {
-  it('sends a data-only message, http origins included', async () => {
-    await sendToToken('u1', 'T1', msg, 'http://localhost:5173');
-    const m = mockFcmSend.mock.calls[0][0];
-    expect(m).toEqual({
-      token: 'T1',
-      data: { title: msg.title, body: msg.body, link: 'http://localhost:5173/?tab=spese' },
-      webpush: { headers: { Urgency: 'high' } },
-    });
-    expect(m.notification).toBeUndefined();
   });
 });
