@@ -65,8 +65,11 @@ describe('sendToOthers', () => {
     expect(mockFcmSend).toHaveBeenCalledTimes(2);
     const sent = mockFcmSend.mock.calls.map(c => c[0]);
     expect(sent.map(m => m.token).sort()).toEqual(['T2', 'T3']);
-    expect(sent[0].webpush.fcm_options.link).toBe('https://casa.test/?tab=spese');
-    expect(sent[0].notification).toEqual({ title: msg.title, body: msg.body });
+    expect(sent[0]).toEqual({
+      token: sent[0].token,
+      data: { title: msg.title, body: msg.body, link: 'https://casa.test/?tab=spese' },
+      webpush: { headers: { Urgency: 'high' } },
+    });
   });
   it('deletes unregistered tokens and still sends the rest', async () => {
     mockGetPushTokens.mockResolvedValue(tokens);
@@ -93,10 +96,14 @@ describe('sendToOthers', () => {
 });
 
 describe('sendToToken', () => {
-  it('omits fcm_options on non-https origin', async () => {
+  it('sends a data-only message, http origins included', async () => {
     await sendToToken('u1', 'T1', msg, 'http://localhost:5173');
     const m = mockFcmSend.mock.calls[0][0];
-    expect(m.token).toBe('T1');
-    expect(m.webpush?.fcm_options).toBeUndefined();
+    expect(m).toEqual({
+      token: 'T1',
+      data: { title: msg.title, body: msg.body, link: 'http://localhost:5173/?tab=spese' },
+      webpush: { headers: { Urgency: 'high' } },
+    });
+    expect(m.notification).toBeUndefined();
   });
 });

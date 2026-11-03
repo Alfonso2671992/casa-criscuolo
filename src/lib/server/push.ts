@@ -34,10 +34,13 @@ export async function tokenId(t: string): Promise<string> {
   return hex.slice(0, 32);
 }
 
+// Data-only: our service worker always shows the notification itself (also with the app in foreground)
 function build(t: string, msg: PushMsg, origin: string) {
-  const m: Record<string, unknown> = { token: t, notification: { title: msg.title, body: msg.body } };
-  if (origin.startsWith('https://')) m.webpush = { fcm_options: { link: origin + msg.path } };
-  return m;
+  return {
+    token: t,
+    data: { title: msg.title, body: msg.body, link: origin + msg.path },
+    webpush: { headers: { Urgency: 'high' } },
+  };
 }
 
 async function sendOne(uid: string, id: string, t: string, msg: PushMsg, origin: string) {
