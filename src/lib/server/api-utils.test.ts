@@ -22,10 +22,17 @@ describe('apiHandler', () => {
   }
 
   it('returns handler response when auth succeeds', async () => {
-    mockRequireAuth.mockResolvedValue('uid1');
+    mockRequireAuth.mockResolvedValue({ uid: 'uid1' });
     const res = await apiHandler(req(), async () => new Response(JSON.stringify({ ok: true }), { status: 200 }));
     expect(res.status).toBe(200);
     expect(await res.json()).toEqual({ ok: true });
+  });
+
+  it('passes the authenticated user to the handler', async () => {
+    mockRequireAuth.mockResolvedValue({ uid: 'u1', email: 'a@b.c' });
+    let received: unknown;
+    await apiHandler(req(), async (user) => { received = user; return new Response('{}'); });
+    expect(received).toEqual({ uid: 'u1', email: 'a@b.c' });
   });
 
   it('returns 401 when requireAuth throws auth error', async () => {
@@ -47,7 +54,7 @@ describe('apiHandler', () => {
   });
 
   it('uses ApiError status when thrown from handler', async () => {
-    mockRequireAuth.mockResolvedValue('uid1');
+    mockRequireAuth.mockResolvedValue({ uid: 'uid1' });
     const res = await apiHandler(req(), async () => { throw new ApiError(400, 'Importo non valido'); });
     expect(res.status).toBe(400);
     const body = await res.json();
@@ -56,7 +63,7 @@ describe('apiHandler', () => {
   });
 
   it('handles non-Error throws gracefully', async () => {
-    mockRequireAuth.mockResolvedValue('uid1');
+    mockRequireAuth.mockResolvedValue({ uid: 'uid1' });
     const res = await apiHandler(req(), async () => { throw 'string error'; });
     expect(res.status).toBe(500);
     const body = await res.json();
@@ -65,7 +72,7 @@ describe('apiHandler', () => {
   });
 
   it('handles handler rejection', async () => {
-    mockRequireAuth.mockResolvedValue('uid1');
+    mockRequireAuth.mockResolvedValue({ uid: 'uid1' });
     const res = await apiHandler(req(), async () => { throw new Error('Handler failed'); });
     expect(res.status).toBe(500);
     const body = await res.json();

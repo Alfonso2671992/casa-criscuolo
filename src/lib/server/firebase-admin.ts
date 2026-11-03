@@ -155,12 +155,14 @@ async function verifyToken(idToken: string): Promise<{ sub: string; email?: stri
   return { sub: payload.sub, email: payload.email || undefined };
 }
 
-export async function requireAuth(request: Request): Promise<string> {
+export interface AuthUser { uid: string; email?: string }
+
+export async function requireAuth(request: Request): Promise<AuthUser> {
   const ah = request.headers.get('authorization');
   if (!ah || !ah.startsWith('Bearer ')) throw new Error('Autenticazione richiesta');
   const user = await verifyToken(ah.slice(7));
   if (!user) throw new Error('Token non valido o scaduto');
-  return user.sub;
+  return { uid: user.sub, email: user.email };
 }
 
 export async function addExpense(d: Expense) { d.ts = Date.now(); await db('POST', 'exp', d); }

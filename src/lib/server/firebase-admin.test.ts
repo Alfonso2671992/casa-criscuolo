@@ -159,7 +159,7 @@ describe('requireAuth', () => {
     await expect(requireAuth({ authorization: 'Bearer ' + token })).rejects.toThrow('Token non valido o scaduto');
   });
 
-  it('returns uid for valid token', async () => {
+  it('returns uid and email for valid token', async () => {
     const kp = await crypto.subtle.generateKey(
       { name: 'RSASSA-PKCS1-v1_5', hash: 'SHA-256', modulusLength: 2048, publicExponent: new Uint8Array([1, 0, 1]) },
       true, ['sign', 'verify']
@@ -186,7 +186,7 @@ describe('requireAuth', () => {
     const token = hB64 + '.' + pB64 + '.' + sigB64;
 
     const uid = await requireAuth({ authorization: 'Bearer ' + token });
-    expect(uid).toBe('user42');
+    expect(uid).toEqual({ uid: 'user42', email: 'a@b.com' });
 
     globalThis.fetch = origFetch;
   });
