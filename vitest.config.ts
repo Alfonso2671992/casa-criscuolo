@@ -12,6 +12,17 @@ export default defineConfig({
   },
   test: {
     environment: 'jsdom',
-    include: ['src/**/*.test.ts'],
+    projects: [
+      {
+        extends: true,
+        test: { name: 'unit', include: ['src/**/*.test.ts'], exclude: ['src/lib/components/**'] },
+      },
+      {
+        // Component tests mount Svelte in jsdom, so they need the client build of svelte
+        extends: true,
+        resolve: { conditions: ['browser'] },
+        test: { name: 'components', include: ['src/lib/components/**/*.test.ts'] },
+      },
+    ],
   },
 });

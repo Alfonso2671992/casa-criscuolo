@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Spese fisse con promemoria**: nuova funzionalità per definire spese ricorrenti mensili (nome, importo, range di giorni); all'apertura dell'app nei giorni del range compare un promemoria in SummaryBar (una volta al giorno); gestione in modal dedicata accessibile dall'header; supporto edit e delete inline con conferma
 - **Promemoria in SummaryBar**: i promemoria rimpiazzano temporaneamente le card "Da pagare" / "Pagate" con un'animazione `fly`; più spese vengono ciclate ogni 4 secondi; al termine torna la visualizzazione normale con `fade`
 - **Icona spese fisse nell'header**: puntino arancione sull'icona solo nei giorni in cui ci sono spese fisse in scadenza
+- **Test dei componenti**: nuovi test Vitest che montano i form in jsdom e verificano che il pulsante di salvataggio si sblocchi in caso di errore di rete o del server; la config di Vitest è divisa nei progetti `unit` e `components`
 - **Toast frosted glass**: effetto vetro smerigliato con `backdrop-filter`, colori adattivi light/dark mode; posizionato in basso al centro per messaggi di sistema
 
 ### Changed
