@@ -40,7 +40,7 @@ async function token(): Promise<string> {
   const a = sa();
   const now = Math.floor(Date.now() / 1000);
   const header = b64url(JSON.stringify({ alg: 'RS256', typ: 'JWT' }));
-  const payload = b64url(JSON.stringify({ iss: a.client_email, scope: 'https://www.googleapis.com/auth/firebase.database https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/devstorage.full_control', aud: 'https://oauth2.googleapis.com/token', exp: now + 3600, iat: now }));
+  const payload = b64url(JSON.stringify({ iss: a.client_email, scope: 'https://www.googleapis.com/auth/firebase.database https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/devstorage.full_control https://www.googleapis.com/auth/firebase.messaging', aud: 'https://oauth2.googleapis.com/token', exp: now + 3600, iat: now }));
   const jwt = header + '.' + payload;
   let sig: string;
   try { sig = await sign(jwt, a.private_key); } catch (e: any) { throw new Error('JWT sign failed: ' + (e?.message || e)); }
@@ -247,3 +247,29 @@ export async function getPhoto(key: string): Promise<string | null> {
   return d?.data || null;
 }
 
+
+export type PushTokens = Record<string, Record<string, { t: string; ts: number }>>;
+
+export async function getPushTokens(): Promise<PushTokens | null> {
+  return (await db('GET', 'push')) as PushTokens | null;
+}
+export async function savePushToken(uid: string, id: string, t: string): Promise<void> {
+  await db('PUT', `push/${uid}/${id}`, { t, ts: Date.now() });
+}
+export async function deletePushToken(uid: string, id: string): Promise<void> {
+  await db('DELETE', `push/${uid}/${id}`);
+}
+export async function getAcquisto(k: string): Promise<AcquistoItem | null> {
+  return (await db('GET', 'acquisti/' + k)) as AcquistoItem | null;
+}
+
+export async function fcmSend(message: object): Promise<{ ok: boolean; status: number; unregistered: boolean }> {
+  const t = await token();
+  const r = await fetch('https://fcm.googleapis.com/v1/projects/casa-criscuolo/messages:send', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + t },
+    body: JSON.stringify({ message }),
+  });
+  const txt = await r.text();
+  return { ok: r.ok, status: r.status, unregistered: r.status === 404 || txt.includes('UNREGISTERED') };
+}
