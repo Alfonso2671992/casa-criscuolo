@@ -88,7 +88,7 @@ Push notifications (FCM HTTP v1) go to the OTHER user when an expense is added (
 ## Conventions
 
 - **UI labels**: Italian (`Spese`, `Da acquistare`, `Casa`, `Misure`)
-- **localStorage keys**: prefixed `cc_` (`cc_e`, `cc_w`, `cc_m`, `cc_a`, `cc_r`, `cc_n`, `cc_budget`, `cc_dark`, `cc_push`)
+- **localStorage keys**: prefixed `cc_` (`cc_e`, `cc_w`, `cc_m`, `cc_a`, `cc_r`, `cc_n`, `cc_budget`, `cc_dark`, `cc_push`, `cc_rem_seen`)
 - **Changelog**: update `CHANGELOG.md` (Keep a Changelog format) before every commit — sections: `### Added`, `### Changed`, `### Fixed`, `### Removed`, `### Docs`
 - **Commits**: short, English
 - **Branches**: `develop` for work in progress, `main` for production (auto-deploys to Cloudflare Pages)

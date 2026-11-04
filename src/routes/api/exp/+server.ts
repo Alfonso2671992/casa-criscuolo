@@ -1,7 +1,7 @@
 import { json } from '@sveltejs/kit';
 import { apiHandler, ApiError } from '$lib/server/api-utils';
 import { addExpense } from '$lib/server/firebase-admin';
-import { cap } from '$lib/utils';
+import { cap, halfOf } from '$lib/utils';
 import { background, sendToOthers, expenseMsg, authorName } from '$lib/server/push';
 
 export async function POST({ request, platform, url }) {
@@ -12,7 +12,7 @@ export async function POST({ request, platform, url }) {
     if (!body.payer || !body.payer.trim()) throw new ApiError(400, 'Seleziona chi paga');
     const cat = body.c || 'altro';
     const n = cap((body.n || '').toString().slice(0, 200) || cat);
-    const half = body.payer === 'A metà' ? +(a / 2).toFixed(2) : null;
+    const half = body.payer === 'A metà' ? halfOf(a) : null;
     await addExpense({
       n, a, c: cat, dt: body.dt || null, sc: body.sc || null, payer: body.payer, half, s: 'da', ts: Date.now(),
     });

@@ -248,3 +248,13 @@ describe('trapFocus', () => {
     expect(spy).toHaveBeenCalledWith('keydown', expect.any(Function));
   });
 });
+
+describe('halfOf', async () => {
+  const { halfOf } = await import('./utils');
+  it('splits to the cent, rounding half cents up', () => {
+    expect(halfOf(10)).toBe(5);
+    expect(halfOf(263.49)).toBe(131.75);
+    expect(halfOf(0.01)).toBe(0.01);
+    expect(halfOf(85.5)).toBe(42.75);
+  });
+});

@@ -3,7 +3,9 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 const mockAddExpense = vi.fn();
 const mockUpdateExpense = vi.fn();
 const mockDeleteExpense = vi.fn();
+const mockGetExpense = vi.fn();
 vi.mock('../../../lib/server/firebase-admin', () => ({
+  getExpense: mockGetExpense,
   addExpense: mockAddExpense,
   updateExpense: mockUpdateExpense,
   deleteExpense: mockDeleteExpense,
@@ -36,6 +38,7 @@ beforeEach(() => {
   mockAddExpense.mockClear();
   mockUpdateExpense.mockClear();
   mockDeleteExpense.mockClear();
+  mockGetExpense.mockReset();
   mockSendToOthers.mockReset();
   mockSendToOthers.mockResolvedValue(undefined);
 });
@@ -171,6 +174,44 @@ describe('PATCH /api/exp/[id]', () => {
     });
     const res = await PATCH({ params: { id: 'abc' }, request: req });
     expect(res.status).toBe(400);
+  });
+
+  const patch = (body: unknown) => PATCH({ params: { id: 'abc' }, request: new Request('http://localhost', {
+    method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body),
+  }) } as never);
+
+  it('recomputes half when the amount of a split expense changes', async () => {
+    await patch({ a: 20, payer: 'A metà' });
+    expect(mockUpdateExpense.mock.calls[0][1].half).toBe(10);
+  });
+
+  it('computes half when an expense becomes split', async () => {
+    await patch({ a: 263.49, payer: 'A metà' });
+    expect(mockUpdateExpense.mock.calls[0][1].half).toBe(131.75);
+  });
+
+  it('clears half when an expense stops being split', async () => {
+    await patch({ a: 20, payer: 'Alfonso' });
+    expect(mockUpdateExpense.mock.calls[0][1].half).toBeNull();
+  });
+
+  it('uses the stored payer when only the amount changes', async () => {
+    mockGetExpense.mockResolvedValue({ a: 10, payer: 'A metà' });
+    await patch({ a: 30 });
+    expect(mockGetExpense).toHaveBeenCalledWith('abc');
+    expect(mockUpdateExpense.mock.calls[0][1].half).toBe(15);
+  });
+
+  it('uses the stored amount when only the payer changes', async () => {
+    mockGetExpense.mockResolvedValue({ a: 50, payer: 'Alina' });
+    await patch({ payer: 'A metà' });
+    expect(mockUpdateExpense.mock.calls[0][1].half).toBe(25);
+  });
+
+  it('ignores a half sent by the client', async () => {
+    await patch({ s: 'ok', half: 999 });
+    expect(mockUpdateExpense.mock.calls[0][1].half).toBeUndefined();
+    expect(mockGetExpense).not.toHaveBeenCalled();
   });
 
   it('rejects invalid status', async () => {

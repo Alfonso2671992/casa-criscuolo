@@ -1,5 +1,10 @@
 import { browser } from '$app/environment';
 
+/** Share of a split ("A metà") expense, rounded to the cent (half cents round up). */
+export function halfOf(a: number): number {
+  return Math.round(Math.round(a * 100) / 2) / 100;
+}
+
 export function cap(s: string): string {
   if (!s) return s;
   return s.charAt(0).toUpperCase() + s.slice(1);

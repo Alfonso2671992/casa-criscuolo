@@ -51,6 +51,9 @@ input[type=number]{-moz-appearance:textfield}
   display:flex;
   flex-direction:column;
   background:var(--bg-app);
+  /* Anchor and clip overlays that slide in from the app's right edge (ReminderPopup) */
+  position:relative;
+  overflow:hidden;
 }
 
 .body{

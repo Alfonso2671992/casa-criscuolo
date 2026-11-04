@@ -1,5 +1,5 @@
 import { writable, derived } from 'svelte/store';
-import type { Expense, WishItem, Misura, AcquistoItem, TabId, Names, ModalState, RecurringExpense, DueReminder } from './types';
+import type { Expense, WishItem, Misura, AcquistoItem, TabId, Names, ModalState, RecurringExpense } from './types';
 import type { User } from 'firebase/auth';
 
 function lsNames(): Names {
@@ -22,7 +22,6 @@ export const wishes = writable<WishItem[]>(lsCache<WishItem[]>('cc_w', []));
 export const misure = writable<Misura[]>(lsCache<Misura[]>('cc_m', []));
 export const acquisti = writable<AcquistoItem[]>(lsCache<AcquistoItem[]>('cc_a', []));
 export const recurringExpenses = writable<RecurringExpense[]>(lsCache<RecurringExpense[]>('cc_r', []));
-export const reminderQueue = writable<DueReminder[]>([]);
 export const user = writable<User | null>(null);
 export const currentTab = writable<TabId>('spese');
 export const names = writable<Names>(lsNames());

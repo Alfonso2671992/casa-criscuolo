@@ -20,6 +20,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **Promemoria spese fisse**: non copre più le card "Da pagare / Pagate". È un riquadro che entra da destra alla prima apertura della giornata (`cc_rem_seen`), con una riga per spesa in scadenza, largo quanto il testo (nomi lunghi tagliati con "…"); si chiude toccandolo o da solo dopo 7 secondi, e riesce a destra. Niente più comparsa a ogni apertura né dopo 30 minuti in background
+- **Impostazioni**: l'etichetta dell'interruttore notifiche ora è "Attiva notifiche"
 - **Chiusura della modale impostazioni**: tolto il pulsante "Chiudi" in basso, al suo posto la X in alto a destra come nella modale delle spese fisse
 - **Etichette più corte in Da acquistare**: "Salute & Farmacia" diventa "Farmacia" e "Fai da te & Casa" diventa "Fai da te"; gli id delle categorie restano invariati, quindi i prodotti già salvati non cambiano
 - **Nuove icone in Da acquistare**: Pulizia ora ha un flacone con erogatore, Fai da te un rullo da pittura, Tempo libero un joypad
@@ -30,6 +32,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Cifra "a testa" dopo una modifica**: modificando importo o "chi paga" di una spesa, il server ricalcola la metà (prima restava quella vecchia, o 0,00 € passando ad "A metà"); la metà non è più scrivibile dal client
 - **Sicurezza API**: il server accetta solo i due account di casa (uid in allowlist) e verifica anche l'`aud` del token; i percorsi verso il database accettano solo chiavi Firebase (niente `../`); il ripristino di "Svuota categoria" riscrive solo i campi noti dei prodotti
 - **Campi della modale spese fisse**: testo a 14px con peso 500 come nei form dei tab (prima 16px, più grande su computer)
 - **Spazio vuoto in fondo alla pagina**: il margine inferiore fisso di 80px è sceso a 24px più lo spazio dell'indicatore home dell'iPhone (`env(safe-area-inset-bottom)`), quindi niente fascia vuota su computer e telefoni senza barretta

@@ -179,6 +179,7 @@ export async function requireAuth(request: Request): Promise<AuthUser> {
 }
 
 export async function addExpense(d: Expense) { d.ts = Date.now(); await db('POST', 'exp', d); }
+export async function getExpense(k: string): Promise<Expense | null> { return await db('GET', 'exp/' + k); }
 export async function updateExpense(k: string, d: Partial<Expense>) { await db('PATCH', 'exp/' + k, d); }
 export async function deleteExpense(k: string) { await db('DELETE', 'exp/' + k); }
 

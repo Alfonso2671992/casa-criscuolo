@@ -65,8 +65,8 @@
     <div class="avatar" style="background:{bg};color:{text}">{initial}</div>
     <div class="email">{email}</div>
     <div class="push-row">
-      <span>Notifiche</span>
-      <button class="switch" class:on={pushOn} role="switch" aria-checked={pushOn} aria-label="Notifiche" disabled={busy || support !== 'ok'} onclick={togglePush}><span class="knob"></span></button>
+      <span>Attiva notifiche</span>
+      <button class="switch" class:on={pushOn} role="switch" aria-checked={pushOn} aria-label="Attiva notifiche" disabled={busy || support !== 'ok'} onclick={togglePush}><span class="knob"></span></button>
     </div>
     {#if support === 'need-home'}
       <div class="push-note">Aggiungi l'app alla schermata Home per ricevere le notifiche</div>

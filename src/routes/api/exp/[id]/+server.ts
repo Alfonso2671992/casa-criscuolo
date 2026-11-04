@@ -1,9 +1,10 @@
 import { json } from '@sveltejs/kit';
 import { apiHandler, ApiError } from '$lib/server/api-utils';
-import { updateExpense, deleteExpense } from '$lib/server/firebase-admin';
-import { cap } from '$lib/utils';
+import { getExpense, updateExpense, deleteExpense } from '$lib/server/firebase-admin';
+import { cap, halfOf } from '$lib/utils';
 
-const VALID_EXP_FIELDS = ['n', 'a', 'c', 'dt', 'sc', 'payer', 'half', 's', 'paidAt'];
+// `half` is not client-writable: it is derived from the amount and the payer below
+const VALID_EXP_FIELDS = ['n', 'a', 'c', 'dt', 'sc', 'payer', 's', 'paidAt'];
 
 export async function PATCH({ params, request }) {
   return apiHandler(request, async () => {
@@ -19,10 +20,16 @@ export async function PATCH({ params, request }) {
         else if (k === 'dt') update.dt = body.dt || null;
         else if (k === 'sc') update.sc = body.sc || null;
         else if (k === 'payer') { if (!body.payer || !body.payer.trim()) throw new ApiError(400, 'Seleziona chi paga'); update.payer = body.payer; }
-        else if (k === 'half') update.half = body.half != null ? +body.half : null;
         else if (k === 's') { if (!['da', 'ok'].includes(body.s)) throw new ApiError(400, 'Stato non valido'); update.s = body.s; }
         else if (k === 'paidAt') update.paidAt = body.paidAt || null;
       }
+    }
+    if ('a' in update || 'payer' in update) {
+      // Only one of the two sent: read the other from the stored expense
+      const cur = 'a' in update && 'payer' in update ? null : await getExpense(id);
+      const a = (update.a ?? cur?.a) as number | undefined;
+      const payer = update.payer ?? cur?.payer;
+      update.half = payer === 'A metà' && typeof a === 'number' ? halfOf(a) : null;
     }
     await updateExpense(id, update);
     return json({ ok: true });

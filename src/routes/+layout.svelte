@@ -10,47 +10,17 @@
   import ConfirmDialog from '$lib/components/ConfirmDialog.svelte';
   import SettingsModal from '$lib/components/SettingsModal.svelte';
   import RecurringModal from '$lib/components/RecurringModal.svelte';
-  import { user, initDark, currentTab, currentModal, recurringExpenses, reminderQueue, cacheRecurring } from '$lib/stores';
+  import ReminderPopup from '$lib/components/ReminderPopup.svelte';
+  import { user, initDark, currentTab, currentModal, cacheRecurring } from '$lib/stores';
   import { onAuth, listenRecurring } from '$lib/firebase-client';
   import { tabFromUrl, tabFromSwMessage, refreshPush } from '$lib/push';
   import { onMount } from 'svelte';
-  import { get } from 'svelte/store';
-  import type { RecurringExpense } from '$lib/types';
-  import { dueReminders } from '$lib/recurring';
 
   let { children }: { children: import('svelte').Snippet } = $props();
 
   let authed = $state(false);
   let recurringUnsub: (() => void) | null = null;
-  // The listener fires on every change: show the reminders only on the first load after opening the app
-  let remindersShown = false;
-  // Resuming from background after this long counts as a new opening
-  const RESUME_REMINDER_MS = 30 * 60 * 1000;
-  let hiddenAt: number | null = null;
   let pushStarted = false;
-
-  function showDueReminders(list: RecurringExpense[]) {
-    const due = dueReminders(list, new Date());
-    if (due.length > 0) reminderQueue.set(due);
-  }
-
-  // Fresh data while the box is open (e.g. an expense deleted from the other phone): fix its content
-  function refreshVisibleReminders(list: RecurringExpense[]) {
-    const fresh = dueReminders(list, new Date());
-    const sig = (q: typeof fresh) => JSON.stringify(q.map(r => [r._k, r.n, r.a, r.dueLabel]));
-    if (sig(fresh) !== sig(get(reminderQueue))) reminderQueue.set(fresh);
-  }
-
-  function onVisibilityChange() {
-    if (document.visibilityState === 'hidden') {
-      hiddenAt = Date.now();
-      return;
-    }
-    if (hiddenAt !== null && Date.now() - hiddenAt >= RESUME_REMINDER_MS && get(user)) {
-      showDueReminders(get(recurringExpenses));
-    }
-    hiddenAt = null;
-  }
 
   function closeModal() { currentModal.set(null); }
 
@@ -62,19 +32,10 @@
 
   $effect(() => {
     if ($user) {
-      recurringUnsub = listenRecurring((data) => {
-        cacheRecurring(data);
-        if (!remindersShown) {
-          remindersShown = true;
-          showDueReminders(data);
-        } else if (get(reminderQueue).length > 0) {
-          refreshVisibleReminders(data);
-        }
-      });
+      recurringUnsub = listenRecurring(cacheRecurring);
     } else {
       recurringUnsub?.();
       recurringUnsub = null;
-      remindersShown = false;
     }
     return () => { recurringUnsub?.(); recurringUnsub = null; };
   });
@@ -86,15 +47,8 @@
       currentTab.set(t);
       history.replaceState(null, '', '/');
     }
-    document.addEventListener('visibilitychange', onVisibilityChange);
     navigator.serviceWorker?.addEventListener('message', onSwMessage);
     const unsubAuth = onAuth((u) => {
-      // Show the reminders from the cache before the page renders, so the summary cards don't flash first
-      const cached = get(recurringExpenses);
-      if (u && !remindersShown && cached.length > 0) {
-        remindersShown = true;
-        showDueReminders(cached);
-      }
       user.set(u);
       authed = true;
       if (u && !pushStarted) {
@@ -103,7 +57,6 @@
       }
     });
     return () => {
-      document.removeEventListener('visibilitychange', onVisibilityChange);
       navigator.serviceWorker?.removeEventListener('message', onSwMessage);
       unsubAuth();
     };
@@ -118,6 +71,7 @@
   {:else}
     <Header />
     <TabBar />
+    <ReminderPopup />
     <div class="body">
       {@render children()}
     </div>
