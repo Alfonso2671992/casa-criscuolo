@@ -34,6 +34,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **X di chiusura delle modali**: disegnata come un unico tratto invece di due linee, così su iPhone l'incrocio non appare più scuro (si notava nel pannello dello storico, che entra con un'animazione)
 - **Cifra "a testa" dopo una modifica**: modificando importo o "chi paga" di una spesa, il server ricalcola la metà (prima restava quella vecchia, o 0,00 € passando ad "A metà"); la metà non è più scrivibile dal client
 - **Sicurezza API**: il server accetta solo i due account di casa (uid in allowlist) e verifica anche l'`aud` del token; i percorsi verso il database accettano solo chiavi Firebase (niente `../`); il ripristino di "Svuota categoria" riscrive solo i campi noti dei prodotti
 - **Campi della modale spese fisse**: testo a 14px con peso 500 come nei form dei tab (prima 16px, più grande su computer)
