@@ -4,8 +4,10 @@ const mockAddExpense = vi.fn();
 const mockUpdateExpense = vi.fn();
 const mockDeleteExpense = vi.fn();
 const mockGetExpense = vi.fn();
+const mockAddBillRecord = vi.fn();
 vi.mock('../../../lib/server/firebase-admin', () => ({
   getExpense: mockGetExpense,
+  addBillRecord: mockAddBillRecord,
   addExpense: mockAddExpense,
   updateExpense: mockUpdateExpense,
   deleteExpense: mockDeleteExpense,
@@ -39,6 +41,7 @@ beforeEach(() => {
   mockUpdateExpense.mockClear();
   mockDeleteExpense.mockClear();
   mockGetExpense.mockReset();
+  mockAddBillRecord.mockReset();
   mockSendToOthers.mockReset();
   mockSendToOthers.mockResolvedValue(undefined);
 });
@@ -231,5 +234,51 @@ describe('DELETE /api/exp/[id]', () => {
     const res = await DELETE({ params: { id: 'xyz' }, request: req });
     expect(res.status).toBe(200);
     expect(mockDeleteExpense).toHaveBeenCalledWith('xyz');
+  });
+
+  const del = () => DELETE({ params: { id: 'xyz' }, request: new Request('http://localhost', { method: 'DELETE' }) } as never);
+  const bill = { n: 'Gas', a: 72.3, c: 'gas', dt: '2026-10-01', sc: '2026-10-20', paidAt: '2026-10-15', payer: 'Alfonso', half: null, s: 'ok', ts: 1 };
+
+  it('archives a paid bill with its due date before deleting it', async () => {
+    mockGetExpense.mockResolvedValue(bill);
+    const res = await del();
+    expect(res.status).toBe(200);
+    expect(mockAddBillRecord).toHaveBeenCalledOnce();
+    const rec = mockAddBillRecord.mock.lastCall![0];
+    expect(rec).toMatchObject({ c: 'gas', n: 'Gas', a: 72.3, d: '2026-10-20' });
+    expect(rec.ts).toBeGreaterThan(0);
+    expect(mockAddBillRecord.mock.invocationCallOrder[0]).toBeLessThan(mockDeleteExpense.mock.invocationCallOrder[0]);
+    expect(mockDeleteExpense).toHaveBeenCalledWith('xyz');
+  });
+
+  it('falls back to dt, then paidAt, for the archived date', async () => {
+    mockGetExpense.mockResolvedValue({ ...bill, sc: null });
+    await del();
+    expect(mockAddBillRecord.mock.lastCall![0].d).toBe('2026-10-01');
+    mockGetExpense.mockResolvedValue({ ...bill, sc: null, dt: null });
+    await del();
+    expect(mockAddBillRecord.mock.lastCall![0].d).toBe('2026-10-15');
+  });
+
+  it('does not archive an unpaid bill', async () => {
+    mockGetExpense.mockResolvedValue({ ...bill, s: 'da' });
+    await del();
+    expect(mockAddBillRecord).not.toHaveBeenCalled();
+    expect(mockDeleteExpense).toHaveBeenCalledWith('xyz');
+  });
+
+  it('does not archive a non-bill expense', async () => {
+    mockGetExpense.mockResolvedValue({ ...bill, c: 'spesa' });
+    await del();
+    expect(mockAddBillRecord).not.toHaveBeenCalled();
+    expect(mockDeleteExpense).toHaveBeenCalledWith('xyz');
+  });
+
+  it('fails without deleting when archiving fails', async () => {
+    mockGetExpense.mockResolvedValue(bill);
+    mockAddBillRecord.mockRejectedValue(new Error('Firebase 500'));
+    const res = await del();
+    expect(res.status).toBe(500);
+    expect(mockDeleteExpense).not.toHaveBeenCalled();
   });
 });

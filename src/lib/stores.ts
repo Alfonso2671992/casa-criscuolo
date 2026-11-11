@@ -1,5 +1,5 @@
 import { writable, derived } from 'svelte/store';
-import type { Expense, WishItem, Misura, AcquistoItem, TabId, Names, ModalState, RecurringExpense } from './types';
+import type { Expense, BillRecord, WishItem, Misura, AcquistoItem, TabId, Names, ModalState, RecurringExpense } from './types';
 import type { User } from 'firebase/auth';
 
 function lsNames(): Names {
@@ -22,6 +22,7 @@ export const wishes = writable<WishItem[]>(lsCache<WishItem[]>('cc_w', []));
 export const misure = writable<Misura[]>(lsCache<Misura[]>('cc_m', []));
 export const acquisti = writable<AcquistoItem[]>(lsCache<AcquistoItem[]>('cc_a', []));
 export const recurringExpenses = writable<RecurringExpense[]>(lsCache<RecurringExpense[]>('cc_r', []));
+export const storico = writable<BillRecord[]>(lsCache<BillRecord[]>('cc_s', []));
 export const user = writable<User | null>(null);
 export const currentTab = writable<TabId>('spese');
 export const names = writable<Names>(lsNames());
@@ -68,6 +69,11 @@ export function cacheAcquisti(data: AcquistoItem[]) {
 export function cacheRecurring(data: RecurringExpense[]) {
   recurringExpenses.set(data);
   try { localStorage.setItem('cc_r', JSON.stringify(data)); } catch {}
+}
+
+export function cacheStorico(data: BillRecord[]) {
+  storico.set(data);
+  try { localStorage.setItem('cc_s', JSON.stringify(data)); } catch {}
 }
 
 function lsDark(): boolean {

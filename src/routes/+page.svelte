@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';
-  import { currentTab, expenses, wishes, misure, acquisti, currentModal, cacheExpenses, cacheWishes, cacheMisure, cacheAcquisti, showToast } from '$lib/stores';
-  import { listenExpenses, listenWishes, listenMisure, listenAcquisti, authFetch } from '$lib/firebase-client';
+  import { currentTab, expenses, wishes, misure, acquisti, currentModal, cacheExpenses, cacheWishes, cacheMisure, cacheAcquisti, cacheStorico, showToast } from '$lib/stores';
+  import { listenExpenses, listenWishes, listenMisure, listenAcquisti, listenStorico, authFetch } from '$lib/firebase-client';
   import { ACQUISTO_CATS } from '$lib/constants';
   import { groupAcquisti } from '$lib/group-acquisti';
   import { sortDaPagare } from '$lib/utils';
@@ -18,6 +18,7 @@
   let unsubWish = $state<() => void>(() => {});
   let unsubMis = $state<() => void>(() => {});
   let unsubAcq = $state<() => void>(() => {});
+  let unsubSto = $state<() => void>(() => {});
 
   let collapsed = $state(new Set<string>(['__paid']));
   let loaded = $state({ exp: false, wish: false, mis: false, acq: false });
@@ -61,6 +62,7 @@
     unsubWish = listenWishes((data) => { cacheWishes(data); loaded.wish = true; });
     unsubMis = listenMisure((data) => { cacheMisure(data); loaded.mis = true; });
     unsubAcq = listenAcquisti((data) => { cacheAcquisti(data); loaded.acq = true; });
+    unsubSto = listenStorico(cacheStorico);
   });
 
   onDestroy(() => {
@@ -68,6 +70,7 @@
     unsubWish();
     unsubMis();
     unsubAcq();
+    unsubSto();
   });
 </script>
 

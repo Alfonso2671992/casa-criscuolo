@@ -1,6 +1,6 @@
 import { env } from '$env/dynamic/private';
 import { ROOT } from '../constants';
-import type { Expense, WishItem, Misura, AcquistoItem, RecurringExpense } from '../types';
+import type { Expense, BillRecord, WishItem, Misura, AcquistoItem, RecurringExpense } from '../types';
 
 const DB_URL = 'https://casa-criscuolo-default-rtdb.europe-west1.firebasedatabase.app';
 
@@ -182,6 +182,7 @@ export async function addExpense(d: Expense) { d.ts = Date.now(); await db('POST
 export async function getExpense(k: string): Promise<Expense | null> { return await db('GET', 'exp/' + k); }
 export async function updateExpense(k: string, d: Partial<Expense>) { await db('PATCH', 'exp/' + k, d); }
 export async function deleteExpense(k: string) { await db('DELETE', 'exp/' + k); }
+export async function addBillRecord(r: BillRecord) { await db('POST', 'storico', r); }
 
 function isDataUrl(v: string): boolean {
   return typeof v === 'string' && v.startsWith('data:');

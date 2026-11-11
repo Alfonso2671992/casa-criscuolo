@@ -76,7 +76,7 @@
     <CategoryGrid categories={CASA_CATS} bind:selected={cat} columns={3} />
     <input class="inp" placeholder="Misure (es. 40×60 cm)" aria-label="Misure" bind:value={dims} />
     <input class="inp" placeholder="Link prodotto (Amazon, IKEA...)" aria-label="Link prodotto" bind:value={link} />
-    <input type="text" inputmode="decimal" class="inp" placeholder="Budget indicativo (€)" aria-label="Budget" bind:value={budgetStr} />
+    <input type="text" inputmode="decimal" class="inp" placeholder="Prezzo prodotto (€)" aria-label="Prezzo prodotto" bind:value={budgetStr} />
     <button class="photo-btn" onclick={() => document.getElementById('wishEditFileInput')?.click()}>+ Cambia foto</button>
     <input type="file" id="wishEditFileInput" accept="image/*" style="display:none" onchange={handlePhoto} />
     {#if previewUrl}

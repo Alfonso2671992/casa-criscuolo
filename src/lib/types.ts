@@ -12,6 +12,17 @@ export interface Expense {
   ts: number;
 }
 
+/** Archived paid bill (casa_criscuolo/storico), written when a paid bill is deleted */
+export interface BillRecord {
+  _k?: string;
+  c: string;
+  n: string;
+  a: number;
+  /** Bill date YYYY-MM-DD: due date, else expense date, else payment date */
+  d: string;
+  ts: number;
+}
+
 export interface WishItem {
   _k?: string;
   n: string;
@@ -58,6 +69,7 @@ export type ModalState =
   | { type: 'confirm'; message: string; onConfirm: () => void; onCancel: () => void }
   | { type: 'settings' }
   | { type: 'recurring' }
+  | { type: 'bill-history'; expense: Expense }
   | { type: 'svuota'; cat: string; onConfirm: () => void; onCancel: () => void }
   | null;
 

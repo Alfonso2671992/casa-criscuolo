@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { CATS, FALLBACK_CAT } from '$lib/constants';
+  import { CATS, FALLBACK_CAT, BOLLETTE_IDS } from '$lib/constants';
   import { strToDisplay, daysUntil, fmtEuro } from '$lib/utils';
   import { showToast, currentModal } from '$lib/stores';
   import { authFetch } from '$lib/firebase-client';
@@ -8,6 +8,7 @@
   let { expense, isDa = false }: { expense: Expense; isDa?: boolean } = $props();
 
   const cat = $derived(CATS.find(c => c.id === expense.c) || FALLBACK_CAT);
+  const isBill = $derived(BOLLETTE_IDS.includes(expense.c));
   const payerText = $derived(expense.payer === 'A metà' ? `A metà · ${fmtEuro(expense.half ?? 0)}\u00a0€ a testa` : expense.payer);
   const days = $derived(expense.sc ? daysUntil(expense.sc) : null);
   const urgClass = $derived(isDa && days !== null ? (days < 0 ? 'scaduta' : days <= 5 ? 'urgente' : '') : '');
@@ -51,6 +52,10 @@
     <div class="amt">{fmtEuro(expense.a)}&nbsp;€</div>
   </div>
 
+  {#if isBill}
+    <button class="btn-history" onclick={() => currentModal.set({ type: 'bill-history', expense })}>Storico {cat.label.toLowerCase()} ›</button>
+  {/if}
+
   {#if isDa && badge}
     <div class="badge badge-{badge.type}">
       <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
@@ -82,6 +87,7 @@
   .meta { font-size: 11px; color: var(--text-muted); font-weight: 500; margin-top: 4px; }
   .card > .meta { margin-top: 8px; }
   .amt { font-size: 16px; font-weight: 600; color: var(--text-primary); font-family: var(--font-serif); flex-shrink: 0; }
+  .btn-history { all: unset; display: block; margin-top: 8px; font-size: 12px; font-weight: 700; color: var(--accent); cursor: pointer; }
   .badge { display: inline-flex; align-items: center; gap: 5px; margin-top: 8px; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; }
   .badge-urgent { background: var(--badge-urgent-bg); color: var(--badge-urgent-color); }
   .badge-warning { background: var(--badge-warning-bg); color: var(--badge-warning-color); }

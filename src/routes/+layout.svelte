@@ -10,6 +10,7 @@
   import ConfirmDialog from '$lib/components/ConfirmDialog.svelte';
   import SettingsModal from '$lib/components/SettingsModal.svelte';
   import RecurringModal from '$lib/components/RecurringModal.svelte';
+  import BillHistoryModal from '$lib/components/BillHistoryModal.svelte';
   import ReminderPopup from '$lib/components/ReminderPopup.svelte';
   import { user, initDark, currentTab, currentModal, cacheRecurring } from '$lib/stores';
   import { onAuth, listenRecurring } from '$lib/firebase-client';
@@ -91,6 +92,8 @@
   <SettingsModal onClose={closeModal} />
 {:else if $currentModal?.type === 'recurring'}
   <RecurringModal onClose={closeModal} />
+{:else if $currentModal?.type === 'bill-history'}
+  <BillHistoryModal expense={$currentModal.expense} onClose={closeModal} />
 {:else if $currentModal?.type === 'svuota'}
   <ConfirmDialog message={'Svuotare tutta la categoria?'} onConfirm={$currentModal.onConfirm} onCancel={$currentModal.onCancel} />
 {/if}

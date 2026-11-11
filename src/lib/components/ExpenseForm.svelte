@@ -18,7 +18,6 @@
   let payerOpts = $derived([
     { val: $names.p1, color: '#C4622D', bg: '#FDF0E6', border: '#D4A574' },
     { val: $names.p2, color: '#C2185B', bg: '#FCE4EC', border: '#F48FB1' },
-    { val: 'A metà', color: '#5D4037', bg: '#EFEBE9', border: '#BCAAA4' },
   ]);
 
   function parseAmt(v: string): number {
@@ -93,7 +92,7 @@
         style="border-color:{payer === opt.val ? opt.color : opt.border};background:{payer === opt.val ? opt.bg : 'var(--bg-app)'}"
         onclick={() => payer = opt.val}
       >
-        <div class="avatar" style="background:{payer === opt.val ? opt.color : opt.bg};border:2px solid {payer === opt.val ? opt.color : opt.border};color:{payer === opt.val ? '#FFF' : opt.color}">{opt.val === 'A metà' ? '½' : opt.val.charAt(0)}</div>
+        <div class="avatar" style="background:{payer === opt.val ? opt.color : opt.bg};border:2px solid {payer === opt.val ? opt.color : opt.border};color:{payer === opt.val ? '#FFF' : opt.color}">{opt.val.charAt(0)}</div>
         <span style="color:{payer === opt.val ? opt.color : 'var(--text-secondary)'}">{opt.val}</span>
       </button>
     {/each}

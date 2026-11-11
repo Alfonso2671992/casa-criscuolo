@@ -56,6 +56,7 @@ Token is cached in-memory with 60s expiry buffer.
 | `src/lib/stores.ts` | Svelte stores + localStorage cache helpers (`cc_` prefix), derived stats |
 | `src/lib/utils.ts` | `esc()`, `safeUrl()`, `snap2arr()`, date helpers, `trapFocus`, `scrollLock`, `compressImg` |
 | `src/lib/group-acquisti.ts` | `groupAcquisti()` — pure function grouping shopping items by category with active count |
+| `src/lib/bill-history.ts` | `billHistory()` — pure merge of archived + current bills of a category, newest first, with Italian month labels |
 | `src/lib/push.ts` | Client push: FCM token registration, permission, `cc_push` flag, service worker setup |
 | `src/lib/server/push.ts` | Server push: FCM HTTP v1 send to the other user, `NOTIFY_USERS` mapping, stale token cleanup |
 | `src/lib/server/firebase-admin.ts` | Firebase REST API writes (edge-compatible) |
@@ -65,7 +66,7 @@ Token is cached in-memory with 60s expiry buffer.
 
 All routes are POST-only, authenticated via `Authorization: Bearer <firebase-id-token>` in `apiHandler()`:
 
-- `POST /api/exp` — add expense; `POST /api/exp/[id]` — PATCH or DELETE
+- `POST /api/exp` — add expense; `POST /api/exp/[id]` — PATCH or DELETE (DELETE of a paid bill archives it to `storico` first; archive failure aborts the delete)
 - `POST /api/wish` — add wish item; `POST /api/wish/[id]` — PATCH or DELETE
 - `POST /api/mis` — add misura; `POST /api/mis/[id]` — DELETE
 - `POST /api/acquisto` — add acquisto item; `POST /api/acquisto/[id]` — PATCH or DELETE
@@ -77,7 +78,7 @@ Push notifications (FCM HTTP v1) go to the OTHER user when an expense is added (
 ### Firebase database
 
 - **Project**: `casa-criscuolo`
-- **Root path**: `casa_criscuolo/` → sub-paths `exp`, `wish`, `mis`, `acquisti`, `photos`, `push` (tokens at `push/<uid>/<tokenId>`)
+- **Root path**: `casa_criscuolo/` → sub-paths `exp`, `wish`, `mis`, `acquisti`, `photos`, `push` (tokens at `push/<uid>/<tokenId>`), `storico` (paid bills archived by `DELETE /api/exp/[id]` before deletion: `{c, n, a, d, ts}`)
 - **Client config**: hardcoded in `firebase-client.ts` (public Firebase keys, by design)
 - **Auth**: Email/Password via Firebase Auth
 
@@ -88,7 +89,7 @@ Push notifications (FCM HTTP v1) go to the OTHER user when an expense is added (
 ## Conventions
 
 - **UI labels**: Italian (`Spese`, `Da acquistare`, `Casa`, `Misure`)
-- **localStorage keys**: prefixed `cc_` (`cc_e`, `cc_w`, `cc_m`, `cc_a`, `cc_r`, `cc_n`, `cc_budget`, `cc_dark`, `cc_push`, `cc_rem_seen`)
+- **localStorage keys**: prefixed `cc_` (`cc_e`, `cc_w`, `cc_m`, `cc_a`, `cc_r`, `cc_s`, `cc_n`, `cc_budget`, `cc_dark`, `cc_push`, `cc_rem_seen`)
 - **Changelog**: update `CHANGELOG.md` (Keep a Changelog format) before every commit — sections: `### Added`, `### Changed`, `### Fixed`, `### Removed`, `### Docs`
 - **Commits**: short, English
 - **Branches**: `develop` for work in progress, `main` for production (auto-deploys to Cloudflare Pages)

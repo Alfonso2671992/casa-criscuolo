@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Storico bollette**: sulle card di luce, acqua, gas e condominio (da pagare e pagate) c'è il link "Storico gas ›" che apre un pannello dal basso con un grafico a barre delle ultime 6 bollette (quella della card evidenziata) e l'elenco per mese, senza percentuali (conguagli e rate le renderebbero fuorvianti); cancellando una bolletta pagata il server la archivia prima in `storico` (categoria, nome, importo, data = scadenza, altrimenti data, altrimenti data di pagamento) e, se l'archiviazione fallisce, non la cancella; le bollette non pagate e le altre spese si cancellano come prima; logica in `src/lib/bill-history.ts` con test, cache locale `cc_s`
 - **Notifiche push**: l'altro utente riceve una notifica (FCM HTTP v1) quando viene aggiunta una spesa o un prodotto di Da acquistare viene segnato urgente; interruttore "Notifiche" nelle impostazioni; il tocco sulla notifica apre il tab giusto; token salvati in `push/<uid>/<tokenId>`, nuova route `POST /api/push` (register / unregister), service worker proprio `firebase-messaging-sw.js` senza SDK (messaggi FCM data-only, notifica sempre mostrata, il tocco cambia tab anche ad app già aperta), al logout il dispositivo viene deregistrato, nuovo secret `NOTIFY_USERS` (mappa email → nome); su iPhone funziona solo dall'app aggiunta alla Home (iOS 16.4+)
 - **Prodotti urgenti in Da acquistare**: toccando la riga di un prodotto (icona o nome) compare una conferma "Rendere … urgente?" o "Togliere l'urgenza a …?"; i prodotti urgenti stanno in cima alla loro categoria, con card evidenziata e "· Urgente" accanto al nome, e l'intestazione della categoria mostra quanti sono (es. "· 1 urgente") anche quando è chiusa; sulla card resta solo il cestino; campo `u` su `acquisti`, gestito da `PATCH /api/acquisto/[id]`
 - **Spese fisse con promemoria**: nuova funzionalità per definire spese ricorrenti mensili (nome, importo, giorno di scadenza); compare un promemoria in SummaryBar dagli ultimi 2 giorni del mese precedente fino alla scadenza; gestione in modal dedicata accessibile dall'header; supporto edit e delete inline con conferma
@@ -20,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **Casa**: "Budget indicativo" diventa "Prezzo prodotto" nel form e nella modifica, e sulla card "Budget:" diventa "Prezzo:" (il dato salvato non cambia)
 - **Promemoria spese fisse**: non copre più le card "Da pagare / Pagate". È un riquadro che entra da destra alla prima apertura della giornata (`cc_rem_seen`), con una riga per spesa in scadenza, largo quanto il testo (nomi lunghi tagliati con "…"); si chiude toccandolo o da solo dopo 7 secondi, e riesce a destra. Niente più comparsa a ogni apertura né dopo 30 minuti in background
 - **Impostazioni**: l'etichetta dell'interruttore notifiche ora è "Attiva notifiche"
 - **Chiusura della modale impostazioni**: tolto il pulsante "Chiudi" in basso, al suo posto la X in alto a destra come nella modale delle spese fisse
@@ -45,6 +47,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
+- **"A metà" nel form delle spese**: chi paga si sceglie solo tra i due nomi; nella modifica l'opzione resta solo per le spese già salvate come "A metà", e il calcolo della quota sul server non cambia
 - **Campo Quantità in Da acquistare**: rimosso dal form, dalle card e dalle API (`qta`), perché non veniva mai usato; i prodotti già salvati con il campo vuoto restano invariati
 - **Codice di registrazione inutilizzato**: rimossi da `LoginForm` lo stato `isRegister`, `toggleMode` e i testi di registrazione, e da `firebase-client` la funzione `register`; la registrazione era già irraggiungibile dalla schermata di login
 

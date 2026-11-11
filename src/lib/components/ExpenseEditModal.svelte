@@ -23,7 +23,8 @@
   let payerOpts = $derived([
     { val: $names.p1, color: '#C4622D', bg: '#FDF0E6', border: '#D4A574' },
     { val: $names.p2, color: '#C2185B', bg: '#FCE4EC', border: '#F48FB1' },
-    { val: 'A metà', color: '#5D4037', bg: '#EFEBE9', border: '#BCAAA4' },
+    // Legacy: "A metà" is offered only to expenses already saved that way
+    ...(p0 === 'A metà' ? [{ val: 'A metà', color: '#5D4037', bg: '#EFEBE9', border: '#BCAAA4' }] : []),
   ]);
 
   function parseAmt(v: string): number {

@@ -34,7 +34,7 @@
       <span class="cat-badge" style="background:{cat.bg};color:{cat.color};border-color:{cat.color}">{wish.c}</span>
     </div>
     {#if wish.d}<div class="detail">{wish.d}</div>{/if}
-    {#if wish.bgt}<div class="budget">Budget: {fmtEuro(wish.bgt)}&nbsp;€</div>{/if}
+    {#if wish.bgt}<div class="budget">Prezzo: {fmtEuro(wish.bgt)}&nbsp;€</div>{/if}
     {#if wish.l && safeUrl(wish.l)}
       <a href={safeUrl(wish.l)} target="_blank" class="link">Apri link →</a>
     {/if}

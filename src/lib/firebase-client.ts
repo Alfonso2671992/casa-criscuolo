@@ -16,7 +16,7 @@ import {
 } from 'firebase/auth';
 import { snap2arr } from './utils';
 import { ROOT } from './constants';
-import type { Expense, WishItem, Misura, AcquistoItem, RecurringExpense } from './types';
+import type { Expense, BillRecord, WishItem, Misura, AcquistoItem, RecurringExpense } from './types';
 
 const firebaseConfig = {
   apiKey: 'AIzaSyCHPWXCOg3lwu6_okAlpUomiGWoJ7f9he8',
@@ -73,6 +73,11 @@ export function listenAcquisti(cb: (data: AcquistoItem[]) => void) {
 export function listenRecurring(cb: (data: RecurringExpense[]) => void) {
   const rootRef = ref(db, ROOT + '/recurring');
   return onValue(rootRef, (snap) => cb(snap2arr<RecurringExpense>(snap.val())));
+}
+
+export function listenStorico(cb: (data: BillRecord[]) => void) {
+  const rootRef = ref(db, ROOT + '/storico');
+  return onValue(rootRef, (snap) => cb(snap2arr<BillRecord>(snap.val())));
 }
 
 export async function authFetch(url: string, init?: RequestInit): Promise<Response> {
